@@ -1,0 +1,77 @@
+name: Lighthouse
+
+on:
+  pull_request:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Auditar dist/
+        id: lhci
+        uses: treosh/lighthouse-ci-action@12.6.2
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Resumen de puntajes
+        if: always() && steps.lhci.outputs.manifest
+        uses: actions/github-script@v9
+        env:
+          MANIFEST: ${{ steps.lhci.outputs.manifest }}
+          LINKS: ${{ steps.lhci.outputs.links }}
+        with:
+          script: |
+            // Se escribe en el Job Summary (no en el PR) para no generar notificaciones.
+            const manifest = JSON.parse(process.env.MANIFEST);
+            const links = JSON.parse(process.env.LINKS || '{}');
+            const pct = (v) => (v == null ? '—' : String(Math.round(v * 100)));
+            const icon = (v) => (v == null ? '' : v >= 0.9 ? '🟢' : v >= 0.5 ? '🟠' : '🔴');
+            const categories = ['performance', 'accessibility', 'best-practices', 'seo'];
+            const rows = manifest
+              .filter((run) => run.isRepresentativeRun)
+              .map((run) => [
+                new URL(run.url).pathname,
+                ...categories.map((k) => `${icon(run.summary[k])} ${pct(run.summary[k])}`),
+                links[run.url] ? `<a href="${links[run.url]}">ver</a>` : '—',
+              ]);
+            await core.summary
+              .addHeading('Lighthouse', 3)
+              .addTable([
+                [
+                  { data: 'Ruta', header: true },
+                  { data: 'Performance', header: true },
+                  { data: 'Accesibilidad', header: true },
+                  { data: 'Buenas prácticas', header: true },
+                  { data: 'SEO', header: true },
+                  { data: 'Reporte', header: true },
+                ],
+                ...rows,
+              ])
+              .addRaw(
+                `<sub>Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
+                true,
+              )
+              .write();

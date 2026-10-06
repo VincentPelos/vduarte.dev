@@ -1,0 +1,33 @@
+name: Funcionalidad o tarea
+description: Algo nuevo para el sitio, la documentación o la infraestructura.
+title: '<Verbo en infinitivo> …'
+labels: ['tipo: feat']
+body:
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: ¿Por qué hace falta? Si aplica, qué criterio de la rúbrica cubre.
+    validations:
+      required: true
+  - type: textarea
+    id: tareas
+    attributes:
+      label: Tareas
+      description: Lista de pasos concretos.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: aceptacion
+    attributes:
+      label: Criterio de aceptación
+      description: Cómo se comprueba que está terminado.
+    validations:
+      required: true
+  - type: input
+    id: rubrica
+    attributes:
+      label: Rúbrica
+      description: Criterios de ISI802 relacionados (p. ej. A1 · A4). Opcional.
