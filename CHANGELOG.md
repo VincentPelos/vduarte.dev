@@ -4,6 +4,18 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Agregado
+
+- Schemas zod del contenido en `src/lib/schemas.ts`, conectados a cada JSON en `src/content.config.ts` (#20).
+- `site.json` con perfil, contacto, _Sonando_ y _Jugando_ (#21).
+- Experiencia y educación de ejemplo, con `sortByRecency()` para ordenarlas (#22).
+- Proyectos y skills de ejemplo, con `sortProjects()` (destacados primero) (#23).
+
+### Cambiado
+
+- Commits agrupados por bloques de cambios relacionados (#27).
+- Configs de Prettier y commitlint dentro de `package.json`; `lighthouserc.json` en `.github/` (#29).
+
 ### Eliminado
 
 - Tablero de GitHub Projects: no aporta frente a los milestones (#1).
