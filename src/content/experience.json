@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "lumen-logistica",
+    "company": "Lumen Logística",
+    "role": "Ingeniero de Software & Datos",
+    "start": "2023-03",
+    "end": null,
+    "location": "Remoto",
+    "description": "Plataforma de seguimiento de flotas en tiempo real usada por más de 40 empresas de reparto.",
+    "highlights": [
+      "Migré el panel de clientes a Astro con islas y bajé un 62 % el JavaScript enviado.",
+      "Diseñé la API de eventos de GPS con colas en Redis: 1,2 M eventos al día.",
+      "Armé el modelo de datos y los dashboards de entregas que usa el equipo comercial."
+    ],
+    "stack": ["TypeScript", "Node.js", "PostgreSQL", "Redis", "Power BI"]
+  },
+  {
+    "id": "estudio-norte",
+    "company": "Estudio Norte",
+    "role": "Desarrollador Frontend",
+    "start": "2021-01",
+    "end": "2023-02",
+    "location": "Híbrido",
+    "description": "Sitios y e-commerce para marcas locales, con foco en animación y rendimiento.",
+    "highlights": ["Lideré 14 lanzamientos con Lighthouse sobre 95 en móvil."],
+    "stack": ["React", "Next.js", "GSAP", "Shopify"]
+  },
+  {
+    "id": "independiente",
+    "company": "Independiente",
+    "role": "Desarrollador web",
+    "start": "2019-06",
+    "end": "2020-12",
+    "location": "Freelance",
+    "description": "Landing pages y sistemas internos para pymes: inventario, reservas y facturación.",
+    "stack": ["PHP", "MySQL", "JavaScript"]
+  }
+]
