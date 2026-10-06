@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "id": "colchagua",
+    "title": "Vulnerabilidad territorial en Colchagua",
+    "description": "Caso de Business Intelligence: ETL, modelo de datos y dashboard en Power BI para entender la vulnerabilidad territorial de la provincia de Colchagua.",
+    "tags": ["Power BI", "Python", "ETL", "DAX"],
+    "year": 2026,
+    "featured": true,
+    "caseStudy": "colchagua"
+  },
+  {
+    "id": "vduarte-dev",
+    "title": "vduarte.dev",
+    "description": "Este portafolio: Astro sin framework de UI, contenido en JSON validado con zod, CI con Lighthouse y despliegue en Coolify.",
+    "tags": ["Astro", "TypeScript", "Tailwind CSS", "Coolify"],
+    "repo": "https://github.com/VincentPelos/vduarte.dev",
+    "demo": "https://vduarte.dev",
+    "year": 2026
+  },
+  {
+    "id": "rutas",
+    "title": "Rutas",
+    "description": "Planificador de repartos que ordena paradas y estima tiempos con datos de tráfico.",
+    "tags": ["Astro", "Leaflet", "PostGIS"],
+    "year": 2025,
+    "featured": true
+  },
+  {
+    "id": "auto-ops",
+    "title": "auto-ops",
+    "description": "Flujos de n8n que generan facturas, respaldan bases de datos y avisan por Telegram cuando algo falla.",
+    "tags": ["n8n", "Python", "Telegram"],
+    "year": 2024
+  },
+  {
+    "id": "coolify-templates",
+    "title": "coolify-templates",
+    "description": "Plantillas de despliegue para apps Node y sitios estáticos en Coolify.",
+    "tags": ["Docker", "Coolify"],
+    "year": 2025
+  }
+]
