@@ -37,7 +37,9 @@ const palette = [
         <span class="text-fg">vicente@vduarte</span>:~$ whoami
       </p>
       <h1 class="font-display text-name leading-[0.92] font-bold tracking-display">
-        Vicente<br />Duarte
+        Vicente
+        <br />
+        Duarte
       </h1>
       <p class="text-xl font-semibold">Ingeniero de Software &amp; Datos</p>
       <p class="max-w-[46ch] text-lg text-muted">
@@ -47,13 +49,15 @@ const palette = [
         <a
           href="#tokens"
           class="rounded-full border border-fg bg-fg px-[18px] py-[13px] text-sm font-semibold text-bg transition hover:bg-white"
-          >Ver tokens</a
         >
+          Ver tokens
+        </a>
         <a
           href="#tipografia"
           class="rounded-full border border-line bg-glass px-[18px] py-[13px] text-sm font-medium backdrop-blur-xl transition hover:-translate-y-px hover:border-line-hi hover:bg-glass-hi"
-          >Tipografía</a
         >
+          Tipografía
+        </a>
       </div>
     </section>
 
@@ -63,31 +67,27 @@ const palette = [
       </h2>
 
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          ui.map((t) => (
-            <div class="glass flex items-center gap-4 p-4">
-              <span class={`size-10 shrink-0 rounded-full border border-line ${t.cls}`} />
-              <div class="min-w-0">
-                <p class="font-mono text-sm">--{t.name}</p>
-                <p class="truncate font-mono text-xs text-muted">{t.value}</p>
-              </div>
+        {ui.map((t) => (
+          <div class="glass flex items-center gap-4 p-4">
+            <span class={`size-10 shrink-0 rounded-full border border-line ${t.cls}`} />
+            <div class="min-w-0">
+              <p class="font-mono text-sm">--{t.name}</p>
+              <p class="truncate font-mono text-xs text-muted">{t.value}</p>
             </div>
-          ))
-        }
+          </div>
+        ))}
       </div>
 
       <p class="label mt-4">Paleta Sangre</p>
       <div class="grid gap-3 sm:grid-cols-3">
-        {
-          palette.map((t) => (
-            <div class="glass overflow-hidden">
-              <div class={`h-24 ${t.cls}`} />
-              <p class="p-4 font-mono text-sm">
-                --{t.name} <span class="text-muted">{t.value}</span>
-              </p>
-            </div>
-          ))
-        }
+        {palette.map((t) => (
+          <div class="glass overflow-hidden">
+            <div class={`h-24 ${t.cls}`} />
+            <p class="p-4 font-mono text-sm">
+              --{t.name} <span class="text-muted">{t.value}</span>
+            </p>
+          </div>
+        ))}
       </div>
       <div class="h-0.5 w-full bg-linear-to-r from-c1 via-c2 to-c3"></div>
     </section>
@@ -128,9 +128,7 @@ const palette = [
         </article>
         <article class="glass grid gap-2 p-6 transition hover:border-line-hi">
           <p class="label">Radio, blur y brillos</p>
-          <p class="text-muted">
-            Radio 18px · blur 20px con saturate(170%) · brillos al 20%.
-          </p>
+          <p class="text-muted">Radio 18px · blur 20px con saturate(170%) · brillos al 20%.</p>
         </article>
       </div>
     </section>

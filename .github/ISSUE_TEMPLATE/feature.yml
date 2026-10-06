@@ -1,7 +1,7 @@
 name: Funcionalidad o tarea
 description: Algo nuevo para el sitio, la documentación o la infraestructura.
-title: "<Verbo en infinitivo> …"
-labels: ["tipo: feat"]
+title: '<Verbo en infinitivo> …'
+labels: ['tipo: feat']
 body:
   - type: textarea
     id: contexto
@@ -16,7 +16,7 @@ body:
       label: Tareas
       description: Lista de pasos concretos.
       value: |
-        - [ ] 
+        - [ ]
     validations:
       required: true
   - type: textarea

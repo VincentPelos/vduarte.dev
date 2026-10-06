@@ -1,7 +1,7 @@
 name: Error
 description: Algo que no funciona o se ve mal.
-title: "Corregir …"
-labels: ["tipo: fix"]
+title: 'Corregir …'
+labels: ['tipo: fix']
 body:
   - type: textarea
     id: que-pasa
@@ -16,7 +16,7 @@ body:
       label: Cómo reproducirlo
       value: |
         1. 
-        2. 
+        2.
     validations:
       required: true
   - type: textarea
