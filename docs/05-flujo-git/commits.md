@@ -1,6 +1,6 @@
 ---
 tags: [git, commits]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # Convención de commits
@@ -48,6 +48,15 @@ docs(decisiones): registra uso de Coolify para despliegue
 chore(deps): actualiza astro a 5.x
 ci: agrega lighthouse en pull requests
 ```
+
+## Validación automática
+
+- **husky** instala el hook `.husky/commit-msg` al correr `pnpm install` (script `prepare`).
+- El hook ejecuta **commitlint** con `commitlint.config.js`, que extiende `@commitlint/config-conventional` y agrega:
+  - `type-enum`: solo los tipos de la tabla de arriba (error si no).
+  - `header-max-length`: 72 caracteres (error si se pasa).
+  - `scope-enum`: los alcances de esta nota (**advertencia**, no bloquea; si se usa uno nuevo, se agrega aquí y en la config).
+- Probar un mensaje sin commitear: `echo "feat(hero): agrega algo" | pnpm exec commitlint`.
 
 ## Reglas
 
