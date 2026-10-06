@@ -10,7 +10,7 @@ Reglas para agentes de IA que trabajen en este repo. **Antes de tocar código, l
 - **Sin frameworks de UI** (React, Vue, Svelte) ni dependencias nuevas sin una decisión registrada en `docs/03-decisiones/`.
 - **Estilos:** utilidades de Tailwind y tokens de `src/styles/global.css`; nada de colores ni fuentes fuera de [`docs/04-diseno/tokens.md`](docs/04-diseno/tokens.md).
 - **Animaciones:** el contenido nunca depende de que una animación termine; todo respeta `prefers-reduced-motion`.
-- **Flujo:** issue → rama `<tipo>/<n>-<slug>` desde `develop` → commits [convencionales](docs/05-flujo-git/commits.md) con `Refs #n` → PR a `develop` con `Closes #n` → merge commit. Nunca commits directos a `develop` ni `main`.
+- **Flujo:** issue → rama `<tipo>/<n>-<slug>` desde `develop` → commits [convencionales](docs/05-flujo-git/commits.md) que agrupan ~3 cambios relacionados (1–3 por PR), con `Refs #n` → PR a `develop` con `Closes #n` → merge commit. Nunca commits directos a `develop` ni `main`.
 - **Antes de abrir un PR:** `pnpm lint && pnpm format:check && pnpm check && pnpm test && pnpm build`.
 - **Cambios visuales:** revisar en 390, 768 y 1280 px.
 - **Bitácora:** al cerrar una sesión, agrega o actualiza `docs/06-bitacora/AAAA-MM-DD.md`, incluyendo el uso de IA.
