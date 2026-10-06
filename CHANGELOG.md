@@ -4,6 +4,10 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Eliminado
+
+- Tablero de GitHub Projects: no aporta frente a los milestones (#1).
+
 ## [0.1.0] - 2026-10-06
 
 Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tooling de calidad.
