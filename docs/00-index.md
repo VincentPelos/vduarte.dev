@@ -11,7 +11,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ## Estado actual
 
-- **Hito en curso:** v0.1.0 Fundaciones — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.1.0 Fundaciones (2026-10-06).
+- **Hito en curso:** v0.2.0 Contenido — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (pendiente de despliegue).
 
