@@ -1,0 +1,86 @@
+name: Lighthouse
+
+on:
+  pull_request:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Auditar dist/
+        id: lhci
+        uses: treosh/lighthouse-ci-action@12.6.2
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Comentar resultados en el PR
+        if: always() && steps.lhci.outputs.manifest
+        uses: actions/github-script@v9
+        env:
+          MANIFEST: ${{ steps.lhci.outputs.manifest }}
+          LINKS: ${{ steps.lhci.outputs.links }}
+        with:
+          script: |
+            const marker = '<!-- lighthouse-ci -->';
+            const manifest = JSON.parse(process.env.MANIFEST);
+            const links = JSON.parse(process.env.LINKS || '{}');
+            const pct = (v) => (v == null ? '—' : Math.round(v * 100));
+            const icon = (v) => (v == null ? '' : v >= 0.9 ? '🟢' : v >= 0.5 ? '🟠' : '🔴');
+            const rows = manifest
+              .filter((run) => run.isRepresentativeRun)
+              .map((run) => {
+                const s = run.summary;
+                const path = new URL(run.url).pathname;
+                const report = links[run.url] ? `[ver](${links[run.url]})` : '—';
+                const cells = ['performance', 'accessibility', 'best-practices', 'seo']
+                  .map((k) => `${icon(s[k])} ${pct(s[k])}`)
+                  .join(' | ');
+                return `| \`${path}\` | ${cells} | ${report} |`;
+              });
+            const body = [
+              marker,
+              '### Lighthouse',
+              '',
+              '| Ruta | Performance | Accesibilidad | Buenas prácticas | SEO | Reporte |',
+              '|---|---|---|---|---|---|',
+              ...rows,
+              '',
+              `<sub>Commit ${context.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+            });
+            const previous = comments.find((c) => c.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
