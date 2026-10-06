@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, rubrica]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # Rúbrica ISI802
@@ -46,11 +46,11 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 
 - ✅ Dominio propio `.dev` (`vduarte.dev`).
 - ⬜ Lighthouse alto (performance / accesibilidad).
-- 🟨 Tests o CI con lint.
+- ✅ Tests o CI con lint.
 - ✅ Dark mode (el sitio es oscuro por diseño).
 - ⬜ Formulario de contacto funcional (n8n).
 - 🟨 Historial de commits que muestra el proceso.
-- ⬜ README ejemplar.
+- 🟨 README ejemplar.
 
 ## Bajan la nota (evitar)
 
