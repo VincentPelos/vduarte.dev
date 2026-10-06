@@ -1,0 +1,8 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .nvmrc, .prettierignore, .editorconfig, .gitattributes, .gitignore, astro.config.*, tsconfig.json, eslint.config.*, vitest.config.*",
+    "README.md": "AGENTS.md, CLAUDE.md, CHANGELOG.md"
+  }
+}
