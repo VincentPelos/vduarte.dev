@@ -9,7 +9,6 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   lighthouse:
@@ -37,7 +36,7 @@ jobs:
           uploadArtifacts: true
           temporaryPublicStorage: true
 
-      - name: Comentar resultados en el PR
+      - name: Resumen de puntajes
         if: always() && steps.lhci.outputs.manifest
         uses: actions/github-script@v9
         env:
@@ -45,42 +44,34 @@ jobs:
           LINKS: ${{ steps.lhci.outputs.links }}
         with:
           script: |
-            const marker = '<!-- lighthouse-ci -->';
+            // Se escribe en el Job Summary (no en el PR) para no generar notificaciones.
             const manifest = JSON.parse(process.env.MANIFEST);
             const links = JSON.parse(process.env.LINKS || '{}');
-            const pct = (v) => (v == null ? '—' : Math.round(v * 100));
+            const pct = (v) => (v == null ? '—' : String(Math.round(v * 100)));
             const icon = (v) => (v == null ? '' : v >= 0.9 ? '🟢' : v >= 0.5 ? '🟠' : '🔴');
+            const categories = ['performance', 'accessibility', 'best-practices', 'seo'];
             const rows = manifest
               .filter((run) => run.isRepresentativeRun)
-              .map((run) => {
-                const s = run.summary;
-                const path = new URL(run.url).pathname;
-                const report = links[run.url] ? `[ver](${links[run.url]})` : '—';
-                const cells = ['performance', 'accessibility', 'best-practices', 'seo']
-                  .map((k) => `${icon(s[k])} ${pct(s[k])}`)
-                  .join(' | ');
-                return `| \`${path}\` | ${cells} | ${report} |`;
-              });
-            const body = [
-              marker,
-              '### Lighthouse',
-              '',
-              '| Ruta | Performance | Accesibilidad | Buenas prácticas | SEO | Reporte |',
-              '|---|---|---|---|---|---|',
-              ...rows,
-              '',
-              `<sub>Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
-            ].join('\n');
-            const { owner, repo } = context.repo;
-            const issue_number = context.issue.number;
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number,
-            });
-            const previous = comments.find((c) => c.body?.includes(marker));
-            if (previous) {
-              await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
-            } else {
-              await github.rest.issues.createComment({ owner, repo, issue_number, body });
-            }
+              .map((run) => [
+                new URL(run.url).pathname,
+                ...categories.map((k) => `${icon(run.summary[k])} ${pct(run.summary[k])}`),
+                links[run.url] ? `<a href="${links[run.url]}">ver</a>` : '—',
+              ]);
+            await core.summary
+              .addHeading('Lighthouse', 3)
+              .addTable([
+                [
+                  { data: 'Ruta', header: true },
+                  { data: 'Performance', header: true },
+                  { data: 'Accesibilidad', header: true },
+                  { data: 'Buenas prácticas', header: true },
+                  { data: 'SEO', header: true },
+                  { data: 'Reporte', header: true },
+                ],
+                ...rows,
+              ])
+              .addRaw(
+                `<sub>Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
+                true,
+              )
+              .write();
