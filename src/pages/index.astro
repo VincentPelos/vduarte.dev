@@ -1,16 +1,138 @@
 ---
+// Página temporal de verificación de tokens (issue #4). Se reemplaza por el home en v0.3.0.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const ui = [
+  { name: 'bg', cls: 'bg-bg', value: '#000' },
+  { name: 'fg', cls: 'bg-fg', value: '#ededed' },
+  { name: 'muted', cls: 'bg-muted', value: '#8f8f8f' },
+  { name: 'line', cls: 'bg-line', value: 'rgba(255,255,255,.09)' },
+  { name: 'line-hi', cls: 'bg-line-hi', value: 'rgba(255,255,255,.22)' },
+  { name: 'glass', cls: 'bg-glass', value: 'rgba(255,255,255,.045)' },
+  { name: 'glass-hi', cls: 'bg-glass-hi', value: 'rgba(255,255,255,.06)' },
+  { name: 'ok', cls: 'bg-ok', value: '#3ddc84' },
+];
+
+const palette = [
+  { name: 'c1', cls: 'bg-c1', value: '#ff0040' },
+  { name: 'c2', cls: 'bg-c2', value: '#9b00ff' },
+  { name: 'c3', cls: 'bg-c3', value: '#ff8a00' },
+];
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Vicente Duarte</title>
-  </head>
-  <body>
-    <h1>vduarte.dev</h1>
-  </body>
-</html>
+<BaseLayout title="Tokens · vduarte.dev">
+  <main class="relative isolate overflow-clip">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -inset-x-[5%] -top-[10%] -z-10 h-[120%] blur-[110px]"
+      style="opacity: calc(0.55 * var(--glow));"
+    >
+      <span class="absolute top-[8%] left-[2%] aspect-square w-[38%] rounded-full bg-c1"></span>
+      <span class="absolute top-[40%] left-[40%] aspect-square w-[32%] rounded-full bg-c2"></span>
+      <span class="absolute top-0 right-0 aspect-square w-[30%] rounded-full bg-c3"></span>
+    </div>
+
+    <section class="wrap grid gap-6 pt-[clamp(80px,15vh,160px)] pb-16">
+      <p class="font-mono text-sm text-muted">
+        <span class="text-fg">vicente@vduarte</span>:~$ whoami
+      </p>
+      <h1 class="font-display text-name leading-[0.92] font-bold tracking-display">
+        Vicente<br />Duarte
+      </h1>
+      <p class="text-xl font-semibold">Ingeniero de Software &amp; Datos</p>
+      <p class="max-w-[46ch] text-lg text-muted">
+        Página de prueba de tokens, fuentes y vidrio. Se reemplaza por el home en v0.3.0.
+      </p>
+      <div class="flex flex-wrap gap-2.5">
+        <a
+          href="#tokens"
+          class="rounded-full border border-fg bg-fg px-[18px] py-[13px] text-sm font-semibold text-bg transition hover:bg-white"
+          >Ver tokens</a
+        >
+        <a
+          href="#tipografia"
+          class="rounded-full border border-line bg-glass px-[18px] py-[13px] text-sm font-medium backdrop-blur-xl transition hover:-translate-y-px hover:border-line-hi hover:bg-glass-hi"
+          >Tipografía</a
+        >
+      </div>
+    </section>
+
+    <section id="tokens" class="wrap grid gap-6 py-16">
+      <h2 class="font-display text-section leading-none font-bold tracking-display">
+        Color<span class="text-grad">.</span>
+      </h2>
+
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          ui.map((t) => (
+            <div class="glass flex items-center gap-4 p-4">
+              <span class={`size-10 shrink-0 rounded-full border border-line ${t.cls}`} />
+              <div class="min-w-0">
+                <p class="font-mono text-sm">--{t.name}</p>
+                <p class="truncate font-mono text-xs text-muted">{t.value}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="label mt-4">Paleta Sangre</p>
+      <div class="grid gap-3 sm:grid-cols-3">
+        {
+          palette.map((t) => (
+            <div class="glass overflow-hidden">
+              <div class={`h-24 ${t.cls}`} />
+              <p class="p-4 font-mono text-sm">
+                --{t.name} <span class="text-muted">{t.value}</span>
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <div class="h-0.5 w-full bg-linear-to-r from-c1 via-c2 to-c3"></div>
+    </section>
+
+    <section id="tipografia" class="wrap grid gap-6 py-16">
+      <h2 class="font-display text-section leading-none font-bold tracking-display">
+        Tipografía<span class="text-grad">.</span>
+      </h2>
+      <div class="grid gap-3 md:grid-cols-3">
+        <article class="glass grid gap-3 p-6">
+          <p class="label">Display · Martian Mono 700</p>
+          <p class="font-display text-3xl font-bold tracking-display">¿Hablamos?</p>
+        </article>
+        <article class="glass grid gap-3 p-6">
+          <p class="label">Texto · Geist 300–700</p>
+          <p class="text-2xl font-light">Ligera</p>
+          <p class="text-2xl font-semibold">Seminegrita</p>
+        </article>
+        <article class="glass grid gap-3 p-6">
+          <p class="label">Utilidad · Geist Mono</p>
+          <p class="font-mono text-sm text-muted">src/content/site.json</p>
+          <p class="font-mono text-sm">2023-03 — actual</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap grid gap-6 pt-16 pb-32">
+      <h2 class="font-display text-section leading-none font-bold tracking-display">
+        Vidrio<span class="text-grad">.</span>
+      </h2>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <article class="glass grid gap-2 p-6 transition hover:border-line-hi">
+          <p class="label">Disponibilidad</p>
+          <p class="flex items-center gap-2 text-xl font-semibold">
+            <span class="size-2.5 rounded-full bg-ok motion-safe:animate-pulse"></span>
+            Abierto a proyectos
+          </p>
+        </article>
+        <article class="glass grid gap-2 p-6 transition hover:border-line-hi">
+          <p class="label">Radio, blur y brillos</p>
+          <p class="text-muted">
+            Radio 18px · blur 20px con saturate(170%) · brillos al 20%.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
