@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -46,6 +46,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ### 06 · Bitácora — qué pasó y cuándo
 - [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
+- [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
 
 ## Convenciones de la bóveda
 
