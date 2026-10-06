@@ -12,5 +12,5 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 - Tailwind CSS v4 con los tokens de diseño, fuentes Martian Mono, Geist y Geist Mono, `BaseLayout` y página temporal de tokens (#4).
 - Validación de commits con commitlint y husky (#5).
 - ESLint, Prettier, Vitest y `astro check`, con un primer módulo probado en `src/lib/dates.ts` (#6).
-- CI en GitHub Actions y Lighthouse CI con comentario de puntajes en cada PR (#7).
+- CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).

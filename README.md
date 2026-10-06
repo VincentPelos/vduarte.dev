@@ -77,7 +77,7 @@ develop → PR "release: vX.Y.Z" a main → tag + GitHub Release → despliegue 
 ## Despliegue
 
 ```
-PR a develop ──► GitHub Actions: lint · formato · tipos · tests · build · Lighthouse (comenta puntajes en el PR)
+PR a develop ──► GitHub Actions: lint · formato · tipos · tests · build · Lighthouse (puntajes en el resumen del run)
              └─► Coolify: preview del PR en una URL temporal
 push a main ───► Coolify: pnpm install --frozen-lockfile && pnpm build → sirve dist/ en https://vduarte.dev
 ```
