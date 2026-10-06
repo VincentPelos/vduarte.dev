@@ -69,7 +69,7 @@ jobs:
               '|---|---|---|---|---|---|',
               ...rows,
               '',
-              `<sub>Commit ${context.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
+              `<sub>Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
             ].join('\n');
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
