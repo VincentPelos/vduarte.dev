@@ -52,7 +52,7 @@ ci: agrega lighthouse en pull requests
 ## Validación automática
 
 - **husky** instala el hook `.husky/commit-msg` al correr `pnpm install` (script `prepare`).
-- El hook ejecuta **commitlint** con `commitlint.config.js`, que extiende `@commitlint/config-conventional` y agrega:
+- El hook ejecuta **commitlint** con la clave `commitlint` de `package.json`, que extiende `@commitlint/config-conventional` y agrega:
   - `type-enum`: solo los tipos de la tabla de arriba (error si no).
   - `header-max-length`: 72 caracteres (error si se pasa).
   - `scope-enum`: los alcances de esta nota (**advertencia**, no bloquea; si se usa uno nuevo, se agrega aquí y en la config).

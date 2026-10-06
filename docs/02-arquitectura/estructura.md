@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # Estructura de carpetas
@@ -14,7 +14,8 @@ vduarte.dev/
 ├─ .github/
 │  ├─ ISSUE_TEMPLATE/          plantillas de issue (feature, bug)
 │  ├─ pull_request_template.md
-│  └─ workflows/               ci.yml, lighthouse.yml
+│  ├─ workflows/               ci.yml, lighthouse.yml
+│  └─ lighthouserc.json        umbrales de Lighthouse CI
 ├─ .husky/                     hooks de git (commit-msg)
 ├─ docs/                       esta bóveda
 ├─ public/                     archivos servidos tal cual: cv.pdf, favicon.svg, og.png
@@ -43,8 +44,11 @@ vduarte.dev/
 ├─ AGENTS.md                   reglas para agentes de IA
 ├─ CLAUDE.md                   importa AGENTS.md
 ├─ README.md
-└─ CHANGELOG.md
+├─ CHANGELOG.md
+└─ package.json                dependencias, scripts y config de Prettier y commitlint
 ```
+
+En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, TypeScript, ESLint, Vitest, pnpm). Prettier y commitlint viven en `package.json`. En VS Code, `.vscode/settings.json` las agrupa bajo `package.json` con *file nesting*.
 
 ## Dónde va cada cosa
 
