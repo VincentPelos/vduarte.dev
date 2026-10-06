@@ -1,0 +1,116 @@
+/* Tokens de diseño: ver docs/04-diseno/tokens.md (fuente de verdad). */
+@import 'tailwindcss';
+
+@import '@fontsource/martian-mono/700.css';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+@theme {
+  /* Color: UI monocroma sobre negro puro */
+  --color-bg: #000;
+  --color-fg: #ededed;
+  --color-muted: #8f8f8f;
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-line-hi: rgb(255 255 255 / 0.22);
+  --color-glass: rgb(255 255 255 / 0.045);
+  --color-glass-hi: rgb(255 255 255 / 0.06);
+  --color-ok: #3ddc84;
+
+  /* Paleta "Sangre": solo partículas, brillos y degradados */
+  --color-c1: #ff0040;
+  --color-c2: #9b00ff;
+  --color-c3: #ff8a00;
+
+  /* Tipografía */
+  --font-display: 'Martian Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, Menlo, monospace;
+
+  --text-name: clamp(2.5rem, 10.5vw, 7.5rem);
+  --text-section: clamp(2.1rem, 6.5vw, 4.2rem);
+  --text-cta: clamp(3rem, 13vw, 10rem);
+  --tracking-display: -0.04em;
+
+  /* Forma */
+  --radius-card: 18px;
+  --blur-glass: 20px;
+
+  /* Movimiento */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+  /* Intensidad de los brillos difuminados (0–1) */
+  --glow: 0.2;
+}
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    overflow-x: clip;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Contenedor de página: máx. 1200px con gutter fluido */
+@utility wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+/* Tarjeta de vidrio */
+@utility glass {
+  background: var(--color-glass);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(var(--blur-glass)) saturate(170%);
+}
+
+/* Texto con el degradado de la paleta */
+@utility text-grad {
+  background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));
+  background-clip: text;
+  color: transparent;
+}
+
+/* Etiqueta mono en mayúsculas */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
