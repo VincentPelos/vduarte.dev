@@ -4,8 +4,13 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.1.0] - 2026-10-06
+
+Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tooling de calidad.
+
 ### Agregado
 
+- Repositorio con `main` y `develop`, labels, milestones y tablero de GitHub Projects (#1).
 - Bóveda de documentación en `docs/`: visión, alcance, rúbrica, arquitectura, decisiones, guía de diseño, flujo git y bitácora (#2).
 - Plantillas de issues (funcionalidad y error) y de pull request; issues en blanco desactivados (#8).
 - Proyecto Astro con TypeScript strict, pnpm y estructura de carpetas (#3).
@@ -14,3 +19,6 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 - ESLint, Prettier, Vitest y `astro check`, con un primer módulo probado en `src/lib/dates.ts` (#6).
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
+
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.1.0...develop
+[0.1.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.1.0
