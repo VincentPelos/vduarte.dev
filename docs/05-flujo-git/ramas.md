@@ -1,6 +1,6 @@
 ---
 tags: [git, flujo]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # Ramas y pull requests
@@ -38,7 +38,7 @@ Tipos: los mismos que en [commits](commits.md) (`feat`, `fix`, `docs`, `style`, 
 
 1. **Issue** con plantilla, labels (`tipo:` y `área:`) y milestone.
 2. **Rama** desde `develop` actualizado: `git switch develop && git pull && git switch -c feat/12-hero-particulas`.
-3. **Commits** atómicos con la [convención](commits.md); cada uno con `Refs #12` en el cuerpo.
+3. **Commits** por bloques de cambios relacionados (1–3 por PR) con la [convención](commits.md); cada uno con `Refs #12` en el cuerpo.
 4. **PR** a `develop` con la plantilla, `Closes #12`, capturas si hay cambios visuales.
 5. **CI en verde** (lint, check, test, build, Lighthouse) y preview de Coolify revisado.
 6. **Merge commit** (nunca squash ni rebase). La rama se borra sola.
