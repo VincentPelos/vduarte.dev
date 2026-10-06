@@ -14,3 +14,17 @@ export function formatMonth(value: string): string {
 export function formatPeriod(start: string, end: string | null): string {
   return `${formatMonth(start)} — ${end ? formatMonth(end) : 'actual'}`;
 }
+
+interface Period {
+  start: string;
+  end: string | null;
+}
+
+/**
+ * Ordena del más reciente al más antiguo: primero lo vigente (`end: null`),
+ * luego por término y, si empatan, por inicio. No modifica el arreglo original.
+ */
+export function sortByRecency<T extends Period>(items: readonly T[]): T[] {
+  const key = (item: Period) => item.end ?? '9999-12';
+  return [...items].sort((a, b) => key(b).localeCompare(key(a)) || b.start.localeCompare(a.start));
+}

@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "aiep-ingenieria-programacion",
+    "institution": "AIEP",
+    "title": "Ingeniería en Programación",
+    "start": "2023-03",
+    "end": null,
+    "type": "degree"
+  },
+  {
+    "id": "threejs-journey",
+    "institution": "Bruno Simon",
+    "title": "Three.js Journey",
+    "start": "2025-01",
+    "end": "2025-04",
+    "type": "cert",
+    "url": "https://threejs-journey.com"
+  },
+  {
+    "id": "aws-cloud-practitioner",
+    "institution": "Amazon Web Services",
+    "title": "AWS Cloud Practitioner",
+    "start": "2023-08",
+    "end": "2023-08",
+    "type": "cert"
+  }
+]
