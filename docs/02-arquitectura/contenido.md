@@ -1,11 +1,11 @@
 ---
 tags: [arquitectura, contenido]
-actualizado: 2026-10-05
+actualizado: 2026-10-06
 ---
 
 # Contenido
 
-Todo lo que se lee en el sitio vive en `src/content/`. Los schemas están en `src/content.config.ts` y se validan con zod: **si un JSON tiene un error, el build falla y dice qué campo falta**.
+Todo lo que se lee en el sitio vive en `src/content/`. Los schemas zod están en `src/lib/schemas.ts` (con tests al lado) y `src/content.config.ts` los conecta a cada JSON: **si un JSON tiene un error, el build falla y dice qué campo falla y por qué**.
 
 ## Archivos
 
@@ -30,7 +30,9 @@ Cada ítem de una lista lleva un `id` único en `kebab-case`.
 
 **skills.json** — `id`, `group`, `items[] { name, icon? }`. `icon` es un nombre de Iconify (`"simple-icons:python"`).
 
-**education.json** — `id`, `institution`, `title`, `start`, `end`, `type` (`"degree"` | `"cert"`), `url?`.
+**education.json** — `id`, `institution`, `title`, `start`, `end` (`null` = en curso), `type` (`"degree"` | `"cert"`), `url?`.
+
+**Reglas comunes:** fechas en formato `AAAA-MM`; `end` no puede ser anterior a `start`; URLs completas con `https://`; `cvPath` es una ruta de `public/` que empieza con `/`; `timezone` es una zona IANA (`"America/Santiago"`); `featured` es `false` si se omite.
 
 ## Cómo agregar algo
 
