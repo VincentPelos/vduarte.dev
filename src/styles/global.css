@@ -49,6 +49,24 @@
     }
   }
 
+  --animate-eq: eq 0.9s ease-in-out infinite alternate;
+  --animate-pulse-ok: pulse-ok 2s infinite;
+
+  @keyframes eq {
+    to {
+      height: 15%;
+    }
+  }
+
+  @keyframes pulse-ok {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 55%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 12px transparent;
+    }
+  }
+
   @keyframes drift {
     to {
       transform: translate(6%, -8%) scale(1.15);
