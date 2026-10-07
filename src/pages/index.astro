@@ -1,7 +1,7 @@
 ---
 // Página temporal de verificación de tokens (issue #4). Se reemplaza por el home en v0.3.0.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/ui/Button.astro';
+import Hero from '../components/sections/hero/Hero.astro';
 import Chip from '../components/ui/Chip.astro';
 import GlassCard from '../components/ui/GlassCard.astro';
 import Glows from '../components/ui/Glows.astro';
@@ -29,29 +29,7 @@ const palette = [
   <div class="relative isolate overflow-clip">
     <Glows />
 
-    <section id="inicio" class="wrap grid gap-6 pt-[clamp(80px,15vh,160px)] pb-16">
-      <p class="font-mono text-sm text-muted">
-        <span class="text-fg">vicente@vduarte</span>:~$ whoami
-      </p>
-      <h1 class="font-display text-name leading-[0.92] font-bold tracking-display">
-        Vicente
-        <br />
-        Duarte
-      </h1>
-      <p class="text-xl font-semibold">Ingeniero de Software &amp; Datos</p>
-      <p class="max-w-[46ch] text-lg text-muted">
-        Página de prueba de tokens, fuentes y vidrio. Se reemplaza por el home en v0.3.0.
-      </p>
-      <div class="flex flex-wrap gap-2.5">
-        <Button href="#tokens" variant="primary" arrow="down">
-          Ver tokens
-        </Button>
-        <Button href="#tipografia">Tipografía</Button>
-        <Button href="https://github.com/VincentPelos" arrow="external">
-          GitHub
-        </Button>
-      </div>
-    </section>
+    <Hero />
 
     <section id="tokens" class="wrap grid gap-6 py-16">
       <h2 class="font-display text-section leading-none font-bold tracking-display">

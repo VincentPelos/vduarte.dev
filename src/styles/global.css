@@ -41,6 +41,14 @@
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --animate-drift: drift 18s ease-in-out infinite alternate;
 
+  --animate-blink: blink 1.05s steps(1) infinite;
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   @keyframes drift {
     to {
       transform: translate(6%, -8%) scale(1.15);
