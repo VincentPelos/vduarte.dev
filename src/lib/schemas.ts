@@ -22,6 +22,7 @@ export const siteSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
   tagline: z.string().min(1),
+  bioTitle: z.string().min(1),
   bio: z.string().min(1),
   available: z.boolean(),
   availabilityNote: z.string().optional(),
@@ -51,7 +52,17 @@ export const siteSchema = z.object({
     title: z.string().min(1),
     hours: z.number().int().nonnegative().optional(),
     note: z.string().optional(),
-    gacha: z.object({ game: z.string().min(1), pity: z.number().int().nonnegative() }).optional(),
+    gacha: z
+      .object({
+        game: z.string().min(1),
+        pity: z.number().int().nonnegative(),
+        pityMax: z.number().int().positive().default(90),
+      })
+      .refine((g) => g.pity <= g.pityMax, {
+        message: '"pity" no puede superar "pityMax"',
+        path: ['pity'],
+      })
+      .optional(),
   }),
   /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
   nav: z
@@ -60,6 +71,18 @@ export const siteSchema = z.object({
   footerNote: z.string().min(1),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
+  /** Etiquetas de las tarjetas del bento "Sobre mí". */
+  bento: z.object({
+    about: z.string().min(1),
+    clock: z.string().min(1),
+    status: z.string().min(1),
+    available: z.string().min(1),
+    unavailable: z.string().min(1),
+    stack: z.string().min(1),
+    playing: z.string().min(1),
+    gaming: z.string().min(1),
+    links: z.string().min(1),
+  }),
   /** Textos de los botones de contacto (hero y sección Contacto). */
   labels: z.object({
     email: z.string().min(1),

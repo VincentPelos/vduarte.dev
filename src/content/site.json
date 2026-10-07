@@ -3,6 +3,7 @@
     "name": "Vicente Duarte",
     "role": "Ingeniero de Software & Datos",
     "tagline": "Construyo productos web y convierto datos en decisiones, desde la base de datos hasta el dashboard.",
+    "bioTitle": "Me gusta construir cosas que funcionan rápido y datos que se entienden fácil.",
     "bio": "Desarrollo web, automatización y Business Intelligence. Si algo se repite más de dos veces, lo automatizo; si hay datos, los convierto en algo que se entienda. Fuera del código: power metal a todo volumen, partidas de estrategia que duran demasiado y tiradas de gacha que no debería hacer.",
     "available": true,
     "availabilityNote": "Proyectos freelance y roles full-time",
@@ -34,6 +35,17 @@
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
+    "bento": {
+      "about": "Sobre mí",
+      "clock": "Hora local",
+      "status": "Estado",
+      "available": "Disponible",
+      "unavailable": "No disponible",
+      "stack": "Stack principal",
+      "playing": "Sonando",
+      "gaming": "Jugando",
+      "links": "Encuéntrame"
+    },
     "labels": {
       "email": "Correo",
       "github": "GitHub",

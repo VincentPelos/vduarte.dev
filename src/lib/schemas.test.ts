@@ -17,6 +17,7 @@ const site = {
   name: 'Vicente Duarte',
   role: 'Ingeniero de Software & Datos',
   tagline: 'Construyo software y convierto datos en decisiones.',
+  bioTitle: 'Título de prueba.',
   bio: 'Bio de prueba.',
   available: true,
   location: 'Chile',
@@ -32,6 +33,17 @@ const site = {
   footerNote: 'Hecho con Astro',
   prompt: { user: 'vicente@vduarte', command: 'whoami' },
   labels: { email: 'Correo', github: 'GitHub', linkedin: 'LinkedIn', cv: 'Descargar CV' },
+  bento: {
+    about: 'Sobre mí',
+    clock: 'Hora local',
+    status: 'Estado',
+    available: 'Disponible',
+    unavailable: 'No disponible',
+    stack: 'Stack principal',
+    playing: 'Sonando',
+    gaming: 'Jugando',
+    links: 'Encuéntrame',
+  },
 };
 
 const experience = {
@@ -68,6 +80,13 @@ describe('siteSchema', () => {
       cvPath: 'cv.pdf',
     });
     expect(errorPaths(result).sort()).toEqual(['cvPath', 'github', 'timezone']);
+  });
+
+  it('usa 90 como pity máximo y no deja superarlo', () => {
+    const gacha = (g: object) =>
+      siteSchema.safeParse({ ...site, nowGaming: { title: 'Juego', gacha: g } });
+    expect(gacha({ game: 'Genshin', pity: 74 }).data?.nowGaming.gacha?.pityMax).toBe(90);
+    expect(errorPaths(gacha({ game: 'Genshin', pity: 95 }))).toEqual(['nowGaming.gacha.pity']);
   });
 
   it('exige al menos un enlace en la nav con id de sección válido', () => {
