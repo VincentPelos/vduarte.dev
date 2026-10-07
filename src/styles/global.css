@@ -16,6 +16,7 @@
   --color-glass-hi: rgb(255 255 255 / 0.06);
   --color-ok: #3ddc84;
   --color-nav: rgb(10 10 10 / 0.6);
+  --color-spot: rgb(255 255 255 / 0.07);
 
   /* Paleta "Sangre": solo partículas, brillos y degradados */
   --color-c1: #ff0040;
@@ -38,6 +39,13 @@
 
   /* Movimiento */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+
+  @keyframes drift {
+    to {
+      transform: translate(6%, -8%) scale(1.15);
+    }
+  }
 }
 
 :root {
@@ -97,6 +105,27 @@
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   backdrop-filter: blur(var(--blur-glass)) saturate(170%);
+}
+
+/* Brillo que sigue al puntero (--mx/--my los fija GlassCard) */
+@utility spotlight {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 50%),
+      var(--color-spot),
+      transparent 60%
+    );
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
 }
 
 /* Texto con el degradado de la paleta */

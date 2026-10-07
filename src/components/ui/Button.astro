@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'glass';
+  /** Flecha al final: `external` (↗) para enlaces fuera del sitio, `down` (↓) para descargas. */
+  arrow?: 'external' | 'down';
+}
+
+const { href, variant = 'glass', arrow, class: className, ...attrs } = Astro.props;
+const isExternal = /^https?:\/\//.test(href);
+const arrows = { external: '↗', down: '↓' };
+---
+
+<a
+  href={href}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener' : undefined}
+  class:list={[
+    'group inline-flex items-center gap-2 rounded-full border px-[18px] py-[13px] text-[0.88rem] leading-none transition',
+    variant === 'primary'
+      ? 'border-fg bg-fg font-semibold text-bg hover:bg-white'
+      : 'border-line bg-glass font-medium backdrop-blur-xl hover:-translate-y-px hover:border-line-hi hover:bg-glass-hi',
+    className,
+  ]}
+  {...attrs}
+>
+  <slot />
+  {arrow && (
+    <span
+      aria-hidden="true"
+      class="font-mono transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+    >
+      {arrows[arrow]}
+    </span>
+  )}
+</a>
