@@ -36,6 +36,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [004 · Animaciones con librerías vanilla](03-decisiones/004-animaciones-vanilla.md)
 - [005 · Flujo git main + develop](03-decisiones/005-flujo-git.md)
 - [006 · Power BI: descarga + dashboard web](03-decisiones/006-power-bi-descarga.md)
+- [007 · Íconos de Iconify como SVG en el build](03-decisiones/007-iconos.md)
 
 ### 04 · Diseño — cómo se ve
 - [Tokens](04-diseno/tokens.md): colores, vidrio, tipografía, movimiento.

@@ -1,0 +1,13 @@
+---
+import { renderIcon } from '../../lib/icons';
+
+interface Props {
+  /** Nombre de Iconify con prefijo, p. ej. `"simple-icons:python"`. */
+  name: string;
+  class?: string;
+}
+
+const { name, class: className = '' } = Astro.props;
+---
+
+<Fragment set:html={renderIcon(name, className ? { class: className } : {})} />
