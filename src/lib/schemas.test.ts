@@ -28,6 +28,8 @@ const site = {
   highlightStack: ['TypeScript', 'Python'],
   nowPlaying: { song: 'Canción', artist: 'Banda' },
   nowGaming: { title: 'Juego' },
+  nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
+  footerNote: 'Hecho con Astro',
 };
 
 const experience = {
@@ -64,6 +66,13 @@ describe('siteSchema', () => {
       cvPath: 'cv.pdf',
     });
     expect(errorPaths(result).sort()).toEqual(['cvPath', 'github', 'timezone']);
+  });
+
+  it('exige al menos un enlace en la nav con id de sección válido', () => {
+    expect(errorPaths(siteSchema.safeParse({ ...site, nav: [] }))).toEqual(['nav']);
+    expect(
+      errorPaths(siteSchema.safeParse({ ...site, nav: [{ section: '#inicio', label: '~/' }] })),
+    ).toEqual(['nav.0.section']);
   });
 });
 

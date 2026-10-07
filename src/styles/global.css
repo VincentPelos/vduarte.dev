@@ -15,6 +15,7 @@
   --color-glass: rgb(255 255 255 / 0.045);
   --color-glass-hi: rgb(255 255 255 / 0.06);
   --color-ok: #3ddc84;
+  --color-nav: rgb(10 10 10 / 0.6);
 
   /* Paleta "Sangre": solo partículas, brillos y degradados */
   --color-c1: #ff0040;

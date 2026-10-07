@@ -23,6 +23,15 @@
       "hours": 412,
       "note": "un turno más",
       "gacha": { "game": "Genshin Impact", "pity": 74 }
-    }
+    },
+    "nav": [
+      { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
+      { "section": "experiencia", "label": "experiencia" },
+      { "section": "proyectos", "label": "proyectos" },
+      { "section": "skills", "label": "skills" },
+      { "section": "educacion", "label": "educación" },
+      { "section": "contacto", "label": "contacto" }
+    ],
+    "footerNote": "Hecho con Astro · vduarte.dev"
   }
 }

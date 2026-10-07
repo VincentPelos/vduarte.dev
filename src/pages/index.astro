@@ -21,7 +21,7 @@ const palette = [
 ---
 
 <BaseLayout title="Tokens · vduarte.dev">
-  <main class="relative isolate overflow-clip">
+  <div class="relative isolate overflow-clip">
     <div
       aria-hidden="true"
       class="pointer-events-none absolute -inset-x-[5%] -top-[10%] -z-10 h-[120%] blur-[110px]"
@@ -32,7 +32,7 @@ const palette = [
       <span class="absolute top-0 right-0 aspect-square w-[30%] rounded-full bg-c3"></span>
     </div>
 
-    <section class="wrap grid gap-6 pt-[clamp(80px,15vh,160px)] pb-16">
+    <section id="inicio" class="wrap grid gap-6 pt-[clamp(80px,15vh,160px)] pb-16">
       <p class="font-mono text-sm text-muted">
         <span class="text-fg">vicente@vduarte</span>:~$ whoami
       </p>
@@ -132,5 +132,5 @@ const palette = [
         </article>
       </div>
     </section>
-  </main>
+  </div>
 </BaseLayout>

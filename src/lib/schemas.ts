@@ -53,6 +53,11 @@ export const siteSchema = z.object({
     note: z.string().optional(),
     gacha: z.object({ game: z.string().min(1), pity: z.number().int().nonnegative() }).optional(),
   }),
+  /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
+  nav: z
+    .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))
+    .min(1),
+  footerNote: z.string().min(1),
 });
 
 export const experienceSchema = z

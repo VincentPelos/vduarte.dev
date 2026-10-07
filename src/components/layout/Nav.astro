@@ -1,0 +1,28 @@
+---
+import { getEntry } from 'astro:content';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+// En el home basta con el ancla; desde otras páginas se vuelve al home.
+const base = Astro.url.pathname === '/' ? '' : '/';
+---
+
+<nav
+  aria-label="Secciones"
+  class="fixed bottom-[calc(16px+env(safe-area-inset-bottom,0px))] left-1/2 z-50 max-w-[calc(100%-32px)] -translate-x-1/2 overflow-x-auto rounded-full border border-line bg-nav p-1.5 shadow-[0_10px_40px_rgb(0_0_0/0.6)] backdrop-blur-[32px] backdrop-saturate-170 [scrollbar-width:none]"
+>
+  <ul class="flex gap-0.5">
+    {site.data.nav.map(({ section, label, ariaLabel }) => (
+      <li>
+        <a
+          href={`${base}#${section}`}
+          aria-label={ariaLabel}
+          class="block rounded-full px-[15px] py-[11px] font-mono text-[0.8rem] leading-none whitespace-nowrap text-muted transition-colors hover:text-fg"
+        >
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
