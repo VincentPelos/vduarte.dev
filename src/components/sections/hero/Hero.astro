@@ -10,18 +10,17 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
 
 <section id="inicio" class="relative isolate overflow-hidden">
   <!--
-    Fondo de respaldo: siempre visible. La animación del hero (v0.4.0) se monta encima
-    en [data-hero-scene] y es intercambiable; el hero no depende de ella.
+    Fondo del hero: degradado de respaldo (siempre visible) + [data-hero-scene], donde v0.4.0
+    monta la animación intercambiable. Se desvanece con una máscara (no con capas negras)
+    para que los brillos del bento pasen por detrás sin cortes.
   -->
   <div
     aria-hidden="true"
-    class="absolute inset-0 -z-20 bg-[radial-gradient(60%_60%_at_70%_40%,color-mix(in_srgb,var(--color-c2)_25%,transparent),transparent_70%)]"
-  ></div>
-  <div data-hero-scene aria-hidden="true" class="absolute inset-0 -z-20"></div>
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,var(--color-bg)_0%,color-mix(in_srgb,var(--color-bg)_55%,transparent)_45%,transparent_78%),linear-gradient(0deg,var(--color-bg)_0%,transparent_30%)]"
-  ></div>
+    class="pointer-events-none absolute inset-0 -z-10 [mask-composite:intersect] [mask-image:linear-gradient(90deg,transparent,rgb(0_0_0/0.45)_45%,#000_78%),linear-gradient(0deg,transparent,#000_30%)]"
+  >
+    <div class="absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_40%,color-mix(in_srgb,var(--color-c2)_25%,transparent),transparent_70%)]"></div>
+    <div data-hero-scene class="absolute inset-0"></div>
+  </div>
 
   <div class="wrap grid gap-[26px] pt-[clamp(80px,15vh,160px)] pb-[clamp(56px,10vh,100px)]">
     <p class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted">

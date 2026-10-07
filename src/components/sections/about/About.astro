@@ -24,12 +24,9 @@ const icons = new Map(
 const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }));
 ---
 
-<section
-  id="sobre-mi"
-  aria-label={bento.about}
-  class="relative isolate overflow-clip pt-2 pb-[clamp(72px,12vw,140px)]"
->
-  <Glows />
+<section id="sobre-mi" aria-label={bento.about} class="relative pt-2 pb-[clamp(72px,12vw,140px)]">
+  <!-- Sin isolate ni recorte: los brillos se extienden detrás del hero y de Experiencia. -->
+  <Glows class="top-[-35%] bottom-[-35%]" />
   <div class="wrap">
     <!-- 1 columna → 2 desde 461px → 4 desde 901px, como en la guía. -->
     <div class="grid grid-cols-1 gap-3 [grid-template-areas:'bio'_'status'_'clock'_'stack'_'play'_'game'_'links'] min-[461px]:auto-rows-[minmax(150px,auto)] min-[461px]:grid-cols-2 min-[461px]:[grid-template-areas:'bio_bio'_'clock_status'_'stack_stack'_'play_play'_'game_links'] min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_clock_status'_'bio_bio_stack_stack'_'play_play_game_links']">
