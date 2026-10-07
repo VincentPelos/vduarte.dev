@@ -21,6 +21,7 @@ Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegad
 | `--glass` | `rgba(255,255,255,.045)` | Fondo de tarjetas de vidrio |
 | `--glass-hi` | `rgba(255,255,255,.06)` | Vidrio en hover |
 | `--ok` | `#3ddc84` | Estado "disponible", trabajo actual |
+| `--nav` | `rgba(10,10,10,.6)` | Fondo de la nav píldora (con blur 32px) |
 
 ### Paleta "Sangre"
 
