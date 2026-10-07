@@ -100,6 +100,14 @@ export const siteSchema = z.object({
       caseStudy: z.string().min(1),
     }),
     skills: z.object({ title: z.string().min(1), groups: plural, items: plural }),
+    contact: z.object({
+      /** Línea de terminal sobre el título, p. ej. `$ ./contacto.sh`. */
+      kicker: z.string().min(1),
+      /** El último carácter se pinta con el degradado. */
+      title: z.string().min(2),
+      copy: z.string().min(1),
+      copied: z.string().min(1),
+    }),
   }),
   /** Textos de los botones de contacto (hero y sección Contacto). */
   labels: z.object({
