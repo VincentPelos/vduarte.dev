@@ -1,0 +1,14 @@
+---
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<section id={id} class:list={['border-t border-line py-[clamp(72px,12vw,140px)]', className]}>
+  <div class="wrap">
+    <slot />
+  </div>
+</section>

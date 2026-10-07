@@ -1,0 +1,50 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { sortByRecency } from '../../../lib/dates';
+import { pluralize } from '../../../lib/text';
+import Period from '../../ui/Period.astro';
+import Section from '../../ui/Section.astro';
+import SectionHeader from '../../ui/SectionHeader.astro';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+const { current, education: texts } = site.data.sections;
+const items = sortByRecency((await getCollection('education')).map((entry) => entry.data));
+const count = (type: 'degree' | 'cert') => items.filter((item) => item.type === type).length;
+const meta = (['degree', 'cert'] as const)
+  .filter((type) => count(type) > 0)
+  .map((type) => pluralize(count(type), texts[type]))
+  .join(' · ');
+---
+
+<Section id="educacion">
+  <SectionHeader file="education.json" title={texts.title} meta={meta} />
+  <ul>
+    {items.map((item) => (
+      <li class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-7 gap-y-2 border-t border-line py-[22px] last:border-b min-[621px]:grid-cols-[11rem_minmax(0,1fr)_auto]">
+        <p class="col-span-full font-mono text-[0.82rem] leading-none whitespace-nowrap text-muted min-[621px]:col-span-1">
+          <Period start={item.start} end={item.end} currentLabel={current} />
+        </p>
+        <p class="text-[1.06rem] font-semibold">
+          {item.url ? (
+            <a href={item.url} target="_blank" rel="noopener" class="hover:text-white">
+              {item.title}
+            </a>
+          ) : (
+            item.title
+          )}
+          <span class="block text-[0.95rem] font-normal text-muted">{item.institution}</span>
+        </p>
+        <span
+          class:list={[
+            'rounded-full border px-2.5 py-1.5 font-mono text-[0.72rem] leading-none whitespace-nowrap',
+            item.type === 'degree' ? 'border-line-hi text-fg' : 'border-line text-muted',
+          ]}
+        >
+          {texts[item.type].one}
+        </span>
+      </li>
+    ))}
+  </ul>
+</Section>
