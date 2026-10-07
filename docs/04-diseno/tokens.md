@@ -22,6 +22,7 @@ Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegad
 | `--glass-hi` | `rgba(255,255,255,.06)` | Vidrio en hover |
 | `--ok` | `#3ddc84` | Estado "disponible", trabajo actual |
 | `--nav` | `rgba(10,10,10,.6)` | Fondo de la nav píldora (con blur 32px) |
+| `--spot` | `rgba(255,255,255,.07)` | Brillo que sigue al puntero en las tarjetas |
 
 ### Paleta "Sangre"
 
@@ -63,6 +64,8 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 
 - **Partículas:** malla 150×80 (70×46 en móvil), ondas suaves + onda donde está el mouse, intensidad `100%`, DPR máximo 1.5, pausa fuera de pantalla.
 - **Entrada del hero:** nombre letra a letra (stagger 35 ms) y luego rol, tagline y botones.
+- **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
+- **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).
 - **Reveals:** subir 36–40px + fade, 800 ms, `cubic-bezier(.22,1,.36,1)`, stagger 70 ms.
 - **Regla:** nada de contenido oculto esperando una animación; `prefers-reduced-motion` apaga todo.
 

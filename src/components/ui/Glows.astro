@@ -1,0 +1,23 @@
+---
+interface Props {
+  /** Multiplica `--glow`; la sección de contacto usa uno más tenue. */
+  strength?: number;
+  class?: string;
+}
+
+const { strength = 0.55, class: className } = Astro.props;
+---
+
+<!-- Brillos difuminados detrás del vidrio. El padre necesita `relative isolate`. -->
+<div
+  aria-hidden="true"
+  class:list={[
+    'pointer-events-none absolute -inset-x-[5%] -inset-y-[10%] -z-10 blur-[110px]',
+    className,
+  ]}
+  style={`opacity: calc(${strength} * var(--glow));`}
+>
+  <span class="absolute top-[10%] left-[2%] aspect-square w-[38%] animate-drift rounded-full bg-c1"></span>
+  <span class="absolute top-[45%] left-[40%] aspect-square w-[32%] animate-drift rounded-full bg-c2 [animation-delay:-6s]"></span>
+  <span class="absolute top-0 right-0 aspect-square w-[30%] animate-drift rounded-full bg-c3 [animation-delay:-12s]"></span>
+</div>
