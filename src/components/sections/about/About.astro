@@ -1,5 +1,5 @@
 ---
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Glows from '../../ui/Glows.astro';
 import BioCard from './cards/BioCard.astro';
 import ClockCard from './cards/ClockCard.astro';
@@ -14,6 +14,14 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
 
 const data = site.data;
 const { bento } = data;
+
+// El ícono de cada tecnología del stack sale de skills.json, buscando por nombre.
+const icons = new Map(
+  (await getCollection('skills')).flatMap((entry) =>
+    entry.data.items.map((item) => [item.name, item.icon] as const),
+  ),
+);
+const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }));
 ---
 
 <section
@@ -33,7 +41,7 @@ const { bento } = data;
         available={data.available}
         note={data.availabilityNote}
       />
-      <StackCard label={bento.stack} items={data.highlightStack} />
+      <StackCard label={bento.stack} items={stack} />
       <PlayingCard label={bento.playing} {...data.nowPlaying} />
       <GamingCard label={bento.gaming} {...data.nowGaming} />
       <LinksCard

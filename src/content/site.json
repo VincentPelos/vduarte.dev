@@ -57,6 +57,19 @@
         "title": "Educación",
         "degree": { "one": "título", "other": "títulos" },
         "cert": { "one": "certificación", "other": "certificaciones" }
+      },
+      "projects": {
+        "title": "Proyectos",
+        "unit": { "one": "proyecto", "other": "proyectos" },
+        "featured": { "one": "destacado", "other": "destacados" },
+        "repo": "repo",
+        "demo": "demo",
+        "caseStudy": "ver caso"
+      },
+      "skills": {
+        "title": "Skills",
+        "groups": { "one": "grupo", "other": "grupos" },
+        "items": { "one": "herramienta", "other": "herramientas" }
       }
     },
     "labels": {
