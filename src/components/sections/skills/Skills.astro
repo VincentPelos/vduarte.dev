@@ -1,0 +1,49 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import skillsFile from '../../../content/skills.json';
+import { pluralize } from '../../../lib/text';
+import GlassCard from '../../ui/GlassCard.astro';
+import Icon from '../../ui/Icon.astro';
+import Section from '../../ui/Section.astro';
+import SectionHeader from '../../ui/SectionHeader.astro';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+const texts = site.data.sections.skills;
+// El loader entrega los grupos ordenados por id; se respeta el orden del JSON.
+const order = skillsFile.map((group) => group.id);
+const groups = (await getCollection('skills'))
+  .map((entry) => entry.data)
+  .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+const meta = `${pluralize(groups.length, texts.groups)} · ${pluralize(total, texts.items)}`;
+---
+
+<Section id="skills">
+  <SectionHeader file="skills.json" title={texts.title} meta={meta} />
+  <div class="grid grid-cols-1 gap-3 min-[521px]:grid-cols-2 min-[961px]:grid-cols-4">
+    {groups.map((group) => (
+      <GlassCard as="div" class="p-[22px]">
+        <h3 class="label mb-4">{group.group}</h3>
+        <ul class="grid gap-3">
+          {group.items.map((item) => (
+            <li class="flex items-center gap-3 font-medium">
+              <span
+                aria-hidden="true"
+                class="grid size-7 flex-none place-items-center rounded-lg border border-line bg-glass text-[0.95rem]"
+              >
+                {item.icon ? (
+                  <Icon name={item.icon} />
+                ) : (
+                  <span class="font-mono text-[0.6rem] font-semibold">{item.name.slice(0, 2)}</span>
+                )}
+              </span>
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      </GlassCard>
+    ))}
+  </div>
+</Section>

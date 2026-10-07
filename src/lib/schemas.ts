@@ -91,6 +91,15 @@ export const siteSchema = z.object({
     current: z.string().min(1),
     experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
     education: z.object({ title: z.string().min(1), degree: plural, cert: plural }),
+    projects: z.object({
+      title: z.string().min(1),
+      unit: plural,
+      featured: plural,
+      repo: z.string().min(1),
+      demo: z.string().min(1),
+      caseStudy: z.string().min(1),
+    }),
+    skills: z.object({ title: z.string().min(1), groups: plural, items: plural }),
   }),
   /** Textos de los botones de contacto (hero y sección Contacto). */
   labels: z.object({

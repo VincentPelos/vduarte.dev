@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, stack]
-actualizado: 2026-10-05
+actualizado: 2026-10-07
 ---
 
 # Stack
@@ -16,7 +16,7 @@ actualizado: 2026-10-05
 | Scroll | **Lenis** | Smooth scroll | ~3 kB; se apaga con reduced-motion |
 | 3D | **three.js** (vanilla) | Malla de partículas del hero | Un solo canvas; no justifica React Three Fiber |
 | Gráficos | **Chart.js** | Dashboard web del caso Colchagua | Vanilla, conocido, fácil de tematizar. [Decisión 006](../03-decisiones/006-power-bi-descarga.md) |
-| Íconos | **astro-icon** + Iconify | Logos de tecnologías | SVG incrustado en build, nada externo |
+| Íconos | **@iconify/utils** + `@iconify-json/simple-icons` | Logos de tecnologías | SVG incrustado en build, nada externo ([007](../03-decisiones/007-iconos.md)) |
 | Fuentes | **Fontsource** | Martian Mono, Geist, Geist Mono | Self-hosted vía npm, sin archivos sueltos |
 | SEO | **@astrojs/sitemap** | Sitemap | Oficial |
 | Calidad | **ESLint**, **Prettier**, **Vitest**, `astro check` | Lint, formato, tests, tipos | Suben la nota en A4 |
