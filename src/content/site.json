@@ -32,6 +32,13 @@
       { "section": "educacion", "label": "educación" },
       { "section": "contacto", "label": "contacto" }
     ],
-    "footerNote": "Hecho con Astro · vduarte.dev"
+    "footerNote": "Hecho con Astro · vduarte.dev",
+    "prompt": { "user": "vicente@vduarte", "command": "whoami" },
+    "labels": {
+      "email": "Correo",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "cv": "Descargar CV"
+    }
   }
 }

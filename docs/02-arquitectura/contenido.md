@@ -22,7 +22,7 @@ Cada ítem de una lista lleva un `id` único en `kebab-case`.
 
 ## Campos
 
-**site.json** — `name`, `role`, `tagline`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity } }`, `nav[] { section, label, ariaLabel? }` (`section` es el `id` de la sección del home, sin `#`), `footerNote`.
+**site.json** — `name`, `role`, `tagline`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity } }`, `nav[] { section, label, ariaLabel? }` (`section` es el `id` de la sección del home, sin `#`), `footerNote`, `prompt { user, command }`, `labels { email, github, linkedin, cv }` (textos de los botones de contacto).
 
 **experience.json** — `id`, `company`, `role`, `start` (`"2023-03"`), `end` (`null` = actual), `location?`, `description`, `highlights[]?`, `stack[]?`, `url?`. Se ordena por fecha automáticamente.
 
