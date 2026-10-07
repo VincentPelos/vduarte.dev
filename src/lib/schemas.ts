@@ -58,6 +58,15 @@ export const siteSchema = z.object({
     .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))
     .min(1),
   footerNote: z.string().min(1),
+  /** Prompt del hero: `<user>:~$ <command>`. */
+  prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
+  /** Textos de los botones de contacto (hero y sección Contacto). */
+  labels: z.object({
+    email: z.string().min(1),
+    github: z.string().min(1),
+    linkedin: z.string().min(1),
+    cv: z.string().min(1),
+  }),
 });
 
 export const experienceSchema = z
