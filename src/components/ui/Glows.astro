@@ -8,11 +8,14 @@ interface Props {
 const { strength = 0.55, class: className } = Astro.props;
 ---
 
-<!-- Brillos difuminados detrás del vidrio. El padre necesita `relative isolate`. -->
+<!--
+  Brillos difuminados detrás del vidrio. El padre necesita `relative`; con `isolate` quedan
+  dentro de la sección, sin él pasan por detrás de las secciones vecinas.
+-->
 <div
   aria-hidden="true"
   class:list={[
-    'pointer-events-none absolute -inset-x-[5%] -inset-y-[10%] -z-10 blur-[110px] [mask-image:linear-gradient(transparent,black_20%,black_80%,transparent)]',
+    'pointer-events-none absolute -inset-x-[5%] -inset-y-[10%] -z-10 blur-[110px] [mask-image:linear-gradient(transparent,#000_25%,#000_75%,transparent)]',
     className,
   ]}
   style={`opacity: calc(${strength} * var(--glow));`}

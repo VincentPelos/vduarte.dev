@@ -87,8 +87,8 @@
     overflow-x: clip;
   }
 
+  /* Sin fondo propio: así los brillos con z-index negativo se ven detrás de todas las secciones. */
   body {
-    background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
     line-height: 1.6;
