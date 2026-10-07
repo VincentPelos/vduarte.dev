@@ -4,6 +4,10 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.2.0] - 2026-10-07
+
+Hito **Contenido**: schemas zod y JSON de ejemplo para cada sección del sitio.
+
 ### Agregado
 
 - Schemas zod del contenido en `src/lib/schemas.ts`, conectados a cada JSON en `src/content.config.ts` (#20).
@@ -36,5 +40,6 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.1.0...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.2.0...develop
+[0.2.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.2.0
 [0.1.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.1.0

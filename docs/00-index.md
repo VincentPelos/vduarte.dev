@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-06
+actualizado: 2026-10-07
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -11,8 +11,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ## Estado actual
 
-- **Última versión:** v0.1.0 Fundaciones (2026-10-06).
-- **Hito en curso:** v0.2.0 Contenido — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.2.0 Contenido (2026-10-07).
+- **Hito en curso:** v0.3.0 Secciones — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (pendiente de despliegue).
 
@@ -48,6 +48,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 ### 06 · Bitácora — qué pasó y cuándo
 - [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
 - [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
+- [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido.
 
 ## Convenciones de la bóveda
 
