@@ -65,6 +65,12 @@ const site = {
       groups: { one: 'grupo', other: 'grupos' },
       items: { one: 'herramienta', other: 'herramientas' },
     },
+    contact: {
+      kicker: '$ ./contacto.sh',
+      title: '¿Hablamos?',
+      copy: 'Copiar correo',
+      copied: 'Copiado',
+    },
   },
 };
 

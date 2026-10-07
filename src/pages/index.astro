@@ -1,122 +1,20 @@
 ---
-// Página temporal de verificación de tokens (issue #4). Se reemplaza por el home en v0.3.0.
-import BaseLayout from '../layouts/BaseLayout.astro';
 import About from '../components/sections/about/About.astro';
+import Contact from '../components/sections/contact/Contact.astro';
 import Education from '../components/sections/education/Education.astro';
 import Experience from '../components/sections/experience/Experience.astro';
 import Hero from '../components/sections/hero/Hero.astro';
 import Projects from '../components/sections/projects/Projects.astro';
 import Skills from '../components/sections/skills/Skills.astro';
-import Chip from '../components/ui/Chip.astro';
-import GlassCard from '../components/ui/GlassCard.astro';
-import Glows from '../components/ui/Glows.astro';
-import SectionHeader from '../components/ui/SectionHeader.astro';
-
-const ui = [
-  { name: 'bg', cls: 'bg-bg', value: '#000' },
-  { name: 'fg', cls: 'bg-fg', value: '#ededed' },
-  { name: 'muted', cls: 'bg-muted', value: '#8f8f8f' },
-  { name: 'line', cls: 'bg-line', value: 'rgba(255,255,255,.09)' },
-  { name: 'line-hi', cls: 'bg-line-hi', value: 'rgba(255,255,255,.22)' },
-  { name: 'glass', cls: 'bg-glass', value: 'rgba(255,255,255,.045)' },
-  { name: 'glass-hi', cls: 'bg-glass-hi', value: 'rgba(255,255,255,.06)' },
-  { name: 'ok', cls: 'bg-ok', value: '#3ddc84' },
-];
-
-const palette = [
-  { name: 'c1', cls: 'bg-c1', value: '#ff0040' },
-  { name: 'c2', cls: 'bg-c2', value: '#9b00ff' },
-  { name: 'c3', cls: 'bg-c3', value: '#ff8a00' },
-];
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Tokens · vduarte.dev">
-  <div class="relative isolate overflow-clip">
-    <Glows />
-
-    <Hero />
-    <About />
-    <Experience />
-    <Projects />
-    <Skills />
-    <Education />
-
-    <section id="tokens" class="wrap grid gap-6 py-16">
-      <h2 class="font-display text-section leading-none font-bold tracking-display">
-        Color<span class="text-grad">.</span>
-      </h2>
-
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {ui.map((t) => (
-          <div class="glass flex items-center gap-4 p-4">
-            <span class={`size-10 shrink-0 rounded-full border border-line ${t.cls}`} />
-            <div class="min-w-0">
-              <p class="font-mono text-sm">--{t.name}</p>
-              <p class="truncate font-mono text-xs text-muted">{t.value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p class="label mt-4">Paleta Sangre</p>
-      <div class="grid gap-3 sm:grid-cols-3">
-        {palette.map((t) => (
-          <div class="glass overflow-hidden">
-            <div class={`h-24 ${t.cls}`} />
-            <p class="p-4 font-mono text-sm">
-              --{t.name} <span class="text-muted">{t.value}</span>
-            </p>
-          </div>
-        ))}
-      </div>
-      <div class="h-0.5 w-full bg-linear-to-r from-c1 via-c2 to-c3"></div>
-    </section>
-
-    <section id="tipografia" class="wrap grid gap-6 py-16">
-      <h2 class="font-display text-section leading-none font-bold tracking-display">
-        Tipografía<span class="text-grad">.</span>
-      </h2>
-      <div class="grid gap-3 md:grid-cols-3">
-        <article class="glass grid gap-3 p-6">
-          <p class="label">Display · Martian Mono 700</p>
-          <p class="font-display text-3xl font-bold tracking-display">¿Hablamos?</p>
-        </article>
-        <article class="glass grid gap-3 p-6">
-          <p class="label">Texto · Geist 300–700</p>
-          <p class="text-2xl font-light">Ligera</p>
-          <p class="text-2xl font-semibold">Seminegrita</p>
-        </article>
-        <article class="glass grid gap-3 p-6">
-          <p class="label">Utilidad · Geist Mono</p>
-          <p class="font-mono text-sm text-muted">src/content/site.json</p>
-          <p class="font-mono text-sm">2023-03 — actual</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="wrap grid gap-6 pt-16 pb-32">
-      <SectionHeader
-        file="site.json"
-        title="Componentes"
-        meta="GlassCard · Button · Chip · SectionHeader · Glows"
-      />
-      <div class="grid gap-3 sm:grid-cols-2">
-        <GlassCard class="grid gap-2 p-6">
-          <p class="label">Disponibilidad</p>
-          <p class="flex items-center gap-2 text-xl font-semibold">
-            <span class="size-2.5 rounded-full bg-ok motion-safe:animate-pulse"></span>
-            Abierto a proyectos
-          </p>
-        </GlassCard>
-        <GlassCard class="grid gap-3 p-6">
-          <p class="label">Chips</p>
-          <ul class="flex flex-wrap gap-1.5">
-            <Chip>TypeScript</Chip>
-            <Chip>Python</Chip>
-            <Chip>Power BI</Chip>
-          </ul>
-        </GlassCard>
-      </div>
-    </section>
-  </div>
+<BaseLayout>
+  <Hero />
+  <About />
+  <Experience />
+  <Projects />
+  <Skills />
+  <Education />
+  <Contact />
 </BaseLayout>
