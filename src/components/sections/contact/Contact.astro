@@ -1,0 +1,79 @@
+---
+import { getEntry } from 'astro:content';
+import Button from '../../ui/Button.astro';
+import Glows from '../../ui/Glows.astro';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+const { email, github, linkedin, cvPath, labels } = site.data;
+const texts = site.data.sections.contact;
+---
+
+<section
+  id="contacto"
+  class="relative isolate overflow-hidden border-t border-line pt-[clamp(90px,16vw,200px)] pb-[clamp(60px,10vw,120px)]"
+>
+  <Glows strength={0.35} class="top-[30%]" />
+  <div class="wrap">
+    <p class="mb-[18px] font-mono text-[0.8rem] leading-none text-muted">{texts.kicker}</p>
+    <h2 class="font-display text-cta leading-[0.95] font-bold tracking-[-0.055em]">
+      {texts.title.slice(0, -1)}
+      <span class="text-grad">{texts.title.slice(-1)}</span>
+    </h2>
+    <div class="mt-[clamp(28px,5vw,48px)] flex flex-wrap items-center gap-x-[18px] gap-y-3">
+      <a
+        id="contact-email"
+        href={`mailto:${email}`}
+        class="min-w-0 border-b border-line-hi pb-1 font-mono text-[clamp(1.15rem,4.2vw,2.3rem)] leading-[1.2] font-medium tracking-[-0.02em] [overflow-wrap:anywhere] transition-colors select-all hover:border-fg"
+      >
+        {email}
+      </a>
+      <!-- Oculto sin JS: el correo igual se puede seleccionar o abrir con mailto. -->
+      <button
+        type="button"
+        data-copy-email
+        data-copied={texts.copied}
+        hidden
+        class="cursor-pointer rounded-full border border-line bg-glass px-3.5 py-2.5 font-mono text-[0.8rem] leading-none font-medium transition-colors hover:border-line-hi"
+      >
+        {texts.copy}
+      </button>
+    </div>
+    <div class="mt-9 flex flex-wrap gap-2.5">
+      <Button href={github} arrow="external">
+        {labels.github}
+      </Button>
+      <Button href={linkedin} arrow="external">
+        {labels.linkedin}
+      </Button>
+      <Button href={cvPath} arrow="down" download>
+        {labels.cv}
+      </Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+  const email = document.getElementById('contact-email');
+
+  if (button && email) {
+    const label = button.textContent ?? '';
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(email.textContent?.trim() ?? '');
+        button.textContent = button.dataset.copied ?? label;
+        setTimeout(() => (button.textContent = label), 1600);
+      } catch {
+        // Sin permiso de portapapeles: se selecciona el correo para copiarlo a mano.
+        const range = document.createRange();
+        range.selectNodeContents(email);
+        const selection = getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+    });
+  }
+</script>
