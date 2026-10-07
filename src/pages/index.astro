@@ -1,6 +1,11 @@
 ---
 // Página temporal de verificación de tokens (issue #4). Se reemplaza por el home en v0.3.0.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Chip from '../components/ui/Chip.astro';
+import GlassCard from '../components/ui/GlassCard.astro';
+import Glows from '../components/ui/Glows.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 
 const ui = [
   { name: 'bg', cls: 'bg-bg', value: '#000' },
@@ -22,15 +27,7 @@ const palette = [
 
 <BaseLayout title="Tokens · vduarte.dev">
   <div class="relative isolate overflow-clip">
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute -inset-x-[5%] -top-[10%] -z-10 h-[120%] blur-[110px]"
-      style="opacity: calc(0.55 * var(--glow));"
-    >
-      <span class="absolute top-[8%] left-[2%] aspect-square w-[38%] rounded-full bg-c1"></span>
-      <span class="absolute top-[40%] left-[40%] aspect-square w-[32%] rounded-full bg-c2"></span>
-      <span class="absolute top-0 right-0 aspect-square w-[30%] rounded-full bg-c3"></span>
-    </div>
+    <Glows />
 
     <section id="inicio" class="wrap grid gap-6 pt-[clamp(80px,15vh,160px)] pb-16">
       <p class="font-mono text-sm text-muted">
@@ -46,18 +43,13 @@ const palette = [
         Página de prueba de tokens, fuentes y vidrio. Se reemplaza por el home en v0.3.0.
       </p>
       <div class="flex flex-wrap gap-2.5">
-        <a
-          href="#tokens"
-          class="rounded-full border border-fg bg-fg px-[18px] py-[13px] text-sm font-semibold text-bg transition hover:bg-white"
-        >
+        <Button href="#tokens" variant="primary" arrow="down">
           Ver tokens
-        </a>
-        <a
-          href="#tipografia"
-          class="rounded-full border border-line bg-glass px-[18px] py-[13px] text-sm font-medium backdrop-blur-xl transition hover:-translate-y-px hover:border-line-hi hover:bg-glass-hi"
-        >
-          Tipografía
-        </a>
+        </Button>
+        <Button href="#tipografia">Tipografía</Button>
+        <Button href="https://github.com/VincentPelos" arrow="external">
+          GitHub
+        </Button>
       </div>
     </section>
 
@@ -115,21 +107,27 @@ const palette = [
     </section>
 
     <section class="wrap grid gap-6 pt-16 pb-32">
-      <h2 class="font-display text-section leading-none font-bold tracking-display">
-        Vidrio<span class="text-grad">.</span>
-      </h2>
+      <SectionHeader
+        file="site.json"
+        title="Componentes"
+        meta="GlassCard · Button · Chip · SectionHeader · Glows"
+      />
       <div class="grid gap-3 sm:grid-cols-2">
-        <article class="glass grid gap-2 p-6 transition hover:border-line-hi">
+        <GlassCard class="grid gap-2 p-6">
           <p class="label">Disponibilidad</p>
           <p class="flex items-center gap-2 text-xl font-semibold">
             <span class="size-2.5 rounded-full bg-ok motion-safe:animate-pulse"></span>
             Abierto a proyectos
           </p>
-        </article>
-        <article class="glass grid gap-2 p-6 transition hover:border-line-hi">
-          <p class="label">Radio, blur y brillos</p>
-          <p class="text-muted">Radio 18px · blur 20px con saturate(170%) · brillos al 20%.</p>
-        </article>
+        </GlassCard>
+        <GlassCard class="grid gap-3 p-6">
+          <p class="label">Chips</p>
+          <ul class="flex flex-wrap gap-1.5">
+            <Chip>TypeScript</Chip>
+            <Chip>Python</Chip>
+            <Chip>Power BI</Chip>
+          </ul>
+        </GlassCard>
       </div>
     </section>
   </div>
