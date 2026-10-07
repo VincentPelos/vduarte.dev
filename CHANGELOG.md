@@ -4,6 +4,21 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Agregado
+
+- Layout global: nav píldora, footer, SEO básico y "saltar al contenido" (#37).
+- Componentes UI: `GlassCard`, `Button`, `Chip`, `SectionHeader`, `Glows`, `Section`, `Period` e `Icon` (#38, #41, #42).
+- Hero con fondo de respaldo y espacio para la animación de v0.4.0 (#39).
+- Bento "Sobre mí" con hora local, estado, stack, _Sonando_ y _Jugando_ (#40).
+- Secciones Experiencia y Educación con periodos legibles (#41).
+- Secciones Proyectos y Skills, con íconos de Iconify como SVG en el build ([decisión 007](docs/03-decisiones/007-iconos.md)) (#42).
+- Sección Contacto con correo copiable; el home reemplaza a la página temporal de tokens (#43).
+- Textos de la nav, el footer y las secciones en `site.json` (#37, #39–#43).
+
+### Cambiado
+
+- `formatPeriod()` se reemplaza por `periodParts()` (#41).
+
 ## [0.2.0] - 2026-10-07
 
 Hito **Contenido**: schemas zod y JSON de ejemplo para cada sección del sitio.
