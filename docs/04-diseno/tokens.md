@@ -16,6 +16,7 @@ Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegad
 | `--bg` | `#000` | Fondo |
 | `--fg` | `#ededed` | Texto principal, botón primario |
 | `--muted` | `#8f8f8f` | Texto secundario, labels |
+| `--soft` | `#c7c7c7` | Párrafos dentro de experiencia y proyectos |
 | `--line` | `rgba(255,255,255,.09)` | Bordes finos |
 | `--line-hi` | `rgba(255,255,255,.22)` | Bordes en hover |
 | `--glass` | `rgba(255,255,255,.045)` | Fondo de tarjetas de vidrio |

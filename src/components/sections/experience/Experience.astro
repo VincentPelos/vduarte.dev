@@ -1,0 +1,71 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { sortByRecency } from '../../../lib/dates';
+import { pluralize } from '../../../lib/text';
+import Chip from '../../ui/Chip.astro';
+import Period from '../../ui/Period.astro';
+import Section from '../../ui/Section.astro';
+import SectionHeader from '../../ui/SectionHeader.astro';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+const { current, experience: texts } = site.data.sections;
+const jobs = sortByRecency((await getCollection('experience')).map((entry) => entry.data));
+const since = jobs
+  .map((job) => job.start)
+  .sort()[0]
+  ?.slice(0, 4);
+const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${since}`]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<Section id="experiencia">
+  <SectionHeader file="experience.json" title={texts.title} meta={meta} />
+  <ol>
+    {jobs.map((job) => (
+      <li class="grid gap-x-10 gap-y-3 border-t border-line py-[30px] last:border-b min-[721px]:grid-cols-[13rem_minmax(0,1fr)]">
+        <p class="font-mono text-[0.82rem] leading-normal text-muted">
+          <Period start={job.start} end={job.end} currentLabel={current} />
+          {job.location && <span class="block">{job.location}</span>}
+        </p>
+        <div>
+          <h3 class="mb-1 text-[clamp(1.15rem,2.4vw,1.4rem)] leading-[1.25] font-semibold">
+            {job.role}{' '}
+            <span class="font-normal text-muted">
+              ·{' '}
+              {job.url ? (
+                <a href={job.url} target="_blank" rel="noopener" class="hover:text-fg">
+                  {job.company}
+                </a>
+              ) : (
+                job.company
+              )}
+            </span>
+          </h3>
+          <p class="mt-2 max-w-[62ch] text-soft">{job.description}</p>
+          {job.highlights && (
+            <ul class="mt-3.5 grid max-w-[62ch] gap-1.5">
+              {job.highlights.map((highlight) => (
+                <li class="relative pl-5 text-soft">
+                  <span aria-hidden="true" class="absolute left-0 font-mono text-muted">
+                    →
+                  </span>
+                  {highlight}
+                </li>
+              ))}
+            </ul>
+          )}
+          {job.stack && (
+            <ul class="mt-4 flex flex-wrap gap-1.5">
+              {job.stack.map((tech) => (
+                <Chip>{tech}</Chip>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))}
+  </ol>
+</Section>

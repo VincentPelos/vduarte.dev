@@ -2,6 +2,8 @@
 // Página temporal de verificación de tokens (issue #4). Se reemplaza por el home en v0.3.0.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import About from '../components/sections/about/About.astro';
+import Education from '../components/sections/education/Education.astro';
+import Experience from '../components/sections/experience/Experience.astro';
 import Hero from '../components/sections/hero/Hero.astro';
 import Chip from '../components/ui/Chip.astro';
 import GlassCard from '../components/ui/GlassCard.astro';
@@ -32,6 +34,8 @@ const palette = [
 
     <Hero />
     <About />
+    <Experience />
+    <Education />
 
     <section id="tokens" class="wrap grid gap-6 py-16">
       <h2 class="font-display text-section leading-none font-bold tracking-display">

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMonth, formatPeriod, sortByRecency } from './dates';
+import { formatMonth, periodParts, sortByRecency } from './dates';
 
 describe('formatMonth', () => {
   it('formatea AAAA-MM como mes abreviado y año', () => {
@@ -14,13 +14,25 @@ describe('formatMonth', () => {
   });
 });
 
-describe('formatPeriod', () => {
-  it('muestra "actual" cuando no hay fecha de término', () => {
-    expect(formatPeriod('2023-03', null)).toBe('mar 2023 — actual');
+describe('periodParts', () => {
+  it('marca como vigente un periodo sin término', () => {
+    expect(periodParts('2023-03', null)).toEqual({ from: 'mar 2023', to: null, current: true });
   });
 
-  it('muestra ambas fechas cuando el periodo terminó', () => {
-    expect(formatPeriod('2021-01', '2022-06')).toBe('ene 2021 — jun 2022');
+  it('separa inicio y término de un periodo cerrado', () => {
+    expect(periodParts('2021-01', '2022-06')).toEqual({
+      from: 'ene 2021',
+      to: 'jun 2022',
+      current: false,
+    });
+  });
+
+  it('muestra un solo mes si empieza y termina el mismo mes', () => {
+    expect(periodParts('2023-08', '2023-08')).toEqual({
+      from: 'ago 2023',
+      to: null,
+      current: false,
+    });
   });
 });
 
