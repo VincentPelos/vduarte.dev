@@ -18,6 +18,8 @@ const endAfterStart = (item: { start: string; end: string | null }) =>
   item.end === null || item.end >= item.start;
 const endAfterStartError = { message: '"end" no puede ser anterior a "start"', path: ['end'] };
 
+const plural = z.object({ one: z.string().min(1), other: z.string().min(1) });
+
 export const siteSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
@@ -82,6 +84,13 @@ export const siteSchema = z.object({
     playing: z.string().min(1),
     gaming: z.string().min(1),
     links: z.string().min(1),
+  }),
+  /** Títulos y textos de las secciones del home. */
+  sections: z.object({
+    /** Lo que se muestra en lugar del término de un periodo vigente. */
+    current: z.string().min(1),
+    experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
+    education: z.object({ title: z.string().min(1), degree: plural, cert: plural }),
   }),
   /** Textos de los botones de contacto (hero y sección Contacto). */
   labels: z.object({

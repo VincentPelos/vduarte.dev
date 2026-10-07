@@ -44,6 +44,15 @@ const site = {
     gaming: 'Jugando',
     links: 'Encuéntrame',
   },
+  sections: {
+    current: 'actual',
+    experience: { title: 'Experiencia', unit: { one: 'rol', other: 'roles' }, since: 'desde' },
+    education: {
+      title: 'Educación',
+      degree: { one: 'título', other: 'títulos' },
+      cert: { one: 'certificación', other: 'certificaciones' },
+    },
+  },
 };
 
 const experience = {
