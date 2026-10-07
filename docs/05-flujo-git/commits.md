@@ -52,7 +52,7 @@ ci: agrega lighthouse en pull requests
 ## Validación automática
 
 - **husky** instala el hook `.husky/commit-msg` al correr `pnpm install` (script `prepare`).
-- El hook ejecuta **commitlint** con `commitlint.config.js`, que extiende `@commitlint/config-conventional` y agrega:
+- El hook ejecuta **commitlint** con la clave `commitlint` de `package.json`, que extiende `@commitlint/config-conventional` y agrega:
   - `type-enum`: solo los tipos de la tabla de arriba (error si no).
   - `header-max-length`: 72 caracteres (error si se pasa).
   - `scope-enum`: los alcances de esta nota (**advertencia**, no bloquea; si se usa uno nuevo, se agrega aquí y en la config).
@@ -60,7 +60,7 @@ ci: agrega lighthouse en pull requests
 
 ## Reglas
 
-- **Atómico:** un commit = un cambio con sentido propio. Si la descripción necesita "y", probablemente son dos commits.
+- **Por bloques:** cada commit agrupa unos **3 cambios relacionados** (p. ej. la config, el script y la nota de una misma herramienta). Un PR suele tener **1–3 commits**; no se parte cada archivo en su propio commit. Lo que no está relacionado va en otro commit.
 - **Presente:** "agrega", "corrige", "ajusta" (no "agregado" ni "agregué").
 - **Máximo ~72 caracteres** en la primera línea.
 - **Siempre** referenciar el issue (`Refs #N`); el PR es el que lo cierra (`Closes #N`).

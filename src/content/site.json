@@ -1,0 +1,28 @@
+{
+  "main": {
+    "name": "Vicente Duarte",
+    "role": "Ingeniero de Software & Datos",
+    "tagline": "Construyo productos web y convierto datos en decisiones, desde la base de datos hasta el dashboard.",
+    "bio": "Desarrollo web, automatización y Business Intelligence. Si algo se repite más de dos veces, lo automatizo; si hay datos, los convierto en algo que se entienda. Fuera del código: power metal a todo volumen, partidas de estrategia que duran demasiado y tiradas de gacha que no debería hacer.",
+    "available": true,
+    "availabilityNote": "Proyectos freelance y roles full-time",
+    "location": "Santiago, CL",
+    "timezone": "America/Santiago",
+    "email": "hola@vduarte.dev",
+    "github": "https://github.com/VincentPelos",
+    "linkedin": "https://www.linkedin.com/in/CAMBIAR",
+    "cvPath": "/cv.pdf",
+    "highlightStack": ["TypeScript", "Astro", "Python", "PostgreSQL", "Power BI", "n8n", "Docker"],
+    "nowPlaying": {
+      "song": "Through the Fire and Flames",
+      "artist": "DragonForce",
+      "album": "Inhuman Rampage"
+    },
+    "nowGaming": {
+      "title": "Civilization VI",
+      "hours": 412,
+      "note": "un turno más",
+      "gacha": { "game": "Genshin Impact", "pity": 74 }
+    }
+  }
+}
