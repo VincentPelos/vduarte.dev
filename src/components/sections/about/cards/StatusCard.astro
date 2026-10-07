@@ -1,0 +1,24 @@
+---
+import GlassCard from '../../../ui/GlassCard.astro';
+
+interface Props {
+  label: string;
+  text: string;
+  available: boolean;
+  note?: string;
+}
+
+const { label, text, available, note } = Astro.props;
+---
+
+<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:status]">
+  <p class="label">{label}</p>
+  <p class="flex items-center gap-2.5 text-xl leading-[1.25] font-semibold">
+    <span
+      aria-hidden="true"
+      class:list={['size-2.5 rounded-full', available ? 'animate-pulse-ok bg-ok' : 'bg-muted']}
+    ></span>
+    {text}
+  </p>
+  {note && <p class="text-[0.9rem] text-muted">{note}</p>}
+</GlassCard>
