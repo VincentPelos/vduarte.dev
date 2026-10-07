@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, contenido]
-actualizado: 2026-10-06
+actualizado: 2026-10-07
 ---
 
 # Contenido
@@ -11,7 +11,7 @@ Todo lo que se lee en el sitio vive en `src/content/`. Los schemas zod están en
 
 | Archivo | Forma | Qué alimenta |
 |---|---|---|
-| `site.json` | Objeto (`{ "main": { … } }`) | Hero, bento, contacto, SEO |
+| `site.json` | Objeto (`{ "main": { … } }`) | Hero, bento, contacto, SEO, nav y footer |
 | `experience.json` | Lista | Sección Experiencia |
 | `projects.json` | Lista | Sección Proyectos y rutas `/proyectos/[slug]` |
 | `skills.json` | Lista de grupos | Sección Skills |
@@ -22,7 +22,7 @@ Cada ítem de una lista lleva un `id` único en `kebab-case`.
 
 ## Campos
 
-**site.json** — `name`, `role`, `tagline`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity } }`.
+**site.json** — `name`, `role`, `tagline`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity } }`, `nav[] { section, label, ariaLabel? }` (`section` es el `id` de la sección del home, sin `#`), `footerNote`.
 
 **experience.json** — `id`, `company`, `role`, `start` (`"2023-03"`), `end` (`null` = actual), `location?`, `description`, `highlights[]?`, `stack[]?`, `url?`. Se ordena por fecha automáticamente.
 
