@@ -32,7 +32,8 @@ const { title, description } = Astro.props;
     >
       Saltar al contenido
     </a>
-    <main id="contenido" tabindex="-1" class="outline-none">
+    <!-- z-[1]: el contenido va sobre el cielo de estrellas (StarSky, z-0). -->
+    <main id="contenido" tabindex="-1" class="relative z-[1] outline-none">
       <slot />
     </main>
     <Footer />
