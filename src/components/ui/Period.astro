@@ -1,0 +1,20 @@
+---
+import { periodParts } from '../../lib/dates';
+
+interface Props {
+  start: string;
+  end: string | null;
+  /** Texto para un periodo vigente (`sections.current` de site.json). */
+  currentLabel: string;
+}
+
+const { start, end, currentLabel } = Astro.props;
+const { from, to, current } = periodParts(start, end);
+---
+
+<span class="tabular-nums">
+  {from}
+  {(to || current) && <span aria-hidden="true">{' → '}</span>}
+  {to}
+  {current && <span class="text-ok">{currentLabel}</span>}
+</span>

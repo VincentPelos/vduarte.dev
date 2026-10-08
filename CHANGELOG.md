@@ -4,6 +4,31 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.3.0] - 2026-10-08
+
+Hito **Secciones**: layout, componentes UI, todas las secciones del home y el agujero negro del hero.
+
+### Agregado
+
+- Layout global: nav píldora, footer, SEO básico y "saltar al contenido" (#37).
+- Componentes UI: `GlassCard`, `Button`, `Chip`, `SectionHeader`, `Glows`, `Section`, `Period` e `Icon` (#38, #41, #42).
+- Hero con prompt, nombre, rol y botones desde `site.json` (#39).
+- Bento "Sobre mí" con hora local, estado, stack, _Sonando_ y _Jugando_ (#40).
+- Secciones Experiencia y Educación con periodos legibles (#41).
+- Secciones Proyectos y Skills, con íconos de Iconify como SVG en el build ([decisión 007](docs/03-decisiones/007-iconos.md)) (#42).
+- Sección Contacto con correo copiable; el home reemplaza a la página temporal de tokens (#43).
+- Agujero negro en el hero: trazado de rayos real dibujado con puntos de terminal, en WebGL directo ([decisión 008](docs/03-decisiones/008-agujero-negro-puntos.md)) (#53).
+- Textos de la nav, el footer y las secciones en `site.json` (#37, #39–#43).
+
+### Cambiado
+
+- `formatPeriod()` se reemplaza por `periodParts()` (#41).
+- Paleta Sangre → Nebulosa (#53).
+
+### Corregido
+
+- El bento "Sobre mí" ya no se ve cortado respecto del hero (#51).
+
 ## [0.2.0] - 2026-10-07
 
 Hito **Contenido**: schemas zod y JSON de ejemplo para cada sección del sitio.
@@ -40,6 +65,7 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.2.0...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.3.0...develop
+[0.3.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.3.0
 [0.2.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.2.0
 [0.1.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.1.0

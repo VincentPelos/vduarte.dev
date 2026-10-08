@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type CardTag = 'article' | 'div' | 'li';
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: CardTag;
+}
+
+const { as: Tag = 'article', class: className, ...attrs } = Astro.props;
+---
+
+<Tag
+  data-spotlight
+  class:list={[
+    'glass spotlight relative overflow-hidden transition-colors hover:border-line-hi',
+    className,
+  ]}
+  {...attrs}
+>
+  <slot />
+</Tag>
+
+<script>
+  // Un solo listener para todas las tarjetas: mueve el brillo hacia el puntero.
+  // Sin JS la tarjeta se ve igual, solo sin el brillo.
+  document.addEventListener(
+    'pointermove',
+    (event) => {
+      const card = (event.target as Element | null)?.closest<HTMLElement>('[data-spotlight]');
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    },
+    { passive: true },
+  );
+</script>

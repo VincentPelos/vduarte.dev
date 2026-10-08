@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, alcance]
-actualizado: 2026-10-05
+actualizado: 2026-10-08
 ---
 
 # Alcance
@@ -15,7 +15,7 @@ actualizado: 2026-10-05
 
 ## Dentro del alcance
 
-- **Hero:** prompt `whoami`, nombre, rol, tagline, botones Correo · GitHub · LinkedIn · Descargar CV, fondo de partículas.
+- **Hero:** prompt `whoami`, nombre, rol, tagline, botones Correo · GitHub · LinkedIn · Descargar CV, agujero negro de puntos de fondo.
 - **Bento "sobre mí":** bio, hora local, disponibilidad, stack principal, *Sonando*, *Jugando*, links.
 - **Experiencia, proyectos (bento), skills, educación:** todo desde JSON.
 - **Caso Colchagua:** problema, enfoque, datos, dashboard web con Chart.js, hallazgos, conclusiones, descarga del `.pbix` y links a notebooks.
@@ -40,8 +40,8 @@ Cada hito es un milestone en GitHub y una versión SemVer al mergear `develop �
 |---|---|---|
 | v0.1.0 | Fundaciones | Repo, documentación, scaffold Astro, estilos base, lint/tests/CI |
 | v0.2.0 | Contenido | Schemas zod y JSON de ejemplo |
-| v0.3.0 | Secciones | Layout, componentes UI y cada sección del home |
-| v0.4.0 | Movimiento | Partículas three.js, reveals, Lenis, nav activa |
+| v0.3.0 | Secciones | Layout, componentes UI, cada sección del home y el agujero negro del hero |
+| v0.4.0 | Movimiento | Fondo de estrellas de la página, reveals, Lenis, nav activa |
 | v0.5.0 | Caso Colchagua | Página del caso, dashboard Chart.js, descargas, notebooks |
 | v0.6.0 | Contacto y extras | Formulario n8n, `/uso-de-ia`, SEO/OG, analytics |
 | v1.0.0 | Entrega | Contenido real, CV, repo público, Lighthouse, README final |

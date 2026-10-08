@@ -18,10 +18,13 @@ const endAfterStart = (item: { start: string; end: string | null }) =>
   item.end === null || item.end >= item.start;
 const endAfterStartError = { message: '"end" no puede ser anterior a "start"', path: ['end'] };
 
+const plural = z.object({ one: z.string().min(1), other: z.string().min(1) });
+
 export const siteSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
   tagline: z.string().min(1),
+  bioTitle: z.string().min(1),
   bio: z.string().min(1),
   available: z.boolean(),
   availabilityNote: z.string().optional(),
@@ -51,7 +54,67 @@ export const siteSchema = z.object({
     title: z.string().min(1),
     hours: z.number().int().nonnegative().optional(),
     note: z.string().optional(),
-    gacha: z.object({ game: z.string().min(1), pity: z.number().int().nonnegative() }).optional(),
+    gacha: z
+      .object({
+        game: z.string().min(1),
+        pity: z.number().int().nonnegative(),
+        pityMax: z.number().int().positive().default(90),
+      })
+      .refine((g) => g.pity <= g.pityMax, {
+        message: '"pity" no puede superar "pityMax"',
+        path: ['pity'],
+      })
+      .optional(),
+  }),
+  /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
+  nav: z
+    .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))
+    .min(1),
+  footerNote: z.string().min(1),
+  /** Prompt del hero: `<user>:~$ <command>`. */
+  prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
+  /** Etiquetas de las tarjetas del bento "Sobre mí". */
+  bento: z.object({
+    about: z.string().min(1),
+    clock: z.string().min(1),
+    status: z.string().min(1),
+    available: z.string().min(1),
+    unavailable: z.string().min(1),
+    stack: z.string().min(1),
+    playing: z.string().min(1),
+    gaming: z.string().min(1),
+    links: z.string().min(1),
+  }),
+  /** Títulos y textos de las secciones del home. */
+  sections: z.object({
+    /** Lo que se muestra en lugar del término de un periodo vigente. */
+    current: z.string().min(1),
+    experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
+    education: z.object({ title: z.string().min(1), degree: plural, cert: plural }),
+    projects: z.object({
+      title: z.string().min(1),
+      unit: plural,
+      featured: plural,
+      repo: z.string().min(1),
+      demo: z.string().min(1),
+      caseStudy: z.string().min(1),
+    }),
+    skills: z.object({ title: z.string().min(1), groups: plural, items: plural }),
+    contact: z.object({
+      /** Línea de terminal sobre el título, p. ej. `$ ./contacto.sh`. */
+      kicker: z.string().min(1),
+      /** El último carácter se pinta con el degradado. */
+      title: z.string().min(2),
+      copy: z.string().min(1),
+      copied: z.string().min(1),
+    }),
+  }),
+  /** Textos de los botones de contacto (hero y sección Contacto). */
+  labels: z.object({
+    email: z.string().min(1),
+    github: z.string().min(1),
+    linkedin: z.string().min(1),
+    cv: z.string().min(1),
   }),
 });
 

@@ -1,0 +1,29 @@
+---
+import GlassCard from '../../../ui/GlassCard.astro';
+
+interface Props {
+  label: string;
+  links: { href: string; text: string }[];
+}
+
+const { label, links } = Astro.props;
+---
+
+<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:links]">
+  <p class="label">{label}</p>
+  <div>
+    {links.map(({ href, text }) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener"
+        class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
+      >
+        {text}
+        <span aria-hidden="true" class="font-mono text-muted">
+          ↗
+        </span>
+      </a>
+    ))}
+  </div>
+</GlassCard>

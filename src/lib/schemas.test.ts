@@ -17,6 +17,7 @@ const site = {
   name: 'Vicente Duarte',
   role: 'Ingeniero de Software & Datos',
   tagline: 'Construyo software y convierto datos en decisiones.',
+  bioTitle: 'Título de prueba.',
   bio: 'Bio de prueba.',
   available: true,
   location: 'Chile',
@@ -28,6 +29,49 @@ const site = {
   highlightStack: ['TypeScript', 'Python'],
   nowPlaying: { song: 'Canción', artist: 'Banda' },
   nowGaming: { title: 'Juego' },
+  nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
+  footerNote: 'Hecho con Astro',
+  prompt: { user: 'vicente@vduarte', command: 'whoami' },
+  labels: { email: 'Correo', github: 'GitHub', linkedin: 'LinkedIn', cv: 'Descargar CV' },
+  bento: {
+    about: 'Sobre mí',
+    clock: 'Hora local',
+    status: 'Estado',
+    available: 'Disponible',
+    unavailable: 'No disponible',
+    stack: 'Stack principal',
+    playing: 'Sonando',
+    gaming: 'Jugando',
+    links: 'Encuéntrame',
+  },
+  sections: {
+    current: 'actual',
+    experience: { title: 'Experiencia', unit: { one: 'rol', other: 'roles' }, since: 'desde' },
+    education: {
+      title: 'Educación',
+      degree: { one: 'título', other: 'títulos' },
+      cert: { one: 'certificación', other: 'certificaciones' },
+    },
+    projects: {
+      title: 'Proyectos',
+      unit: { one: 'proyecto', other: 'proyectos' },
+      featured: { one: 'destacado', other: 'destacados' },
+      repo: 'repo',
+      demo: 'demo',
+      caseStudy: 'ver caso',
+    },
+    skills: {
+      title: 'Skills',
+      groups: { one: 'grupo', other: 'grupos' },
+      items: { one: 'herramienta', other: 'herramientas' },
+    },
+    contact: {
+      kicker: '$ ./contacto.sh',
+      title: '¿Hablamos?',
+      copy: 'Copiar correo',
+      copied: 'Copiado',
+    },
+  },
 };
 
 const experience = {
@@ -64,6 +108,20 @@ describe('siteSchema', () => {
       cvPath: 'cv.pdf',
     });
     expect(errorPaths(result).sort()).toEqual(['cvPath', 'github', 'timezone']);
+  });
+
+  it('usa 90 como pity máximo y no deja superarlo', () => {
+    const gacha = (g: object) =>
+      siteSchema.safeParse({ ...site, nowGaming: { title: 'Juego', gacha: g } });
+    expect(gacha({ game: 'Genshin', pity: 74 }).data?.nowGaming.gacha?.pityMax).toBe(90);
+    expect(errorPaths(gacha({ game: 'Genshin', pity: 95 }))).toEqual(['nowGaming.gacha.pity']);
+  });
+
+  it('exige al menos un enlace en la nav con id de sección válido', () => {
+    expect(errorPaths(siteSchema.safeParse({ ...site, nav: [] }))).toEqual(['nav']);
+    expect(
+      errorPaths(siteSchema.safeParse({ ...site, nav: [{ section: '#inicio', label: '~/' }] })),
+    ).toEqual(['nav.0.section']);
   });
 });
 

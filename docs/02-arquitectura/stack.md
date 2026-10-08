@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, stack]
-actualizado: 2026-10-05
+actualizado: 2026-10-08
 ---
 
 # Stack
@@ -14,9 +14,9 @@ actualizado: 2026-10-05
 | Contenido | **JSON + zod** (content collections) | Datos del sitio | Editar un archivo para agregar contenido; schema falla en build si falta algo. [Decisión 002](../03-decisiones/002-json-por-seccion.md) |
 | Animación | **Motion** (API vanilla) + Web Animations API | Entradas, stagger, progreso de scroll | Misma librería que "Framer Motion", sin React. [Decisión 004](../03-decisiones/004-animaciones-vanilla.md) |
 | Scroll | **Lenis** | Smooth scroll | ~3 kB; se apaga con reduced-motion |
-| 3D | **three.js** (vanilla) | Malla de partículas del hero | Un solo canvas; no justifica React Three Fiber |
+| Gráficos | **WebGL** directo | Agujero negro del hero ([008](../03-decisiones/008-agujero-negro-puntos.md)) | Un shader de pantalla completa; ~10 KB frente a ~530 KB de three.js |
 | Gráficos | **Chart.js** | Dashboard web del caso Colchagua | Vanilla, conocido, fácil de tematizar. [Decisión 006](../03-decisiones/006-power-bi-descarga.md) |
-| Íconos | **astro-icon** + Iconify | Logos de tecnologías | SVG incrustado en build, nada externo |
+| Íconos | **@iconify/utils** + `@iconify-json/simple-icons` | Logos de tecnologías | SVG incrustado en build, nada externo ([007](../03-decisiones/007-iconos.md)) |
 | Fuentes | **Fontsource** | Martian Mono, Geist, Geist Mono | Self-hosted vía npm, sin archivos sueltos |
 | SEO | **@astrojs/sitemap** | Sitemap | Oficial |
 | Calidad | **ESLint**, **Prettier**, **Vitest**, `astro check` | Lint, formato, tests, tipos | Suben la nota en A4 |

@@ -3,6 +3,7 @@
     "name": "Vicente Duarte",
     "role": "Ingeniero de Software & Datos",
     "tagline": "Construyo productos web y convierto datos en decisiones, desde la base de datos hasta el dashboard.",
+    "bioTitle": "Me gusta construir cosas que funcionan rápido y datos que se entienden fácil.",
     "bio": "Desarrollo web, automatización y Business Intelligence. Si algo se repite más de dos veces, lo automatizo; si hay datos, los convierto en algo que se entienda. Fuera del código: power metal a todo volumen, partidas de estrategia que duran demasiado y tiradas de gacha que no debería hacer.",
     "available": true,
     "availabilityNote": "Proyectos freelance y roles full-time",
@@ -23,6 +24,65 @@
       "hours": 412,
       "note": "un turno más",
       "gacha": { "game": "Genshin Impact", "pity": 74 }
+    },
+    "nav": [
+      { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
+      { "section": "experiencia", "label": "experiencia" },
+      { "section": "proyectos", "label": "proyectos" },
+      { "section": "skills", "label": "skills" },
+      { "section": "educacion", "label": "educación" },
+      { "section": "contacto", "label": "contacto" }
+    ],
+    "footerNote": "Hecho con Astro · vduarte.dev",
+    "prompt": { "user": "vicente@vduarte", "command": "whoami" },
+    "bento": {
+      "about": "Sobre mí",
+      "clock": "Hora local",
+      "status": "Estado",
+      "available": "Disponible",
+      "unavailable": "No disponible",
+      "stack": "Stack principal",
+      "playing": "Sonando",
+      "gaming": "Jugando",
+      "links": "Encuéntrame"
+    },
+    "sections": {
+      "current": "actual",
+      "experience": {
+        "title": "Experiencia",
+        "unit": { "one": "rol", "other": "roles" },
+        "since": "desde"
+      },
+      "education": {
+        "title": "Educación",
+        "degree": { "one": "título", "other": "títulos" },
+        "cert": { "one": "certificación", "other": "certificaciones" }
+      },
+      "projects": {
+        "title": "Proyectos",
+        "unit": { "one": "proyecto", "other": "proyectos" },
+        "featured": { "one": "destacado", "other": "destacados" },
+        "repo": "repo",
+        "demo": "demo",
+        "caseStudy": "ver caso"
+      },
+      "skills": {
+        "title": "Skills",
+        "groups": { "one": "grupo", "other": "grupos" },
+        "items": { "one": "herramienta", "other": "herramientas" }
+      },
+      "contact": {
+        "kicker": "$ ./contacto.sh",
+        "title": "¿Hablamos?",
+        "copy": "Copiar correo",
+        "copied": "Copiado"
+      }
+    },
+    "labels": {
+      "email": "Correo",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "cv": "Descargar CV"
     }
   }
 }

@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-06
+actualizado: 2026-10-08
 ---
 
 # Estructura de carpetas
@@ -26,7 +26,7 @@ vduarte.dev/
 │  ├─ components/
 │  │  ├─ layout/               piezas globales: Nav, Footer, Seo
 │  │  ├─ sections/             una carpeta por sección del home
-│  │  │  ├─ hero/              Hero.astro + particles.ts
+│  │  │  ├─ hero/              Hero.astro + black-hole.ts
 │  │  │  ├─ about/             About.astro + cards/
 │  │  │  ├─ experience/
 │  │  │  ├─ projects/
@@ -57,7 +57,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Texto, links o datos que se muestran | `src/content/*.json` — nunca en un componente |
 | Algo que aparece en todas las páginas | `components/layout/` |
 | Una sección del home | `components/sections/<seccion>/` |
-| Un script que solo usa una sección | Al lado de su componente (`sections/hero/particles.ts`) |
+| Un script que solo usa una sección | Al lado de su componente (`sections/hero/black-hole.ts`) |
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
 | Una imagen que Astro debe optimizar | `src/assets/` |

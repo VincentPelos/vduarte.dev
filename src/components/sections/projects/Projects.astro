@@ -1,0 +1,39 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { pluralize } from '../../../lib/text';
+import { sortProjects } from '../../../lib/projects';
+import Section from '../../ui/Section.astro';
+import SectionHeader from '../../ui/SectionHeader.astro';
+import ProjectCard from './ProjectCard.astro';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+
+const texts = site.data.sections.projects;
+const projects = sortProjects((await getCollection('projects')).map((entry) => entry.data));
+const featured = projects.filter((project) => project.featured).length;
+const meta = [
+  pluralize(projects.length, texts.unit),
+  featured > 0 && pluralize(featured, texts.featured),
+]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<Section id="proyectos" class="relative isolate">
+  <SectionHeader file="projects.json" title={texts.title} meta={meta} />
+  <!-- Los destacados ocupan doble ancho desde 561px; dense rellena los huecos. -->
+  <div class="grid grid-flow-dense grid-cols-1 gap-3 min-[561px]:grid-cols-2 min-[861px]:grid-cols-3">
+    {projects.map((project) => (
+      <ProjectCard
+        project={project}
+        labels={{
+          featured: texts.featured.one,
+          repo: texts.repo,
+          demo: texts.demo,
+          caseStudy: texts.caseStudy,
+        }}
+      />
+    ))}
+  </div>
+</Section>

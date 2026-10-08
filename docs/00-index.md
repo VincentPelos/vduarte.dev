@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-07
+actualizado: 2026-10-08
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -11,8 +11,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ## Estado actual
 
-- **Última versión:** v0.2.0 Contenido (2026-10-07).
-- **Hito en curso:** v0.3.0 Secciones — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.3.0 Secciones (2026-10-08).
+- **Hito en curso:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (pendiente de despliegue).
 
@@ -36,6 +36,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [004 · Animaciones con librerías vanilla](03-decisiones/004-animaciones-vanilla.md)
 - [005 · Flujo git main + develop](03-decisiones/005-flujo-git.md)
 - [006 · Power BI: descarga + dashboard web](03-decisiones/006-power-bi-descarga.md)
+- [007 · Íconos de Iconify como SVG en el build](03-decisiones/007-iconos.md)
+- [008 · Hero: agujero negro real dibujado con puntos de terminal](03-decisiones/008-agujero-negro-puntos.md)
 
 ### 04 · Diseño — cómo se ve
 - [Tokens](04-diseno/tokens.md): colores, vidrio, tipografía, movimiento.
@@ -48,7 +50,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 ### 06 · Bitácora — qué pasó y cuándo
 - [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
 - [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
-- [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido.
+- [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
+- [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, agujero negro del hero y release v0.3.0.
 
 ## Convenciones de la bóveda
 

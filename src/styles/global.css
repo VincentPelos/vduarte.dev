@@ -10,16 +10,19 @@
   --color-bg: #000;
   --color-fg: #ededed;
   --color-muted: #8f8f8f;
+  --color-soft: #c7c7c7;
   --color-line: rgb(255 255 255 / 0.09);
   --color-line-hi: rgb(255 255 255 / 0.22);
   --color-glass: rgb(255 255 255 / 0.045);
   --color-glass-hi: rgb(255 255 255 / 0.06);
   --color-ok: #3ddc84;
+  --color-nav: rgb(10 10 10 / 0.6);
+  --color-spot: rgb(255 255 255 / 0.07);
 
-  /* Paleta "Sangre": solo partículas, brillos y degradados */
-  --color-c1: #ff0040;
-  --color-c2: #9b00ff;
-  --color-c3: #ff8a00;
+  /* Paleta "Nebulosa": el agujero negro del hero, brillos y degradados */
+  --color-c1: #00d1c1;
+  --color-c2: #7a5cff;
+  --color-c3: #ff5ca8;
 
   /* Tipografía */
   --font-display: 'Martian Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -37,6 +40,39 @@
 
   /* Movimiento */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+
+  --animate-blink: blink 1.05s steps(1) infinite;
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  --animate-eq: eq 0.9s ease-in-out infinite alternate;
+  --animate-pulse-ok: pulse-ok 2s infinite;
+
+  @keyframes eq {
+    to {
+      height: 15%;
+    }
+  }
+
+  @keyframes pulse-ok {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 55%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 12px transparent;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      transform: translate(6%, -8%) scale(1.15);
+    }
+  }
 }
 
 :root {
@@ -51,8 +87,8 @@
     overflow-x: clip;
   }
 
+  /* Sin fondo propio: así los brillos con z-index negativo se ven detrás de todas las secciones. */
   body {
-    background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
     line-height: 1.6;
@@ -96,6 +132,27 @@
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   backdrop-filter: blur(var(--blur-glass)) saturate(170%);
+}
+
+/* Brillo que sigue al puntero (--mx/--my los fija GlassCard) */
+@utility spotlight {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 50%),
+      var(--color-spot),
+      transparent 60%
+    );
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
 }
 
 /* Texto con el degradado de la paleta */
