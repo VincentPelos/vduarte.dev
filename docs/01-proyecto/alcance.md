@@ -40,8 +40,8 @@ Cada hito es un milestone en GitHub y una versi贸n SemVer al mergear `develop 鈫
 |---|---|---|
 | v0.1.0 | Fundaciones | Repo, documentaci贸n, scaffold Astro, estilos base, lint/tests/CI |
 | v0.2.0 | Contenido | Schemas zod y JSON de ejemplo |
-| v0.3.0 | Secciones | Layout, componentes UI y cada secci贸n del home |
-| v0.4.0 | Movimiento | Agujero negro del hero, reveals, Lenis, nav activa |
+| v0.3.0 | Secciones | Layout, componentes UI, cada secci贸n del home y el agujero negro del hero |
+| v0.4.0 | Movimiento | Fondo de estrellas de la p谩gina, reveals, Lenis, nav activa |
 | v0.5.0 | Caso Colchagua | P谩gina del caso, dashboard Chart.js, descargas, notebooks |
 | v0.6.0 | Contacto y extras | Formulario n8n, `/uso-de-ia`, SEO/OG, analytics |
 | v1.0.0 | Entrega | Contenido real, CV, repo p煤blico, Lighthouse, README final |

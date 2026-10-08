@@ -11,8 +11,8 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ## Estado actual
 
-- **Última versión:** v0.2.0 Contenido (2026-10-07).
-- **Hito en curso:** v0.3.0 Secciones — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.3.0 Secciones (2026-10-08).
+- **Hito en curso:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (pendiente de despliegue).
 
@@ -51,7 +51,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
 - [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
 - [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
-- [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones y agujero negro del hero.
+- [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, agujero negro del hero y release v0.3.0.
 
 ## Convenciones de la bóveda
 
