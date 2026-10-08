@@ -43,6 +43,15 @@ const site = {
     playing: 'Sonando',
     gaming: 'Jugando',
     links: 'Encuéntrame',
+    constellation: '~/constelacion',
+  },
+  constellations: {
+    about: '@',
+    experience: '>_',
+    projects: '</>',
+    skills: '#',
+    education: 'π',
+    contact: '?',
   },
   sections: {
     current: 'actual',
