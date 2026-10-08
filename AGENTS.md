@@ -12,7 +12,7 @@ Reglas para agentes de IA que trabajen en este repo. **Antes de tocar código, l
 - **Animaciones:** el contenido nunca depende de que una animación termine; todo respeta `prefers-reduced-motion`.
 - **Flujo:** issue → rama `<tipo>/<n>-<slug>` desde `develop` → commits [convencionales](docs/05-flujo-git/commits.md) que agrupan ~3 cambios relacionados (1–3 por PR), con `Refs #n` → PR a `develop` con `Closes #n` → merge commit. Nunca commits directos a `develop` ni `main`.
 - **Antes de abrir un PR:** `pnpm lint && pnpm format:check && pnpm check && pnpm test && pnpm build`.
-- **Cambios visuales:** antes de implementar, prototipar en un artifact con la skill [`prototipo-artifact`](.claude/skills/prototipo-artifact/SKILL.md) y esperar la elección del autor; después, revisar en 390, 768 y 1280 px.
+- **Cambios visuales:** para probarlos y mostrarlos, `pnpm dev` (no artifacts); revisar en 390, 768 y 1280 px. Solo si el autor pide explícitamente diseñar o rehacer algo en un artifact, usar la skill [`prototipo-artifact`](.claude/skills/prototipo-artifact/SKILL.md).
 - **Bitácora:** al cerrar una sesión, agrega o actualiza `docs/06-bitacora/AAAA-MM-DD.md`, incluyendo el uso de IA.
 - **Decisiones:** nunca se borran; si cambian, se marcan _Reemplazada_ y se crea una nueva.
 
