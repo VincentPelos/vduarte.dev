@@ -143,6 +143,7 @@ export const siteSchema = z.object({
     github: z.string().min(1),
     linkedin: z.string().min(1),
     cv: z.string().min(1),
+    pending: z.string().min(1),
   }),
 });
 

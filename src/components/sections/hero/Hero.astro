@@ -59,16 +59,12 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
       <Button href={github} arrow="external">
         {labels.github}
       </Button>
-      {linkedin && (
-        <Button href={linkedin} arrow="external">
-          {labels.linkedin}
-        </Button>
-      )}
-      {cvPath && (
-        <Button href={cvPath} arrow="down" download>
-          {labels.cv}
-        </Button>
-      )}
+      <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
+        {labels.linkedin}
+      </Button>
+      <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
+        {labels.cv}
+      </Button>
     </div>
   </div>
 </section>

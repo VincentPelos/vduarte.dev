@@ -32,7 +32,13 @@ const site = {
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
   prompt: { user: 'vicente@vduarte', command: 'whoami' },
-  labels: { email: 'Correo', github: 'GitHub', linkedin: 'LinkedIn', cv: 'Descargar CV' },
+  labels: {
+    email: 'Correo',
+    github: 'GitHub',
+    linkedin: 'LinkedIn',
+    cv: 'Descargar CV',
+    pending: 'Pendiente de publicación',
+  },
   bento: {
     about: 'Sobre mí',
     clock: 'Hora local',
