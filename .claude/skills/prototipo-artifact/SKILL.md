@@ -1,9 +1,11 @@
 ---
 name: prototipo-artifact
-description: Prototipa un cambio visual de vduarte.dev como artifact interactivo antes de implementarlo. Úsala cuando el autor quiera diseñar, probar o decidir algo visual (una sección, una animación, el fondo, colores, layout) o pida "un artifact para ver/decidir". Produce un laboratorio con variantes y controles, lo itera con el autor y deja anotada la decisión antes de abrir el issue de implementación.
+description: Prototipa un diseño de vduarte.dev como artifact interactivo antes de implementarlo. Úsala SOLO cuando el autor pida explícitamente diseñar o rehacer algo visual en un artifact ("hazme un artifact", "dame opciones para ver"). NO la uses para probar o mostrar cambios ya implementados: para eso se levanta `pnpm dev`. Produce un laboratorio con variantes y controles, lo itera con el autor y deja anotada la decisión antes de implementar.
 ---
 
 # Prototipo en artifact
+
+> **Cuándo sí y cuándo no.** Los artifacts son para **diseñar**, y solo cuando el autor lo pide explícitamente. Para **probar o mostrar** algo ya implementado no se crean artifacts: se levanta el servidor de desarrollo (`pnpm astro dev --background`, http://localhost:4321) y se le da la URL al autor. Tampoco se publica el sitio como artifact de vista previa.
 
 En este proyecto **nada visual se implementa sin verlo antes**. El autor decide mirando, no leyendo: se le muestra un laboratorio con variantes y controles, elige y ajusta valores, y recién entonces se implementa con el flujo normal (issue → rama → PR).
 
@@ -58,4 +60,4 @@ Escribe un HTML autónomo en el scratchpad (`<scratchpad>/<tema>/index.html`):
 
 - Issue → rama `<tipo>/<n>-<slug>` desde `develop` → commits agrupados → PR con `Closes #n` (ver `AGENTS.md`).
 - Si el cambio altera la identidad (paleta, lenguaje gráfico, animación principal), registra una decisión nueva en `docs/03-decisiones/` y marca la anterior como _Reemplazada_.
-- Para mostrar el sitio real antes de mergear: `pnpm build` y luego `bash .claude/skills/prototipo-artifact/vista-previa.sh <carpeta-salida>`, y publica `<carpeta-salida>/index.html` con sus archivos de `assets/` (ver el script).
+- Para mostrar el sitio real antes de mergear: levanta `pnpm astro dev --background` y dale al autor http://localhost:4321. **No** publiques el sitio como artifact.
