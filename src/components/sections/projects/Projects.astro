@@ -20,8 +20,8 @@ const meta = [
   .join(' · ');
 ---
 
-<Section id="proyectos" class="relative isolate">
-  <SectionHeader file="projects.json" title={texts.title} meta={meta} />
+<Section id="proyectos" constellation="projects" class="relative isolate">
+  <SectionHeader file="projects.json" title={texts.title} meta={meta} constellation="projects" />
   <!-- Los destacados ocupan doble ancho desde 561px; dense rellena los huecos. -->
   <div class="grid grid-flow-dense grid-cols-1 gap-3 min-[561px]:grid-cols-2 min-[861px]:grid-cols-3">
     {projects.map((project) => (

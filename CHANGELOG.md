@@ -4,6 +4,15 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Agregado
+
+- Skill de proyecto `prototipo-artifact` para decidir cambios visuales en artifacts antes de implementarlos (#59).
+- Cinemática de constelaciones: cielo de estrellas detrás de la página y un símbolo por sección que viaja con el scroll, escapando del agujero negro desde el hero ([decisión 009](docs/03-decisiones/009-cinematica-constelaciones.md)) (#61).
+
+### Cambiado
+
+- La guía visual queda como histórica; `tokens.md` es la fuente de verdad del diseño (#57).
+
 ## [0.3.0] - 2026-10-08
 
 Hito **Secciones**: layout, componentes UI, todas las secciones del home y el agujero negro del hero.

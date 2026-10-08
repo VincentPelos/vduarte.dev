@@ -106,6 +106,17 @@ export const siteSchema = z.object({
     playing: z.string().min(1),
     gaming: z.string().min(1),
     links: z.string().min(1),
+    /** Título de la ventana chica donde se forma la constelación de Sobre mí. */
+    constellation: z.string().min(1),
+  }),
+  /** Símbolo que forman las estrellas en cada sección (decisión 009). */
+  constellations: z.object({
+    about: z.string().min(1).max(3),
+    experience: z.string().min(1).max(3),
+    projects: z.string().min(1).max(3),
+    skills: z.string().min(1).max(3),
+    education: z.string().min(1).max(3),
+    contact: z.string().min(1).max(3),
   }),
   /** Títulos y textos de las secciones del home. */
   sections: z.object({

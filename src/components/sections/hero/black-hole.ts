@@ -10,6 +10,8 @@
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
 
+import { hole as shared } from '../../../lib/hole';
+
 interface Options {
   /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar. */
   reducedMotion: boolean;
@@ -328,6 +330,13 @@ export function mount(
       width * ((small ? 0.5 : 0.6) + 0.32 * Math.sin(time * 0.055)),
       height * (0.5 + 0.26 * Math.sin(time * 0.083 + 1.3)),
     ];
+    // Se comparte en px de la ventana para que la cinemática haga escapar estrellas del disco.
+    const box = container.getBoundingClientRect();
+    shared.x = box.left + hole[0];
+    shared.y = box.top + height - hole[1];
+    shared.px = pxPerRs;
+    shared.time = time;
+    shared.ready = true;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.viewport(0, 0, cols, rows);
@@ -397,6 +406,7 @@ export function mount(
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
     section.classList.remove('is-lensing');
+    shared.ready = false;
     canvas.remove();
     gl.getExtension('WEBGL_lose_context')?.loseContext();
   };

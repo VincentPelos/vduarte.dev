@@ -66,6 +66,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 ## Movimiento
 
 - **Agujero negro del hero:** celdas de 6 px, velocidad `65%`, escala `160%`, Doppler activado; deambula solo (no sigue al mouse), pausa fuera de pantalla. Las letras cercanas se comban con aberración cromática.
+- **Cinemática de constelaciones:** cielo fijo de puntos detrás de la página; en cada sección las estrellas forman su símbolo y viajan en arco al siguiente con el scroll ([decisión 009](../03-decisiones/009-cinematica-constelaciones.md)).
 - **Entrada del hero:** nombre letra a letra (stagger 35 ms) y luego rol, tagline y botones.
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).

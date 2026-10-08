@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Footer from '../components/layout/Footer.astro';
 import Nav from '../components/layout/Nav.astro';
 import Seo from '../components/layout/Seo.astro';
+import StarSky from '../components/layout/StarSky.astro';
 
 interface Props {
   title?: string;
@@ -31,10 +32,12 @@ const { title, description } = Astro.props;
     >
       Saltar al contenido
     </a>
-    <main id="contenido" tabindex="-1" class="outline-none">
+    <!-- z-[1]: el contenido va sobre el cielo de estrellas (StarSky, z-0). -->
+    <main id="contenido" tabindex="-1" class="relative z-[1] outline-none">
       <slot />
     </main>
     <Footer />
     <Nav />
+    <StarSky />
   </body>
 </html>

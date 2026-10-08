@@ -8,7 +8,12 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
 const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.data;
 ---
 
-<section id="inicio" data-hero class="group/hero relative isolate overflow-hidden">
+<section
+  id="inicio"
+  data-hero
+  data-constellation-section="hero"
+  class="group/hero relative isolate overflow-hidden"
+>
   <!--
     Respaldo sin WebGL: una grilla de puntos tenue en CSS. Con WebGL, el agujero negro
     (black-hole.ts) se monta en [data-hero-scene] por encima del texto y lo redibuja

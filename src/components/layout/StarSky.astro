@@ -1,0 +1,38 @@
+---
+import { getEntry } from 'astro:content';
+
+const site = await getEntry('site', 'main');
+if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+---
+
+<!--
+  Cielo de estrellas fijo detrás de toda la página y constelaciones por sección (decisión 009).
+  Es decorativo: sin JS o sin canvas la página se ve igual, solo sin estrellas.
+-->
+<canvas
+  data-star-sky
+  data-symbols={JSON.stringify(site.data.constellations)}
+  aria-hidden="true"
+  class="pointer-events-none fixed inset-0 z-0 block size-full"
+></canvas>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-star-sky]');
+
+  if (canvas) {
+    const symbols = JSON.parse(canvas.dataset.symbols ?? '{}') as Record<string, string>;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const load = () =>
+      // Espera las fuentes (los símbolos usan Martian Mono), pero nunca más de 1,5 s.
+      Promise.race([
+        document.fonts?.ready ?? Promise.resolve(),
+        new Promise((resolve) => setTimeout(resolve, 1500)),
+      ])
+        .then(() => import('./star-sky'))
+        .then(({ mount }) => mount(canvas, symbols, { reducedMotion }))
+        .catch(() => {});
+
+    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
+    else setTimeout(load, 200);
+  }
+</script>
