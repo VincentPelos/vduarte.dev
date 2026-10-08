@@ -1,6 +1,6 @@
 # vduarte.dev
 
-Portafolio profesional de **Vicente Duarte**, Ingeniero de Software & Datos: desarrollo web, automatización y Business Intelligence. Es también la entrega final de **ISI802 Business Intelligence (AIEP)**, que pide publicar el caso de estudio de Colchagua.
+Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de software con experiencia en soporte e infraestructura TI. Presenta proyectos web, automatización y herramientas internas. Es también la entrega final de **ISI802 Business Intelligence (AIEP)**, que pide publicar el caso de estudio de Colchagua.
 
 [![CI](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml)
 
@@ -86,4 +86,4 @@ Variables de entorno (todas opcionales): `PUBLIC_CONTACT_WEBHOOK`, `PUBLIC_UMAMI
 
 ## Uso de IA
 
-Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic), que se usa para proponer opciones con recomendación, escribir código y configuración, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó. La declaración completa estará en la página `/uso-de-ia`.
+Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic) y **Codex** (OpenAI) para proponer opciones, escribir código, ordenar contenido, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó. La declaración completa estará en la página `/uso-de-ia`.
