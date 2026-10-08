@@ -1,38 +1,51 @@
 [
   {
-    "id": "lumen-logistica",
-    "company": "Lumen Logística",
-    "role": "Ingeniero de Software & Datos",
-    "start": "2023-03",
+    "id": "municipalidad-placilla",
+    "company": "Municipalidad de Placilla",
+    "role": "Soporte-Ti",
+    "start": "2026-03",
     "end": null,
-    "location": "Remoto",
-    "description": "Plataforma de seguimiento de flotas en tiempo real usada por más de 40 empresas de reparto.",
+    "ongoing": true,
+    "location": "Presencial · Placilla, Chile",
+    "description": "Soporte técnico, mantenimiento y administración de infraestructura TI, desarrollo de soluciones digitales y automatización de procesos institucionales.",
     "highlights": [
-      "Migré el panel de clientes a Astro con islas y bajé un 62 % el JavaScript enviado.",
-      "Diseñé la API de eventos de GPS con colas en Redis: 1,2 M eventos al día.",
-      "Armé el modelo de datos y los dashboards de entregas que usa el equipo comercial."
+      "Diagnostico y resuelvo incidencias de hardware, software, conectividad, equipos e impresoras.",
+      "Configuro redes LAN y Wi-Fi, routers, servidores y servicios institucionales.",
+      "Administro y doy soporte a Microsoft 365, SharePoint y Exchange Online.",
+      "Participo en la reconstrucción del sitio web institucional y desarrollo herramientas internas de monitoreo y mesa de ayuda.",
+      "Automatizo procesos administrativos y técnicos."
     ],
-    "stack": ["TypeScript", "Node.js", "PostgreSQL", "Redis", "Power BI"]
+    "stack": [
+      "Windows",
+      "Linux",
+      "Windows Server",
+      "PowerShell",
+      "Microsoft 365",
+      "SharePoint",
+      "Exchange Online",
+      "TypeScript",
+      "JavaScript",
+      "Node.js",
+      "React",
+      "Git",
+      "SQL",
+      "TCP/IP"
+    ]
   },
   {
-    "id": "estudio-norte",
-    "company": "Estudio Norte",
-    "role": "Desarrollador Frontend",
-    "start": "2021-01",
-    "end": "2023-02",
-    "location": "Híbrido",
-    "description": "Sitios y e-commerce para marcas locales, con foco en animación y rendimiento.",
-    "highlights": ["Lideré 14 lanzamientos con Lighthouse sobre 95 en móvil."],
-    "stack": ["React", "Next.js", "GSAP", "Shopify"]
-  },
-  {
-    "id": "independiente",
-    "company": "Independiente",
-    "role": "Desarrollador web",
-    "start": "2019-06",
-    "end": "2020-12",
-    "location": "Freelance",
-    "description": "Landing pages y sistemas internos para pymes: inventario, reservas y facturación.",
-    "stack": ["PHP", "MySQL", "JavaScript"]
+    "id": "aiep-practica-soporte",
+    "company": "AIEP",
+    "role": "Practicante de Soporte TI",
+    "start": null,
+    "end": null,
+    "dateNote": "Aprox. 2025 · meses por confirmar",
+    "ongoing": false,
+    "description": "Práctica profesional de soporte informático y asistencia técnica realizada después de completar dos años de Programación.",
+    "highlights": [
+      "Atendí y resolví incidencias de usuarios.",
+      "Diagnostiqué y mantuve equipos computacionales; instalé sistemas operativos y software.",
+      "Resolví problemas de hardware y conectividad y apoyé tareas de soporte institucional."
+    ],
+    "stack": ["Windows", "Hardware", "Redes", "Soporte técnico"]
   }
 ]

@@ -45,7 +45,7 @@ const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }
         label={bento.links}
         links={[
           { href: data.github, text: data.labels.github },
-          { href: data.linkedin, text: data.labels.linkedin },
+          ...(data.linkedin ? [{ href: data.linkedin, text: data.labels.linkedin }] : []),
         ]}
       />
     </div>

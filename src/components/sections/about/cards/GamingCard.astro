@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { label, title, hours, note, gacha } = Astro.props;
-const meta = [hours !== undefined && `${hours} h`, note && `"${note}"`].filter(Boolean).join(' · ');
+const meta = [hours !== undefined && `${hours} h`, note].filter(Boolean).join(' · ');
 ---
 
 <GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:game]">

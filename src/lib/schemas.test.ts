@@ -51,6 +51,8 @@ const site = {
       title: 'Educación',
       degree: { one: 'título', other: 'títulos' },
       cert: { one: 'certificación', other: 'certificaciones' },
+      training: { one: 'capacitación', other: 'capacitaciones' },
+      folio: 'folio',
     },
     projects: {
       title: 'Proyectos',
@@ -100,6 +102,12 @@ describe('siteSchema', () => {
     expect(errorPaths(siteSchema.safeParse({ ...site, email: undefined }))).toEqual(['email']);
   });
 
+  it('acepta un perfil sin enlaces pendientes de LinkedIn ni CV', () => {
+    expect(siteSchema.safeParse({ ...site, linkedin: undefined, cvPath: undefined }).success).toBe(
+      true,
+    );
+  });
+
   it('rechaza zonas horarias, urls y rutas de CV inválidas', () => {
     const result = siteSchema.safeParse({
       ...site,
@@ -140,6 +148,23 @@ describe('experienceSchema', () => {
     const result = experienceSchema.safeParse({ ...experience, end: '2022-01' });
     expect(errorPaths(result)).toEqual(['end']);
   });
+
+  it('acepta fechas pendientes con una nota visible', () => {
+    expect(
+      experienceSchema.safeParse({
+        ...experience,
+        start: null,
+        dateNote: 'Desde marzo',
+        ongoing: true,
+      }).success,
+    ).toBe(true);
+  });
+
+  it('exige una nota cuando falta la fecha de inicio', () => {
+    expect(errorPaths(experienceSchema.safeParse({ ...experience, start: null }))).toEqual([
+      'dateNote',
+    ]);
+  });
 });
 
 describe('educationSchema', () => {
@@ -153,6 +178,22 @@ describe('educationSchema', () => {
     };
     expect(educationSchema.safeParse({ ...base, type: 'degree' }).success).toBe(true);
     expect(errorPaths(educationSchema.safeParse({ ...base, type: 'curso' }))).toEqual(['type']);
+  });
+
+  it('registra capacitaciones con folio sin llamarlas certificaciones', () => {
+    const training = {
+      id: 'docdigital',
+      institution: 'Gobierno Digital',
+      title: 'DocDigital',
+      start: '2026-07-23',
+      end: '2026-07-23',
+      type: 'training',
+      folio: '20482762',
+    };
+    expect(educationSchema.safeParse(training).success).toBe(true);
+    expect(errorPaths(educationSchema.safeParse({ ...training, start: '2026-02-31' }))).toEqual([
+      'start',
+    ]);
   });
 });
 
