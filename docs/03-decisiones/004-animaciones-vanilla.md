@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento]
-estado: Aceptada
+estado: Reemplazada en parte por 008 (three.js para las partículas)
 fecha: 2026-10-05
 ---
 
@@ -13,7 +13,7 @@ El diseño pide animaciones llamativas: entrada del nombre letra a letra, reveal
 - **Motion** (API vanilla, la misma librería detrás de Framer Motion) para secuencias y progreso de scroll.
 - **Web Animations API** nativa para los reveals.
 - **Lenis** para smooth scroll.
-- **three.js** vanilla para las partículas.
+- **three.js** vanilla para las partículas. _Reemplazado: el hero usa un agujero negro en WebGL directo ([decisión 008](008-agujero-negro-puntos.md))._
 - Todo se desactiva con `prefers-reduced-motion`.
 
 ## Regla aprendida en el mockup
