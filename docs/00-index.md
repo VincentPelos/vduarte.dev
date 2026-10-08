@@ -41,7 +41,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 
 ### 04 · Diseño — cómo se ve
 - [Tokens](04-diseno/tokens.md): colores, vidrio, tipografía, movimiento.
-- [Guía visual](04-diseno/guia.html): mockup interactivo congelado (abrir en el navegador).
+- [Guía visual](04-diseno/guia.html): mockup **histórico** del 2026-10-05 (partículas y paleta Sangre, reemplazadas por la [decisión 008](03-decisiones/008-agujero-negro-puntos.md)).
 
 ### 05 · Flujo git — cómo se trabaja
 - [Ramas](05-flujo-git/ramas.md): modelo, nombres, PRs y releases.

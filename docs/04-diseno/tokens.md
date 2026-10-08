@@ -5,7 +5,7 @@ actualizado: 2026-10-08
 
 # Tokens de diseño
 
-Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegador). Los ajustes finos se hacen durante el desarrollo y se reflejan aquí en el mismo PR.
+**Esta nota es la fuente de verdad del diseño.** Nació de la [guía visual](guia.html), que hoy es histórica: el hero y la paleta cambiaron con la [decisión 008](../03-decisiones/008-agujero-negro-puntos.md). Los ajustes se reflejan aquí en el mismo PR.
 
 **Dirección:** negro puro con UI monocroma, al estilo de Tidal y Vercel. El color vive solo en el agujero negro del hero, en los brillos difuminados detrás del vidrio y en los degradados. Tiene un toque terminal (prompt `whoami`, rutas `src/content/*.json` como etiquetas).
 
