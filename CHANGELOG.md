@@ -13,11 +13,17 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 - Secciones Experiencia y Educación con periodos legibles (#41).
 - Secciones Proyectos y Skills, con íconos de Iconify como SVG en el build ([decisión 007](docs/03-decisiones/007-iconos.md)) (#42).
 - Sección Contacto con correo copiable; el home reemplaza a la página temporal de tokens (#43).
+- Agujero negro en el hero: trazado de rayos real dibujado con puntos de terminal, en WebGL directo ([decisión 008](docs/03-decisiones/008-agujero-negro-puntos.md)) (#53).
 - Textos de la nav, el footer y las secciones en `site.json` (#37, #39–#43).
 
 ### Cambiado
 
 - `formatPeriod()` se reemplaza por `periodParts()` (#41).
+- Paleta Sangre → Nebulosa (#53).
+
+### Corregido
+
+- El bento "Sobre mí" ya no se ve cortado respecto del hero (#51).
 
 ## [0.2.0] - 2026-10-07
 

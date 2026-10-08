@@ -1,13 +1,15 @@
 ---
 tags: [diseno, tokens]
-actualizado: 2026-10-07
+actualizado: 2026-10-08
 ---
 
 # Tokens de diseño
 
 Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegador). Los ajustes finos se hacen durante el desarrollo y se reflejan aquí en el mismo PR.
 
-**Dirección:** negro puro con UI monocroma, al estilo de Tidal y Vercel. El color vive solo en las partículas, en los brillos difuminados detrás del vidrio y en los degradados. Tiene un toque terminal (prompt `whoami`, rutas `src/content/*.json` como etiquetas).
+**Dirección:** negro puro con UI monocroma, al estilo de Tidal y Vercel. El color vive solo en el agujero negro del hero, en los brillos difuminados detrás del vidrio y en los degradados. Tiene un toque terminal (prompt `whoami`, rutas `src/content/*.json` como etiquetas).
+
+**Lenguaje gráfico: puntos de terminal.** Todo lo que se dibuja (cielo, disco, futuras gráficas) es una grilla fija de celdas con un punto o nada, en pocos tamaños (· • ●). Nada de halos ni posiciones al azar ([decisión 008](../03-decisiones/008-agujero-negro-puntos.md)).
 
 ## Color
 
@@ -25,15 +27,15 @@ Valores congelados a partir de la [guía visual](guia.html) (abrir en el navegad
 | `--nav` | `rgba(10,10,10,.6)` | Fondo de la nav píldora (con blur 32px) |
 | `--spot` | `rgba(255,255,255,.07)` | Brillo que sigue al puntero en las tarjetas |
 
-### Paleta "Sangre"
+### Paleta "Nebulosa"
 
 | Token | Valor |
 |---|---|
-| `--c1` | `#ff0040` |
-| `--c2` | `#9b00ff` |
-| `--c3` | `#ff8a00` |
+| `--c1` | `#00d1c1` |
+| `--c2` | `#7a5cff` |
+| `--c3` | `#ff5ca8` |
 
-Se usa en: partículas (degradado de 3 tonos que se desplaza), brillos de fondo, portada de *Sonando*, estrellas de gacha, barra de progreso, el `?` de "¿Hablamos?" y los gráficos del caso Colchagua.
+Reemplaza a la paleta Sangre (`#ff0040`, `#9b00ff`, `#ff8a00`) desde la decisión 008. Se usa en: el disco y el cielo del agujero negro, brillos de fondo, portada de *Sonando*, estrellas de gacha, barra de progreso, el `?` de "¿Hablamos?" y los gráficos del caso Colchagua.
 
 ## Vidrio y brillos
 
@@ -63,7 +65,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 
 ## Movimiento
 
-- **Partículas:** malla 150×80 (70×46 en móvil), ondas suaves + onda donde está el mouse, intensidad `100%`, DPR máximo 1.5, pausa fuera de pantalla.
+- **Agujero negro del hero:** celdas de 6 px, velocidad `65%`, escala `160%`, Doppler activado; deambula solo (no sigue al mouse), pausa fuera de pantalla. Las letras cercanas se comban con aberración cromática.
 - **Entrada del hero:** nombre letra a letra (stagger 35 ms) y luego rol, tagline y botones.
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).

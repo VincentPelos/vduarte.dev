@@ -14,7 +14,7 @@ Portafolio profesional de **Vicente Duarte**, Ingeniero de Software & Datos: des
 | Framework  | [Astro](https://astro.build) con TypeScript strict, sin framework de UI ([por qué](docs/03-decisiones/001-astro-sin-framework-ui.md)) |
 | Estilos    | Tailwind CSS v4 con tokens propios en `src/styles/global.css`                                                                         |
 | Contenido  | Un JSON por sección validado con zod ([por qué](docs/03-decisiones/002-json-por-seccion.md))                                          |
-| Animación  | Motion, Lenis y three.js en versión vanilla                                                                                           |
+| Animación  | Motion, Lenis y WebGL directo (agujero negro del hero)                                                                                |
 | Calidad    | ESLint, Prettier, Vitest, `astro check`, commitlint + husky                                                                           |
 | CI         | GitHub Actions + Lighthouse CI                                                                                                        |
 | Despliegue | Coolify en VPS propio ([por qué](docs/03-decisiones/003-despliegue-coolify.md))                                                       |
