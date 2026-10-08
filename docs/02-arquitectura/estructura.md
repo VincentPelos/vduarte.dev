@@ -16,6 +16,7 @@ vduarte.dev/
 │  ├─ pull_request_template.md
 │  ├─ workflows/               ci.yml, lighthouse.yml
 │  └─ lighthouserc.json        umbrales de Lighthouse CI
+├─ .claude/skills/             skills de proyecto para agentes (prototipo-artifact)
 ├─ .husky/                     hooks de git (commit-msg)
 ├─ docs/                       esta bóveda
 ├─ public/                     archivos servidos tal cual: cv.pdf, favicon.svg, og.png
@@ -63,6 +64,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
 | Un test | Al lado del archivo que prueba: `lib/dates.ts` → `lib/dates.test.ts` |
+| Un proceso que repiten los agentes | `.claude/skills/<nombre>/SKILL.md` |
 
 ## Convenciones de nombres
 
