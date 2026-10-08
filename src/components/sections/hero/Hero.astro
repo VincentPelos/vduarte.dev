@@ -8,36 +8,51 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
 const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.data;
 ---
 
-<section id="inicio" class="relative isolate overflow-hidden">
+<section id="inicio" data-hero class="group/hero relative isolate overflow-hidden">
   <!--
-    Fondo del hero: degradado de respaldo (siempre visible) + [data-hero-scene], donde v0.4.0
-    monta la animación intercambiable. Se desvanece con una máscara (no con capas negras)
-    para que los brillos del bento pasen por detrás sin cortes.
+    Respaldo sin WebGL: una grilla de puntos tenue en CSS. Con WebGL, el agujero negro
+    (black-hole.ts) se monta en [data-hero-scene] por encima del texto y lo redibuja
+    deformado; el texto real queda transparente pero sigue ahí para lectores de pantalla.
   -->
   <div
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 -z-10 [mask-composite:intersect] [mask-image:linear-gradient(90deg,transparent,rgb(0_0_0/0.45)_45%,#000_78%),linear-gradient(0deg,transparent,#000_30%)]"
-  >
-    <div class="absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_40%,color-mix(in_srgb,var(--color-c2)_25%,transparent),transparent_70%)]"></div>
-    <div data-hero-scene class="absolute inset-0"></div>
-  </div>
+    class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle,var(--color-line)_1px,transparent_1.5px)] bg-size-[6px_6px] group-[.is-lensing]/hero:hidden"
+  ></div>
+  <div data-hero-scene aria-hidden="true" class="pointer-events-none absolute inset-0 z-10"></div>
 
   <div class="wrap grid gap-[26px] pt-[clamp(80px,15vh,160px)] pb-[clamp(56px,10vh,100px)]">
-    <p class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted">
-      <span class="text-fg">{prompt.user}</span>:~$ {prompt.command}
+    <p
+      data-lens
+      class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted group-[.is-lensing]/hero:text-transparent"
+    >
+      <span class="text-fg group-[.is-lensing]/hero:text-transparent">{prompt.user}</span>:~${' '}
+      {prompt.command}
       <span
         aria-hidden="true"
-        class="ml-0.5 inline-block h-[1.1em] w-[0.6em] animate-blink bg-fg align-[-0.2em]"
+        class="relative z-20 ml-0.5 inline-block h-[1.1em] w-[0.6em] animate-blink bg-fg align-[-0.2em]"
       ></span>
     </p>
-    <h1 class="font-display text-name leading-[0.92] font-bold tracking-[-0.045em]">
+    <h1
+      data-lens
+      class="font-display text-name leading-[0.92] font-bold tracking-[-0.045em] group-[.is-lensing]/hero:text-transparent"
+    >
       {name.split(' ').map((line) => (
         <span class="block">{line}</span>
       ))}
     </h1>
-    <p class="text-[clamp(1.05rem,2.6vw,1.35rem)] leading-[1.3] font-semibold">{role}</p>
-    <p class="max-w-[46ch] text-[clamp(1rem,2.2vw,1.15rem)] text-muted">{tagline}</p>
-    <div class="flex flex-wrap gap-2.5">
+    <p
+      data-lens
+      class="text-[clamp(1.05rem,2.6vw,1.35rem)] leading-[1.3] font-semibold group-[.is-lensing]/hero:text-transparent"
+    >
+      {role}
+    </p>
+    <p
+      data-lens
+      class="max-w-[46ch] text-[clamp(1rem,2.2vw,1.15rem)] text-muted group-[.is-lensing]/hero:text-transparent"
+    >
+      {tagline}
+    </p>
+    <div class="relative z-20 flex flex-wrap gap-2.5">
       <Button href="#contacto" variant="primary" arrow="external">
         {labels.email}
       </Button>
@@ -53,3 +68,21 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
     </div>
   </div>
 </section>
+
+<script>
+  // El agujero negro se carga diferido: no bloquea la primera pintura y, si falla, queda la
+  // grilla de puntos en CSS. Cambiar la animación = cambiar black-hole.ts.
+  const section = document.querySelector<HTMLElement>('[data-hero]');
+  const container = section?.querySelector<HTMLElement>('[data-hero-scene]');
+
+  if (section && container) {
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const load = () =>
+      import('./black-hole')
+        .then(({ mount }) => mount(section, container, { reducedMotion }))
+        .catch(() => {});
+
+    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
+    else setTimeout(load, 200);
+  }
+</script>
