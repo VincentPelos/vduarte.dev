@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, contenido]
-actualizado: 2026-10-07
+actualizado: 2026-10-08
 ---
 
 # Contenido
@@ -22,7 +22,7 @@ Cada ítem de una lista lleva un `id` único en `kebab-case`.
 
 ## Campos
 
-**site.json** — `name`, `role`, `tagline`, `bioTitle`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity, pityMax? } }` (`pityMax` es 90 si se omite), `nav[] { section, label, ariaLabel? }` (`section` es el `id` de la sección del home, sin `#`), `footerNote`, `prompt { user, command }`, `labels { email, github, linkedin, cv }` (textos de los botones de contacto), `bento { about, clock, status, available, unavailable, stack, playing, gaming, links }` (etiquetas de las tarjetas), `sections { current, experience { title, unit, since }, education { title, degree, cert }, projects { title, unit, featured, repo, demo, caseStudy }, skills { title, groups, items }, contact { kicker, title, copy, copied } }` (títulos y textos de las secciones; `unit`, `degree` y `cert` llevan `{ one, other }` para singular y plural).
+**site.json** — `name`, `role`, `tagline`, `bioTitle`, `bio`, `available`, `availabilityNote`, `location`, `timezone`, `email`, `github`, `linkedin`, `cvPath`, `highlightStack[]`, `nowPlaying { song, artist, album? }`, `nowGaming { title, hours?, note?, gacha? { game, pity, pityMax? } }` (`pityMax` es 90 si se omite), `nav[] { section, label, ariaLabel? }` (`section` es el `id` de la sección del home, sin `#`), `footerNote`, `prompt { user, command }`, `labels { email, github, linkedin, cv }` (textos de los botones de contacto), `bento { about, clock, status, available, unavailable, stack, playing, gaming, links, constellation }` (etiquetas de las tarjetas; `constellation` titula la ventana de la constelación), `constellations { about, experience, projects, skills, education, contact }` (símbolo de 1 a 3 caracteres que forman las estrellas en cada sección; ver [decisión 009](../03-decisiones/009-cinematica-constelaciones.md)), `sections { current, experience { title, unit, since }, education { title, degree, cert }, projects { title, unit, featured, repo, demo, caseStudy }, skills { title, groups, items }, contact { kicker, title, copy, copied } }` (títulos y textos de las secciones; `unit`, `degree` y `cert` llevan `{ one, other }` para singular y plural).
 
 **experience.json** — `id`, `company`, `role`, `start` (`"2023-03"`), `end` (`null` = actual), `location?`, `description`, `highlights[]?`, `stack[]?`, `url?`. Se ordena por fecha automáticamente.
 

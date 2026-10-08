@@ -38,6 +38,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [006 · Power BI: descarga + dashboard web](03-decisiones/006-power-bi-descarga.md)
 - [007 · Íconos de Iconify como SVG en el build](03-decisiones/007-iconos.md)
 - [008 · Hero: agujero negro real dibujado con puntos de terminal](03-decisiones/008-agujero-negro-puntos.md)
+- [009 · Cinemática de constelaciones por sección](03-decisiones/009-cinematica-constelaciones.md)
 
 ### 04 · Diseño — cómo se ve
 - [Tokens](04-diseno/tokens.md): colores, vidrio, tipografía, movimiento.

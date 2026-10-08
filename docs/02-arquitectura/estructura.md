@@ -25,7 +25,7 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, StarSky + star-sky.ts
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts
 │  │  │  ├─ about/             About.astro + cards/
