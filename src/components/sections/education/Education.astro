@@ -18,7 +18,7 @@ const meta = (['degree', 'cert'] as const)
   .join(' · ');
 ---
 
-<Section id="educacion">
+<Section id="educacion" constellation="education">
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
   <ul>
     {items.map((item) => (
@@ -47,4 +47,6 @@ const meta = (['degree', 'cert'] as const)
       </li>
     ))}
   </ul>
+  <!-- Cierre de la sección: aquí las estrellas forman su símbolo (decisión 009). -->
+  <div data-constellation="education" aria-hidden="true" class="mt-7 h-[150px] sm:h-[170px]"></div>
 </Section>

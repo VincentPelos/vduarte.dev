@@ -2,12 +2,18 @@
 interface Props {
   id: string;
   class?: string;
+  /** Nombre de la sección para la cinemática de constelaciones (decisión 009). */
+  constellation?: string;
 }
 
-const { id, class: className } = Astro.props;
+const { id, class: className, constellation } = Astro.props;
 ---
 
-<section id={id} class:list={['border-t border-line py-[clamp(72px,12vw,140px)]', className]}>
+<section
+  id={id}
+  data-constellation-section={constellation}
+  class:list={['border-t border-line py-[clamp(72px,12vw,140px)]', className]}
+>
   <div class="wrap">
     <slot />
   </div>

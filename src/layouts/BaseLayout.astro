@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Footer from '../components/layout/Footer.astro';
 import Nav from '../components/layout/Nav.astro';
 import Seo from '../components/layout/Seo.astro';
+import StarSky from '../components/layout/StarSky.astro';
 
 interface Props {
   title?: string;
@@ -36,5 +37,6 @@ const { title, description } = Astro.props;
     </main>
     <Footer />
     <Nav />
+    <StarSky />
   </body>
 </html>

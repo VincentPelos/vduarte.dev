@@ -12,6 +12,7 @@ const texts = site.data.sections.contact;
 
 <section
   id="contacto"
+  data-constellation-section="contact"
   class="relative isolate overflow-hidden border-t border-line pt-[clamp(90px,16vw,200px)] pb-[clamp(60px,10vw,120px)]"
 >
   <Glows strength={0.35} class="top-[30%]" />
@@ -19,7 +20,10 @@ const texts = site.data.sections.contact;
     <p class="mb-[18px] font-mono text-[0.8rem] leading-none text-muted">{texts.kicker}</p>
     <h2 class="font-display text-cta leading-[0.95] font-bold tracking-[-0.055em]">
       {texts.title.slice(0, -1)}
-      <span class="text-grad">{texts.title.slice(-1)}</span>
+      <!-- Con JS, las estrellas dibujan este carácter (más grande); el texto sigue ahí. -->
+      <span data-constellation="contact" data-constellation-replace class="text-grad">
+        {texts.title.slice(-1)}
+      </span>
     </h2>
     <div class="mt-[clamp(28px,5vw,48px)] flex flex-wrap items-center gap-x-[18px] gap-y-3">
       <a
