@@ -11,8 +11,9 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
 
 const { current, education: texts } = site.data.sections;
 const items = sortByRecency((await getCollection('education')).map((entry) => entry.data));
-const count = (type: 'degree' | 'cert') => items.filter((item) => item.type === type).length;
-const meta = (['degree', 'cert'] as const)
+const count = (type: 'degree' | 'cert' | 'training') =>
+  items.filter((item) => item.type === type).length;
+const meta = (['degree', 'cert', 'training'] as const)
   .filter((type) => count(type) > 0)
   .map((type) => pluralize(count(type), texts[type]))
   .join(' · ');
@@ -24,7 +25,13 @@ const meta = (['degree', 'cert'] as const)
     {items.map((item) => (
       <li class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-7 gap-y-2 border-t border-line py-[22px] last:border-b min-[621px]:grid-cols-[11rem_minmax(0,1fr)_auto]">
         <p class="col-span-full font-mono text-[0.82rem] leading-none whitespace-nowrap text-muted min-[621px]:col-span-1">
-          <Period start={item.start} end={item.end} currentLabel={current} />
+          <Period
+            start={item.start}
+            end={item.end}
+            dateNote={item.dateNote}
+            ongoing={item.ongoing}
+            currentLabel={current}
+          />
         </p>
         <p class="text-[1.06rem] font-semibold">
           {item.url ? (
@@ -34,7 +41,10 @@ const meta = (['degree', 'cert'] as const)
           ) : (
             item.title
           )}
-          <span class="block text-[0.95rem] font-normal text-muted">{item.institution}</span>
+          <span class="block text-[0.95rem] font-normal text-muted">
+            {item.institution}
+            {item.folio && ` · ${texts.folio} ${item.folio}`}
+          </span>
         </p>
         <span
           class:list={[

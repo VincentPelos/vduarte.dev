@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMonth, periodParts, sortByRecency } from './dates';
+import { formatDate, formatMonth, periodParts, sortByRecency } from './dates';
 
 describe('formatMonth', () => {
   it('formatea AAAA-MM como mes abreviado y año', () => {
@@ -34,6 +34,16 @@ describe('periodParts', () => {
       current: false,
     });
   });
+
+  it('muestra años conocidos y notas para fechas pendientes', () => {
+    expect(formatDate('2023')).toBe('2023');
+    expect(formatDate('2026-07-23')).toBe('23 jul 2026');
+    expect(periodParts(null, null, { dateNote: 'Fechas por confirmar', ongoing: false })).toEqual({
+      from: 'Fechas por confirmar',
+      to: null,
+      current: false,
+    });
+  });
 });
 
 describe('sortByRecency', () => {
@@ -57,5 +67,13 @@ describe('sortByRecency', () => {
     const copy = [...items];
     sortByRecency(items);
     expect(items).toEqual(copy);
+  });
+
+  it('deja al final un periodo completado sin fechas', () => {
+    const jobs = [
+      { id: 'practica', start: null, end: null, ongoing: false },
+      { id: 'actual', start: null, end: null, ongoing: true },
+    ];
+    expect(sortByRecency(jobs).map((job) => job.id)).toEqual(['actual', 'practica']);
   });
 });

@@ -5,7 +5,7 @@ actualizado: 2026-10-08
 
 # vduarte.dev — Índice de la bóveda
 
-Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software & Datos). Esta carpeta está pensada para leerse como una bóveda de Obsidian o directamente en GitHub: es el punto de entrada para cualquier persona o agente que llegue sin contexto.
+Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollador de Software | Soporte e Infraestructura TI). Esta carpeta está pensada para leerse como una bóveda de Obsidian o directamente en GitHub: es el punto de entrada para cualquier persona o agente que llegue sin contexto.
 
 > **Si eres un agente:** lee esta nota completa, luego [estructura](02-arquitectura/estructura.md) y [flujo git](05-flujo-git/ramas.md) antes de tocar código.
 
@@ -52,7 +52,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
 - [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
 - [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
-- [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, agujero negro del hero y release v0.3.0.
+- [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, release v0.3.0 y actualización del contenido personal.
 
 ## Convenciones de la bóveda
 

@@ -2,14 +2,16 @@
 import { periodParts } from '../../lib/dates';
 
 interface Props {
-  start: string;
+  start: string | null;
   end: string | null;
+  dateNote?: string;
+  ongoing?: boolean;
   /** Texto para un periodo vigente (`sections.current` de site.json). */
   currentLabel: string;
 }
 
-const { start, end, currentLabel } = Astro.props;
-const { from, to, current } = periodParts(start, end);
+const { start, end, dateNote, ongoing, currentLabel } = Astro.props;
+const { from, to, current } = periodParts(start, end, { dateNote, ongoing });
 ---
 
 <span class="tabular-nums">
