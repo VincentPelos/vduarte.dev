@@ -59,10 +59,10 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
       <Button href={github} arrow="external">
         {labels.github}
       </Button>
-      <Button href={linkedin} arrow="external">
+      <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
         {labels.linkedin}
       </Button>
-      <Button href={cvPath} arrow="down" download>
+      <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
         {labels.cv}
       </Button>
     </div>

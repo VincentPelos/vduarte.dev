@@ -1,27 +1,70 @@
 [
   {
-    "id": "aiep-ingenieria-programacion",
+    "id": "aiep-ingenieria-informatica",
     "institution": "AIEP",
-    "title": "Ingeniería en Programación",
-    "start": "2023-03",
+    "title": "Ingeniería en Informática, mención Desarrollo de Sistemas",
+    "start": "2025",
     "end": null,
+    "ongoing": true,
     "type": "degree"
   },
   {
-    "id": "threejs-journey",
-    "institution": "Bruno Simon",
-    "title": "Three.js Journey",
-    "start": "2025-01",
-    "end": "2025-04",
-    "type": "cert",
-    "url": "https://threejs-journey.com"
+    "id": "aiep-programacion",
+    "institution": "AIEP",
+    "title": "Programación · etapa formativa completada",
+    "start": "2023",
+    "end": "2025",
+    "ongoing": false,
+    "type": "degree"
   },
   {
-    "id": "aws-cloud-practitioner",
-    "institution": "Amazon Web Services",
-    "title": "AWS Cloud Practitioner",
-    "start": "2023-08",
-    "end": "2023-08",
-    "type": "cert"
+    "id": "docdigital-introduccion",
+    "institution": "Secretaría de Gobierno Digital del Gobierno de Chile",
+    "title": "DocDigital: Introducción para usuarios nuevos",
+    "start": "2026-07-23",
+    "end": "2026-07-23",
+    "type": "training",
+    "folio": "20482762",
+    "url": "https://gobdigital.cerofilas.gob.cl/validador"
+  },
+  {
+    "id": "docdigital-uso",
+    "institution": "Secretaría de Gobierno Digital del Gobierno de Chile",
+    "title": "DocDigital: Uso de la plataforma",
+    "start": "2026-07-28",
+    "end": "2026-07-28",
+    "type": "training",
+    "folio": "20493044",
+    "url": "https://gobdigital.cerofilas.gob.cl/validador"
+  },
+  {
+    "id": "simple-capacitacion",
+    "institution": "Secretaría de Gobierno Digital del Gobierno de Chile",
+    "title": "Taller de capacitación SIMPLE",
+    "start": "2026-08-07",
+    "end": "2026-08-07",
+    "type": "training",
+    "folio": "20520002",
+    "url": "https://gobdigital.cerofilas.gob.cl/validador"
+  },
+  {
+    "id": "simple-aprendiendo",
+    "institution": "Secretaría de Gobierno Digital del Gobierno de Chile",
+    "title": "Taller Aprendiendo SIMPLE",
+    "start": "2026-08-12",
+    "end": "2026-08-12",
+    "type": "training",
+    "folio": "20527751",
+    "url": "https://gobdigital.cerofilas.gob.cl/validador"
+  },
+  {
+    "id": "docdigital-administradores",
+    "institution": "Secretaría de Gobierno Digital del Gobierno de Chile",
+    "title": "DocDigital: Gestión avanzada para administradores/as",
+    "start": "2026-08-27",
+    "end": "2026-08-27",
+    "type": "training",
+    "folio": "20576493",
+    "url": "https://gobdigital.cerofilas.gob.cl/validador"
   }
 ]

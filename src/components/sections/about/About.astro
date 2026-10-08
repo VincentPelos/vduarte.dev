@@ -43,6 +43,7 @@ const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }
       <GamingCard label={bento.gaming} {...data.nowGaming} />
       <LinksCard
         label={bento.links}
+        pendingLabel={data.labels.pending}
         links={[
           { href: data.github, text: data.labels.github },
           { href: data.linkedin, text: data.labels.linkedin },

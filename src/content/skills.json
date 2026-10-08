@@ -1,43 +1,92 @@
 [
   {
+    "id": "lenguajes-web",
+    "group": "Lenguajes y tecnologías web",
+    "items": [
+      { "name": "TypeScript", "icon": "simple-icons:typescript" },
+      { "name": "JavaScript", "icon": "simple-icons:javascript" },
+      { "name": "Python", "icon": "simple-icons:python" },
+      { "name": "SQL" },
+      { "name": "PowerShell", "icon": "simple-icons:powershell" },
+      { "name": "HTML", "icon": "simple-icons:html5" },
+      { "name": "CSS", "icon": "simple-icons:css" }
+    ]
+  },
+  {
     "id": "frontend",
     "group": "Frontend",
     "items": [
-      { "name": "TypeScript", "icon": "simple-icons:typescript" },
-      { "name": "Astro", "icon": "simple-icons:astro" },
+      { "name": "React", "icon": "simple-icons:react" },
+      { "name": "Vite", "icon": "simple-icons:vite" },
       { "name": "Tailwind CSS", "icon": "simple-icons:tailwindcss" },
-      { "name": "Three.js", "icon": "simple-icons:threedotjs" }
+      { "name": "SPFx" }
     ]
   },
   {
-    "id": "backend",
-    "group": "Backend",
+    "id": "backend-bases-datos",
+    "group": "Backend y bases de datos",
     "items": [
       { "name": "Node.js", "icon": "simple-icons:nodedotjs" },
-      { "name": "PostgreSQL", "icon": "simple-icons:postgresql" },
-      { "name": "Redis", "icon": "simple-icons:redis" }
+      { "name": "APIs REST" },
+      { "name": "MySQL", "icon": "simple-icons:mysql" },
+      { "name": "Integración de servicios" }
     ]
   },
   {
-    "id": "datos-bi",
-    "group": "Datos y BI",
+    "id": "sistemas-infraestructura",
+    "group": "Sistemas e infraestructura",
     "items": [
-      { "name": "Python", "icon": "simple-icons:python" },
-      { "name": "pandas", "icon": "simple-icons:pandas" },
-      { "name": "Jupyter", "icon": "simple-icons:jupyter" },
-      { "name": "Power BI", "icon": "simple-icons:powerbi" },
-      { "name": "scikit-learn", "icon": "simple-icons:scikitlearn" }
-    ]
-  },
-  {
-    "id": "infra-automatizacion",
-    "group": "Infra y automatización",
-    "items": [
-      { "name": "Docker", "icon": "simple-icons:docker" },
-      { "name": "Coolify", "icon": "simple-icons:coolify" },
       { "name": "Linux", "icon": "simple-icons:linux" },
+      { "name": "Windows", "icon": "simple-icons:windows" },
+      { "name": "Windows Server" },
+      { "name": "TCP/IP" },
+      { "name": "DNS" },
+      { "name": "DHCP" },
+      { "name": "VLAN" },
+      { "name": "SSH" },
+      { "name": "RDP" },
+      { "name": "Virtualización" }
+    ]
+  },
+  {
+    "id": "microsoft-365",
+    "group": "Microsoft 365",
+    "items": [
+      { "name": "Microsoft 365" },
+      { "name": "SharePoint", "icon": "simple-icons:microsoftsharepoint" },
+      { "name": "Exchange Online" },
+      { "name": "Microsoft Entra ID" },
+      { "name": "Microsoft Graph" },
+      { "name": "MSAL" },
+      { "name": "Power Apps" }
+    ]
+  },
+  {
+    "id": "herramientas-desarrollo",
+    "group": "Herramientas de desarrollo",
+    "items": [
+      { "name": "Git", "icon": "simple-icons:git" },
+      { "name": "GitHub", "icon": "simple-icons:github" },
       { "name": "GitHub Actions", "icon": "simple-icons:githubactions" },
-      { "name": "n8n", "icon": "simple-icons:n8n" }
+      { "name": "Git Worktrees" },
+      { "name": "Neovim", "icon": "simple-icons:neovim" },
+      { "name": "VS Code" },
+      { "name": "WSL2" },
+      { "name": "cPanel", "icon": "simple-icons:cpanel" }
+    ]
+  },
+  {
+    "id": "aprendizaje-investigacion",
+    "group": "En aprendizaje e investigación",
+    "items": [
+      { "name": "Rust", "icon": "simple-icons:rust" },
+      { "name": "Vue", "icon": "simple-icons:vuedotjs" },
+      { "name": "Svelte", "icon": "simple-icons:svelte" },
+      { "name": "Astro", "icon": "simple-icons:astro" },
+      { "name": "LoRa" },
+      { "name": "Bluetooth Mesh" },
+      { "name": "Wi-Fi Direct" },
+      { "name": "Orquestación multiagente" }
     ]
   }
 ]

@@ -10,35 +10,52 @@ export function formatMonth(value: string): string {
   return `${MONTHS[month - 1]} ${match[1]}`;
 }
 
+/** Conserva el año cuando no se conoce el mes. */
+export function formatDate(value: string): string {
+  if (/^\d{4}$/.test(value)) return value;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return `${Number(value.slice(8, 10))} ${formatMonth(value.slice(0, 7))}`;
+  }
+  return formatMonth(value);
+}
+
 export interface PeriodParts {
   from: string;
-  /** Mes de término; `null` si sigue vigente o si empieza y termina el mismo mes. */
+  /** Término distinto del inicio; `null` si no se conoce, sigue vigente o coincide con el inicio. */
   to: string | null;
   current: boolean;
 }
 
 /**
  * Partes legibles de un periodo para mostrarlas por separado (p. ej. "actual" en verde).
- * `end` en `null` significa que sigue vigente.
+ * `ongoing` puede distinguir un periodo terminado sin fecha exacta de uno vigente.
  */
-export function periodParts(start: string, end: string | null): PeriodParts {
+export function periodParts(
+  start: string | null,
+  end: string | null,
+  options: { dateNote?: string; ongoing?: boolean } = {},
+): PeriodParts {
   return {
-    from: formatMonth(start),
-    to: end && end !== start ? formatMonth(end) : null,
-    current: end === null,
+    from: options.dateNote ?? (start ? formatDate(start) : ''),
+    to: end && end !== start ? formatDate(end) : null,
+    current: options.ongoing ?? end === null,
   };
 }
 
 interface Period {
-  start: string;
+  start: string | null;
   end: string | null;
+  ongoing?: boolean;
 }
 
 /**
- * Ordena del más reciente al más antiguo: primero lo vigente (`end: null`),
+ * Ordena del más reciente al más antiguo: primero lo vigente,
  * luego por término y, si empatan, por inicio. No modifica el arreglo original.
  */
 export function sortByRecency<T extends Period>(items: readonly T[]): T[] {
-  const key = (item: Period) => item.end ?? '9999-12';
-  return [...items].sort((a, b) => key(b).localeCompare(key(a)) || b.start.localeCompare(a.start));
+  const key = (item: Period) =>
+    (item.ongoing ?? item.end === null) ? '9999-12' : (item.end ?? item.start ?? '0000');
+  return [...items].sort(
+    (a, b) => key(b).localeCompare(key(a)) || (b.start ?? '').localeCompare(a.start ?? ''),
+  );
 }
