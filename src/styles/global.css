@@ -86,6 +86,11 @@
   html {
     background: var(--color-bg);
     overflow-x: clip;
+
+    /* Celular (#92): el texto al 90 %, elegido en el laboratorio de UI. */
+    @media (width <= 460px) {
+      font-size: 90%;
+    }
   }
 
   /* Sin fondo propio: así los brillos con z-index negativo se ven detrás de todas las secciones. */

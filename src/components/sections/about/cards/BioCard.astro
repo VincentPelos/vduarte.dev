@@ -10,7 +10,7 @@ interface Props {
 const { label, title, bio } = Astro.props;
 ---
 
-<BentoCard label={label} class="justify-between [grid-area:bio]">
+<BentoCard label={label} class="justify-between min-[461px]:[grid-area:bio]">
   <h2 class="max-w-[22ch] text-[clamp(1.4rem,3vw,2rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-balance">
     {title}
   </h2>

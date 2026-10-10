@@ -11,7 +11,7 @@ interface Props {
 const { label, items } = Astro.props;
 ---
 
-<BentoCard label={label} class="[grid-area:stack]">
+<BentoCard label={label} class="min-[461px]:[grid-area:stack]">
   <ul class="flex flex-wrap gap-2">
     {items.map(({ name, icon }) => (
       <li class="inline-flex items-center gap-2 rounded-full border border-line bg-glass px-3 py-2 text-[0.88rem] leading-none">

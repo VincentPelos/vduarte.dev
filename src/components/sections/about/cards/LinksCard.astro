@@ -12,7 +12,7 @@ interface Props {
 const { label, pendingLabel, links } = Astro.props;
 ---
 
-<BentoCard label={label} class="justify-between [grid-area:links]">
+<BentoCard label={label} class="justify-between min-[461px]:[grid-area:links]">
   <div>
     {links.map(({ href, text }) =>
       href ? (
