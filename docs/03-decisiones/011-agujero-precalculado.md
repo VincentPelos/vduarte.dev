@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, rendimiento]
-estado: Aceptada
+estado: Reemplazada en parte por 012 (entrada por colapso)
 fecha: 2026-10-09
 ---
 
@@ -18,7 +18,7 @@ Con la 008, cada celda integraba hasta 220 pasos del rayo de luz **en cada cuadr
   - cuántos cruces hay y si el rayo cae al agujero.
 - **Cada cuadro** solo lee la tabla (lectura directa, sin interpolar) y aplica lo que depende del tiempo con las mismas fórmulas de antes.
 - **Sin congelar la página:** el precálculo se reparte en franjas, con un tope de trabajos por cuadro aunque sobre tiempo, porque `gl.finish()` no siempre espera a la GPU.
-- **Carga:** mientras se precalcula, un anillo de puntos de la grilla se completa con el avance real (`--hole-progress`) donde va a aparecer el agujero, y después la escena entra con un fundido de 700 ms. El texto real sigue visible durante el fundido. La carga solo existe con WebGL, así que sin JS no queda colgada.
+- **Carga:** mientras se precalcula, un anillo de puntos de la grilla se completa con el avance real (`--hole-progress`) donde va a aparecer el agujero, y después la escena entra con un fundido de 700 ms. El texto real sigue visible durante el fundido. La carga solo existe con WebGL, así que sin JS no queda colgada. _Reemplazado: la escena entra con un colapso de la sombra en vez del fundido, que dejaba la sombra gris un momento ([decisión 012](012-entrada-colapso.md))._
 - **`prefers-reduced-motion`:** cuadro estático **detrás del texto real**, sin deformarlo. Antes, WebGL dibujaba el texto también en este modo, y en las pruebas el cuadro mostrado no lo incluía: el hero quedaba sin nombre. Ahora el contenido no depende de WebGL.
 
 ## Alternativas consideradas
