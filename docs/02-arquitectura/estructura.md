@@ -27,7 +27,7 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts
 │  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
