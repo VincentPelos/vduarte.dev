@@ -4,6 +4,14 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Rendimiento
+
+- El agujero negro integra los rayos una vez al cargar y no en cada cuadro; mientras tanto, un anillo de puntos muestra el avance ([decisión 011](docs/03-decisiones/011-agujero-precalculado.md)) (#81).
+
+### Corregido
+
+- Con `prefers-reduced-motion`, el hero mostraba el agujero negro pero no el nombre ni el texto: ahora el cuadro estático va detrás del texto real (#81).
+
 ## [0.3.1] - 2026-10-09
 
 Entre hitos: perfil real, cinemática de constelaciones, optimización de rendimiento e imagen Docker para el primer despliegue en Coolify.

@@ -1,11 +1,17 @@
 /**
  * Agujero negro del hero: trazado de rayos real dibujado con puntos de terminal.
  *
- * - Pasada 1 (una celda = un píxel): traza el rayo de luz del centro de cada celda por el
+ * - Precálculo (una vez, al montar): integra el rayo de luz de cada punto de una tabla por el
  *   espacio curvo (Schwarzschild, aceleración de Binet a = -3/2·h²·x/r⁵, en radios de
- *   Schwarzschild) y decide el punto de esa celda: estrella del cielo doblado o disco.
+ *   Schwarzschild) y guarda en texturas si cae al agujero, hacia dónde sale y dónde cruza el
+ *   disco. La trayectoria solo depende de la posición relativa al agujero, no del tiempo
+ *   (decisión 011).
+ * - Pasada 1 (cada cuadro, una celda = un píxel): lee la tabla y aplica lo que cambia con el
+ *   tiempo (giro del disco, gas, titileo del cielo) para decidir el punto de cada celda.
  * - Pasada 2 (pantalla): dibuja cada celda como un punto y encima el texto del hero, que
  *   resiste la gravedad: solo se comba y se separa en colores (aberración cromática).
+ *
+ * Con `prefers-reduced-motion`: un cuadro estático detrás del texto real, sin deformarlo.
  *
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
@@ -14,7 +20,7 @@ import { hole as shared } from '../../../lib/hole';
 import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
 
 interface Options {
-  /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar. */
+  /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar ni deformar el texto. */
   reducedMotion: boolean;
 }
 
@@ -24,6 +30,20 @@ const SCALE = 1.6;
 const INTENSITY = 1;
 const DOPPLER = 1;
 
+/** Texturas de la tabla: desvío del cielo, tres cruces con el disco y sus factores Doppler. */
+const LUT_TEXTURES = 6;
+/** Franjas de filas por textura: el precálculo se reparte entre cuadros para no congelar la página. */
+const LUT_STRIPS = 8;
+/** Tiempo máximo de precálculo por cuadro (ms). */
+const BAKE_BUDGET_MS = 8;
+/**
+ * Tope de trabajos por cuadro, aunque sobre tiempo: `gl.finish()` no siempre espera a la GPU,
+ * y sin tope una GPU débil recibiría toda la tabla en un solo cuadro.
+ */
+const BAKE_MAX_JOBS = LUT_TEXTURES;
+/** Fundido de entrada de la escena (ms). */
+const REVEAL_MS = 700;
+
 const VERTEX = `
   attribute vec2 aPos;
   void main() { gl_Position = vec4(aPos, 0., 1.); }
@@ -32,23 +52,101 @@ const VERTEX = `
 const COMMON = `
   precision highp float;
   uniform vec3 uC1, uC2, uC3;
+  const float RIN = 3.;   // órbita estable más interna (ISCO)
+  const float ROUT = 13.;
+  const float ROLL = -.12;
+  const float BMAX = 20.; // radio (en Rs) dentro del cual la luz se desvía; afuera, cielo recto
+  const float LP = 400.;  // desvío máximo guardado del cielo (±, en Rs)
+  const float GMAX = 2.;  // rango del factor Doppler guardado
   float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
   vec3 pal(float k) { k = clamp(k, 0., 1.); return k < .5 ? mix(uC1, uC2, k * 2.) : mix(uC2, uC3, k * 2. - 1.); }
+`;
+
+/** Precálculo: un rayo por texel de la tabla. `uOut` elige qué datos escribe esta pasada. */
+const BAKE = `
+  ${COMMON}
+  uniform float uSize, uOut, uDoppler;
+  const float D = 32.;    // distancia del observador
+  const float TILT = .1;
+
+  // [0, 1] → dos bytes (16 bits) en dos canales.
+  vec2 pack16(float v) {
+    float x = floor(clamp(v, 0., 1.) * 65535. + .5);
+    float hi = floor(x / 256.);
+    return vec2(hi, x - hi * 256.) / 255.;
+  }
+
+  void main() {
+    vec2 rel = (gl_FragCoord.xy / uSize - .5) * 2. * BMAX;
+    float b = length(rel);
+    if (b > BMAX + .5) { gl_FragColor = vec4(0.); return; }
+    float cr = cos(ROLL), sr = sin(ROLL);
+    mat2 inv = mat2(cr, sr, -sr, cr);
+
+    vec3 pos = vec3(0., 0., -D), vel = normalize(vec3(rel / D, 1.));
+    vec3 hv = cross(pos, vel); float h2 = dot(hv, hv);
+    vec3 N = vec3(0., cos(TILT), -sin(TILT));        // normal del disco, casi de canto
+    vec3 ex = vec3(1., 0., 0.), ez = normalize(cross(ex, N));
+    vec2 q0 = vec2(0.), q1 = vec2(0.), q2 = vec2(0.);
+    float g0 = 0., g1 = 0., g2 = 0., n = 0.;
+    bool captured = false;
+    for (int i = 0; i < 220; i++) {
+      float r2 = dot(pos, pos), r = sqrt(r2);
+      float dt = clamp(.07 * r, .03, 1.1);
+      vec3 prev = pos;
+      vel += -1.5 * h2 * pos / (r2 * r2 * r) * dt;
+      pos += vel * dt;
+      float s0 = dot(prev, N), s1 = dot(pos, N);
+      if (s0 * s1 < 0.) {
+        vec3 hit = mix(prev, pos, s0 / (s0 - s1));
+        float rh = length(hit);
+        if (rh > RIN && rh < ROUT) {
+          vec2 q = vec2(dot(hit, ex), dot(hit, ez));
+          // Doppler + corrimiento gravitatorio: el lado que se acerca brilla mucho más
+          float beta = sqrt(.5 / (rh - 1.)) * uDoppler;
+          vec3 k = -normalize(vel);
+          float g = mix(1., sqrt(1. - 1. / rh), uDoppler) / ((1. / sqrt(1. - beta * beta)) * (1. - beta * dot(normalize(cross(N, hit)), k)));
+          if (n < .5) { q0 = q; g0 = g; } else if (n < 1.5) { q1 = q; g1 = g; } else if (n < 2.5) { q2 = q; g2 = g; }
+          n += 1.;
+        }
+      }
+      if (r2 < 1.) { captured = true; break; }
+      if (r > D + 4. && dot(pos, vel) > 0.) break;
+    }
+
+    // Cuánto se desvía la mirada respecto del cielo recto (en Rs, ya mezclado hacia el borde).
+    // Se guarda el desvío y no la posición: lejos del agujero es chico y suave, y la tabla no
+    // cambia qué estrella se ve. Raíz cuadrada: más precisión en los desvíos chicos.
+    vec2 dv = vec2(0.);
+    if (!captured) {
+      vec3 d = normalize(vel);
+      vec2 look = d.z > .05 ? d.xy / d.z * D : rel * 1e3;
+      vec2 defl = inv * (mix(rel, look, 1. - smoothstep(11., 19.5, b)) - rel);
+      dv = sign(defl) * sqrt(min(abs(defl) / LP, 1.));
+    }
+
+    vec2 qs = vec2(.5 / ROUT);
+    if (uOut < .5) gl_FragColor = vec4(pack16(dv.x * .5 + .5), pack16(dv.y * .5 + .5));
+    else if (uOut < 1.5) gl_FragColor = vec4(pack16(q0.x * qs.x + .5), pack16(q0.y * qs.y + .5));
+    else if (uOut < 2.5) gl_FragColor = vec4(pack16(q1.x * qs.x + .5), pack16(q1.y * qs.y + .5));
+    else if (uOut < 3.5) gl_FragColor = vec4(pack16(q2.x * qs.x + .5), pack16(q2.y * qs.y + .5));
+    else if (uOut < 4.5) gl_FragColor = vec4(pack16(g0 / GMAX), pack16(g1 / GMAX));
+    else gl_FragColor = vec4(pack16(g2 / GMAX), min(n, 3.) / 255., captured ? 1. : 0.);
+  }
 `;
 
 const TRACE = `
   ${COMMON}
   uniform vec2 uHole;
-  uniform float uPx, uTime, uInt, uDoppler, uCell;
-  const float D = 32.;    // distancia del observador
-  const float RIN = 3.;   // órbita estable más interna (ISCO)
-  const float ROUT = 13.;
-  const float TILT = .1, ROLL = -.12;
+  uniform float uPx, uTime, uInt, uCell;
+  uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
 
   float noise(vec2 p) {
     vec2 i = floor(p), f = fract(p), w = f * f * (3. - 2. * f);
     return mix(mix(hash(i), hash(i + vec2(1, 0)), w.x), mix(hash(i + vec2(0, 1)), hash(i + 1.), w.x), w.y);
   }
+
+  float unpack16(vec2 v) { return (floor(v.x * 255. + .5) * 256. + floor(v.y * 255. + .5)) / 65535.; }
 
   // Cielo de terminal: cada celda tiene un nivel 0..3 (como · • ●). Devuelve color y tamaño.
   vec4 sky(vec2 look) {
@@ -63,55 +161,38 @@ const TRACE = `
   void main() {
     vec2 cc = gl_FragCoord.xy * uCell;               // centro de la celda, en px CSS
     float cr = cos(ROLL), sr = sin(ROLL);
-    mat2 rot = mat2(cr, -sr, sr, cr), inv = mat2(cr, sr, -sr, cr);
+    mat2 rot = mat2(cr, -sr, sr, cr);
     vec2 rel = rot * (cc - uHole) / uPx;
-    float b = length(rel);
-    if (b > 20.) { gl_FragColor = sky(cc); return; }
+    if (length(rel) > BMAX) { gl_FragColor = sky(cc); return; }
 
-    vec3 pos = vec3(0., 0., -D), vel = normalize(vec3(rel / D, 1.));
-    vec3 hv = cross(pos, vel); float h2 = dot(hv, hv);
-    vec3 N = vec3(0., cos(TILT), -sin(TILT));        // normal del disco, casi de canto
-    vec3 ex = vec3(1., 0., 0.), ez = normalize(cross(ex, N));
-    vec3 emit = vec3(0.); float trans = 1.; bool captured = false;
-    for (int i = 0; i < 220; i++) {
-      float r2 = dot(pos, pos), r = sqrt(r2);
-      float dt = clamp(.07 * r, .03, 1.1);
-      vec3 prev = pos;
-      vel += -1.5 * h2 * pos / (r2 * r2 * r) * dt;
-      pos += vel * dt;
-      float s0 = dot(prev, N), s1 = dot(pos, N);
-      if (s0 * s1 < 0.) {
-        vec3 hit = mix(prev, pos, s0 / (s0 - s1));
-        float rh = length(hit);
-        if (rh > RIN && rh < ROUT) {
-          float om = pow(rh, -1.5) * 1.8 * uTime;    // giro kepleriano: más rápido adentro
-          vec2 q = vec2(dot(hit, ex), dot(hit, ez));
-          q = mat2(cos(om), -sin(om), sin(om), cos(om)) * q;
-          float gas = .55 * noise(q * 1.3) + .45 * noise(vec2(rh * 3.2, 0.) + q * .4);
-          // temperatura del disco delgado (Novikov-Thorne simplificado), máximo ~1
-          float T = pow(RIN / rh, .75) * pow(max(1. - sqrt(RIN / rh), 0.), .25) / .488;
-          // Doppler + corrimiento gravitatorio: el lado que se acerca brilla mucho más
-          float beta = sqrt(.5 / (rh - 1.)) * uDoppler;
-          vec3 k = -normalize(vel);
-          float g = mix(1., sqrt(1. - 1. / rh), uDoppler) / ((1. / sqrt(1. - beta * beta)) * (1. - beta * dot(normalize(cross(N, hit)), k)));
-          float I = pow(T, 4.) * pow(g, 4.) * (.35 + 1.1 * gas);
-          vec3 c = mix(pal(clamp(T * g * .9, 0., 1.)), vec3(1.), smoothstep(1.1, 1.8, T * g) * .6);
-          float a = clamp(.35 + .8 * gas, 0., 1.) * smoothstep(RIN, RIN + .7, rh) * smoothstep(ROUT, ROUT - 5., rh);
-          emit += trans * a * c * I * 2.2;
-          trans *= 1. - a * .8;
-        }
-      }
-      if (r2 < 1.) { captured = true; break; }
-      if (r > D + 4. && dot(pos, vel) > 0.) break;
+    vec2 uv = rel / (2. * BMAX) + .5;
+    vec4 t4 = texture2D(uLut4, uv), t5 = texture2D(uLut5, uv);
+    float n = floor(t5.b * 255. + .5);
+    vec3 emit = vec3(0.); float trans = 1.;
+    for (int i = 0; i < 3; i++) {
+      if (float(i) >= n) break;
+      vec4 tq = i == 0 ? texture2D(uLut1, uv) : i == 1 ? texture2D(uLut2, uv) : texture2D(uLut3, uv);
+      float g = (i == 0 ? unpack16(t4.rg) : i == 1 ? unpack16(t4.ba) : unpack16(t5.rg)) * GMAX;
+      vec2 q = (vec2(unpack16(tq.rg), unpack16(tq.ba)) - .5) * 2. * ROUT;
+      float rh = length(q);
+      float om = pow(rh, -1.5) * 1.8 * uTime;    // giro kepleriano: más rápido adentro
+      q = mat2(cos(om), -sin(om), sin(om), cos(om)) * q;
+      float gas = .55 * noise(q * 1.3) + .45 * noise(vec2(rh * 3.2, 0.) + q * .4);
+      // temperatura del disco delgado (Novikov-Thorne simplificado), máximo ~1
+      float T = pow(RIN / rh, .75) * pow(max(1. - sqrt(RIN / rh), 0.), .25) / .488;
+      float I = pow(T, 4.) * pow(g, 4.) * (.35 + 1.1 * gas);
+      vec3 c = mix(pal(clamp(T * g * .9, 0., 1.)), vec3(1.), smoothstep(1.1, 1.8, T * g) * .6);
+      float a = clamp(.35 + .8 * gas, 0., 1.) * smoothstep(RIN, RIN + .7, rh) * smoothstep(ROUT, ROUT - 5., rh);
+      emit += trans * a * c * I * 2.2;
+      trans *= 1. - a * .8;
     }
 
     // la sombra es negra sólida (celda completa), para que nada de la página se vea a través
     vec4 s = vec4(0., 0., 0., 1.);
-    if (!captured) {
-      vec3 d = normalize(vel);
-      vec2 look = d.z > .05 ? d.xy / d.z * D : rel * 1e3;   // a dónde apunta el rayo doblado
-      vec2 lp = inv * mix(rel, look, 1. - smoothstep(11., 19.5, b));
-      s = sky(uHole + lp * uPx);
+    if (t5.a < .5) {
+      vec4 tl = texture2D(uLut0, uv);
+      vec2 dv = vec2(unpack16(tl.rg), unpack16(tl.ba)) * 2. - 1.;
+      s = sky(cc + sign(dv) * dv * dv * LP * uPx);
       s.rgb *= trans;
     }
     // disco en la grilla: el punto crece por escalones con el brillo
@@ -128,7 +209,7 @@ const DRAW = `
   ${COMMON}
   uniform sampler2D uCells, uText;
   uniform vec2 uGrid, uRes, uHole;
-  uniform float uCell, uDpr, uPx;
+  uniform float uCell, uDpr, uPx, uLens;
 
   vec4 textAt(vec2 px) {
     vec2 uv = px / uRes;
@@ -143,6 +224,7 @@ const DRAW = `
     // Solo se pintan los puntos y las letras: el resto queda transparente y deja ver la página.
     vec3 col = c.rgb;
     float dotAlpha = smoothstep(r, r - .8, length(px - (cell + .5) * uCell)) * step(.001, c.a);
+    if (uLens < .5) { gl_FragColor = vec4(col, dotAlpha); return; }
 
     // las letras resisten: cerca del agujero se comban y cada canal se dobla distinto
     vec2 rel = (px - uHole) / uPx;
@@ -181,13 +263,13 @@ function compile(gl: WebGLRenderingContext, fragment: string): WebGLProgram {
   return program;
 }
 
-function texture(gl: WebGLRenderingContext): WebGLTexture {
+function texture(gl: WebGLRenderingContext, filter: number = gl.LINEAR): WebGLTexture {
   const tex = gl.createTexture()!;
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
   return tex;
 }
 
@@ -201,6 +283,7 @@ function drawText(section: HTMLElement, target: HTMLCanvasElement, dpr: number) 
   ctx.clearRect(0, 0, box.width, box.height);
 
   // Se leen los colores reales del texto: un instante sin la clase que lo vuelve transparente.
+  const lensing = section.classList.contains('is-lensing');
   section.classList.remove('is-lensing');
   for (const el of section.querySelectorAll<HTMLElement>('[data-lens]')) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -226,7 +309,12 @@ function drawText(section: HTMLElement, target: HTMLCanvasElement, dpr: number) 
       }
     }
   }
-  section.classList.add('is-lensing');
+  if (lensing) section.classList.add('is-lensing');
+}
+
+/** Px por radio de Schwarzschild para una escena de `width` × `height`. */
+function pxPerRsFor(width: number, height: number): number {
+  return Math.max(8, Math.min(width, height) * 0.022) * SCALE;
 }
 
 export function mount(
@@ -242,8 +330,9 @@ export function mount(
   });
   if (!gl) return () => {};
 
-  let trace: WebGLProgram, draw: WebGLProgram;
+  let bake: WebGLProgram, trace: WebGLProgram, draw: WebGLProgram;
   try {
+    bake = compile(gl, BAKE);
     trace = compile(gl, TRACE);
     draw = compile(gl, DRAW);
   } catch {
@@ -251,8 +340,11 @@ export function mount(
     return () => {};
   }
 
-  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
+  // La escena entra con un fundido cuando termina el precálculo; mientras, la carga del hero.
+  canvas.style.cssText = `position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity ${REVEAL_MS}ms ease-out`;
   container.append(canvas);
+  // Sin animación, la escena va detrás del texto real: el contenido no depende de WebGL.
+  if (reducedMotion) container.style.zIndex = '-1';
 
   const buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -260,9 +352,7 @@ export function mount(
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-  const cellsTex = texture(gl);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  const cellsTex = texture(gl, gl.NEAREST);
   const framebuffer = gl.createFramebuffer();
   const textTex = texture(gl);
   const textCanvas = document.createElement('canvas');
@@ -280,6 +370,27 @@ export function mount(
     gl.useProgram(program);
     palette.forEach((rgb, i) => gl.uniform3fv(loc(program, `uC${i + 1}`), rgb));
   }
+
+  // Tabla de trayectorias: unos 2 texels por celda de la pantalla, entre 128 y 512 por lado.
+  // Está en radios de Schwarzschild, así que sirve para cualquier tamaño de pantalla.
+  const lutSize = Math.min(
+    512,
+    Math.max(
+      128,
+      Math.round((80 * pxPerRsFor(container.clientWidth, container.clientHeight)) / CELL),
+    ),
+  );
+  const lut = Array.from({ length: LUT_TEXTURES }, () => {
+    const tex = texture(gl, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, lutSize, lutSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    return { tex, fb };
+  });
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.useProgram(trace);
+  lut.forEach((_, i) => gl.uniform1i(loc(trace, `uLut${i}`), 2 + i));
 
   let width = 1,
     height = 1,
@@ -304,22 +415,24 @@ export function mount(
     canvas.height = Math.round(height * dpr);
     cols = Math.ceil(width / CELL);
     rows = Math.ceil(height / CELL);
-    pxPerRs = Math.max(8, Math.min(width, height) * 0.022) * SCALE;
+    pxPerRs = pxPerRsFor(width, height);
+    section.style.setProperty('--hole-px', String(pxPerRs));
     gl.bindTexture(gl.TEXTURE_2D, cellsTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cols, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, cellsTex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    ready = true;
+    if (!baked) return;
     // El texto se redibuja en el mismo instante del cambio de tamaño, para que la textura
     // calce siempre con el texto real. Nada se dibuja antes de tenerlo: el nombre nunca desaparece.
-    uploadText();
-    ready = true;
+    if (!reducedMotion) uploadText();
     if (reducedMotion || !running) render();
     play();
   };
   // Al terminar de cargar una fuente cambian las letras aunque no cambie el tamaño.
   const onFonts = () => {
-    if (!ready) return;
+    if (!ready || !baked || reducedMotion) return;
     uploadText();
     if (reducedMotion || !running) render();
   };
@@ -344,11 +457,14 @@ export function mount(
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.viewport(0, 0, cols, rows);
     gl.useProgram(trace);
+    lut.forEach(({ tex }, i) => {
+      gl.activeTexture(gl.TEXTURE2 + i);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+    });
     gl.uniform2fv(loc(trace, 'uHole'), hole);
     gl.uniform1f(loc(trace, 'uPx'), pxPerRs);
     gl.uniform1f(loc(trace, 'uTime'), time);
     gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
-    gl.uniform1f(loc(trace, 'uDoppler'), DOPPLER);
     gl.uniform1f(loc(trace, 'uCell'), CELL);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
@@ -368,6 +484,7 @@ export function mount(
     gl.uniform1f(loc(draw, 'uCell'), CELL);
     gl.uniform1f(loc(draw, 'uDpr'), dpr);
     gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
+    gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
@@ -375,7 +492,9 @@ export function mount(
     last = 0,
     visible = true,
     running = false,
-    ready = false;
+    ready = false,
+    baked = false,
+    revealTimer = 0;
   const loop = (now: number) => {
     time += Math.min(0.05, (now - last) / 1000) * SPEED;
     last = now;
@@ -383,7 +502,7 @@ export function mount(
     frame = requestAnimationFrame(loop);
   };
   const play = () => {
-    if (running || reducedMotion || !visible || !ready) return;
+    if (running || reducedMotion || !visible || !ready || !baked) return;
     running = true;
     last = performance.now();
     frame = requestAnimationFrame(loop);
@@ -393,6 +512,67 @@ export function mount(
     running = false;
   };
 
+  // Precálculo repartido entre cuadros: cada trabajo es una franja de una textura de la tabla.
+  // `--hole-progress` (0..1) mueve la animación de carga del hero.
+  const strip = Math.ceil(lutSize / LUT_STRIPS);
+  const jobs = Array.from({ length: LUT_TEXTURES * LUT_STRIPS }, (_, i) => ({
+    out: Math.floor(i / LUT_STRIPS),
+    y: (i % LUT_STRIPS) * strip,
+  }));
+  let done = 0,
+    bakeFrame = 0;
+  const bakeStart = performance.now();
+  gl.useProgram(bake);
+  gl.uniform1f(loc(bake, 'uSize'), lutSize);
+  gl.uniform1f(loc(bake, 'uDoppler'), DOPPLER);
+  section.classList.add('is-loading');
+  section.style.setProperty(
+    '--hole-px',
+    String(pxPerRsFor(container.clientWidth, container.clientHeight)),
+  );
+
+  const reveal = () => {
+    performance.measure('black-hole:bake', { start: bakeStart });
+    gl.deleteProgram(bake);
+    lut.forEach(({ fb }) => gl.deleteFramebuffer(fb));
+    baked = true;
+    resize();
+    canvas.style.opacity = '1';
+    section.classList.remove('is-loading');
+    // El texto real y la grilla de respaldo siguen visibles durante el fundido; al final, la
+    // escena los reemplaza (el texto, solo si hay animación).
+    revealTimer = window.setTimeout(
+      () => {
+        section.classList.add('has-scene');
+        if (!reducedMotion) section.classList.add('is-lensing');
+      },
+      reducedMotion ? 0 : REVEAL_MS,
+    );
+  };
+
+  const bakeStep = () => {
+    const start = performance.now();
+    gl.useProgram(bake);
+    gl.viewport(0, 0, lutSize, lutSize);
+    gl.enable(gl.SCISSOR_TEST);
+    const limit = Math.min(jobs.length, done + BAKE_MAX_JOBS);
+    do {
+      const { out, y } = jobs[done++];
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lut[out].fb);
+      gl.scissor(0, y, lutSize, strip);
+      gl.uniform1f(loc(bake, 'uOut'), out);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      // Espera a la GPU para medir de verdad cuánto costó y no pasarse del presupuesto.
+      gl.finish();
+    } while (done < limit && performance.now() - start < BAKE_BUDGET_MS);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    section.style.setProperty('--hole-progress', String(done / jobs.length));
+    if (done < jobs.length) bakeFrame = requestAnimationFrame(bakeStep);
+    else reveal();
+  };
+  bakeFrame = requestAnimationFrame(bakeStep);
+
   const io = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible) play();
@@ -401,14 +581,16 @@ export function mount(
   const ro = new ResizeObserver(resize);
   io.observe(section);
   ro.observe(container);
-  resize();
 
   return () => {
     pause();
+    cancelAnimationFrame(bakeFrame);
+    clearTimeout(revealTimer);
     io.disconnect();
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
-    section.classList.remove('is-lensing');
+    section.classList.remove('is-lensing', 'is-loading', 'has-scene');
+    container.style.zIndex = '';
     shared.ready = false;
     canvas.remove();
     gl.getExtension('WEBGL_lose_context')?.loseContext();
