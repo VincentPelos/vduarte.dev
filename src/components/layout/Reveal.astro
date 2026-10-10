@@ -1,0 +1,62 @@
+<script>
+  // Reveals al hacer scroll (decisión 004, tokens de movimiento): los `[data-reveal]` que están
+  // bajo la pantalla al cargar suben y aparecen al entrar. El contenido nunca depende de esto:
+  // sin JS, con movimiento reducido o ya visible al cargar, no se toca; lo que se salta con un
+  // ancla queda terminado; al imprimir, todo se termina.
+  const KEYFRAMES = [
+    { opacity: 0, transform: 'translateY(38px)' },
+    { opacity: 1, transform: 'none' },
+  ];
+  const DURATION = 800;
+  const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
+  const STAGGER = 70;
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const pending = new Map<Element, Animation>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        let order = 0;
+        for (const entry of entries) {
+          const animation = pending.get(entry.target);
+          if (!animation) continue;
+          if (entry.isIntersecting) {
+            animation.effect?.updateTiming({ delay: order++ * STAGGER });
+            animation.play();
+          } else if (entry.boundingClientRect.top < 0) {
+            animation.finish();
+          } else continue;
+          pending.delete(entry.target);
+          io.unobserve(entry.target);
+        }
+      },
+      { threshold: 0 },
+    );
+
+    // Las anclas de las constelaciones no se mueven: las estrellas miden su posición. Tampoco
+    // se animan las tarjetas de un carrusel que se desliza de lado (#92): aparecen al deslizar.
+    const sliding = (el: HTMLElement) => {
+      const rail = el.closest<HTMLElement>('[data-rail]');
+      return !!rail && rail.scrollWidth > rail.clientWidth;
+    };
+    const items = [...document.querySelectorAll<HTMLElement>('[data-reveal]')].filter(
+      (el) => !el.querySelector('[data-constellation]') && !sliding(el),
+    );
+    for (const el of items) {
+      if (el.getBoundingClientRect().top < innerHeight) continue;
+      const animation = el.animate(KEYFRAMES, {
+        duration: DURATION,
+        easing: EASING,
+        fill: 'backwards',
+      });
+      animation.pause();
+      pending.set(el, animation);
+      io.observe(el);
+    }
+
+    addEventListener('beforeprint', () => {
+      for (const animation of pending.values()) animation.finish();
+      pending.clear();
+      io.disconnect();
+    });
+  }
+</script>

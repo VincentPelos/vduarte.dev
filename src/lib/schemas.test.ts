@@ -38,6 +38,7 @@ const site = {
     linkedin: 'LinkedIn',
     cv: 'Descargar CV',
     pending: 'Pendiente de publicación',
+    newTab: 'abre en otra pestaña',
   },
   bento: {
     about: 'Sobre mí',

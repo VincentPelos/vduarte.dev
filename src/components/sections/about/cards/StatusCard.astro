@@ -11,7 +11,7 @@ interface Props {
 const { label, text, available, note } = Astro.props;
 ---
 
-<BentoCard label={label} class="justify-between [grid-area:status]">
+<BentoCard label={label} class="justify-between min-[461px]:[grid-area:status]">
   <p class="flex items-center gap-2.5 text-xl leading-[1.25] font-semibold">
     <span
       aria-hidden="true"

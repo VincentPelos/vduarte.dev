@@ -13,7 +13,7 @@ const { label, title, hours, note, gacha } = Astro.props;
 const meta = [hours !== undefined && `${hours} h`, note].filter(Boolean).join(' · ');
 ---
 
-<BentoCard label={label} class="justify-between [grid-area:game]">
+<BentoCard label={label} class="justify-between min-[461px]:[grid-area:game]">
   <div>
     <p class="text-[1.15rem] leading-[1.25] font-semibold">{title}</p>
     {meta && <p class="mt-1 font-mono text-[0.82rem] leading-none text-muted">{meta}</p>}

@@ -98,7 +98,8 @@
       "github": "GitHub",
       "linkedin": "LinkedIn",
       "cv": "Descargar CV",
-      "pending": "Pendiente de publicación"
+      "pending": "Pendiente de publicación",
+      "newTab": "abre en otra pestaña"
     }
   }
 }

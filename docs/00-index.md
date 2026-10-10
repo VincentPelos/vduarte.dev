@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-09
+actualizado: 2026-10-10
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -11,9 +11,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 ## Estado actual
 
-- **Última versión:** v0.3.1 (2026-10-09): perfil real, constelaciones, rendimiento y Docker.
-- **Hecho antes de v0.4.0:** optimización de rendimiento y duplicación (#71–#75) e imagen Docker (#76, entró por `main` y se sincronizó con `develop` en #77). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
-- **Hito siguiente:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.4.0 (2026-10-10) Movimiento: entrada por colapso, hero a pantalla completa, reveals, Lenis, nav arriba y activa, UI en celular, Skills, Educación y Proyectos rediseñados. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
+- **Hito siguiente:** v0.5.0 Caso Colchagua — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
@@ -53,6 +52,10 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [008](03-decisiones/008-agujero-negro-puntos.md) | Hero: agujero negro con puntos de terminal | Movimiento |
 | [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección | Movimiento |
 | [010](03-decisiones/010-iconos-sprite.md) | Íconos en un sprite SVG (reemplaza en parte a 007) | UI |
+| [011](03-decisiones/011-agujero-precalculado.md) | Agujero negro con trayectorias precalculadas (reemplaza en parte a 008) | Movimiento |
+| [012](03-decisiones/012-entrada-colapso.md) | Entrada del agujero negro por colapso (reemplaza en parte a 011) | Movimiento |
+| [013](03-decisiones/013-lighthouse-manual.md) | Lighthouse a mano antes de cada versión menor | Calidad |
+| [014](03-decisiones/014-hero-diapositiva.md) | Hero como diapositiva que el portafolio tapa | Movimiento |
 
 ### 04 · Diseño — cómo se ve
 
@@ -72,6 +75,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
+- [2026-10-10](06-bitacora/2026-10-10.md): hito Movimiento, laboratorios de UI y Proyectos, hero descartado, Lighthouse y release v0.4.0.
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.
 - [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, release v0.3.0 y contenido personal.
 - [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.

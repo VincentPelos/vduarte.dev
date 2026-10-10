@@ -86,6 +86,11 @@
   html {
     background: var(--color-bg);
     overflow-x: clip;
+
+    /* Celular (#92): el texto al 90 %, elegido en el laboratorio de UI. */
+    @media (width <= 460px) {
+      font-size: 90%;
+    }
   }
 
   /* Sin fondo propio: así los brillos con z-index negativo se ven detrás de todas las secciones. */
@@ -172,6 +177,85 @@
     color-mix(in srgb, var(--orb) 15%, transparent) 77%,
     transparent
   );
+}
+
+/*
+ * Carga del agujero negro (decisión 011), centrada donde aparece el agujero: un anillo de
+ * puntos de terminal que se completa con el precálculo (`--hole-progress`, 0..1) y una sombra
+ * que crece. `--hole-px` (px por radio de Schwarzschild) lo fija black-hole.ts.
+ */
+@property --hole-progress {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@utility hole-loader {
+  width: calc(var(--hole-px, 14) * 10px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  opacity: 0;
+  transition:
+    opacity 0.5s ease-out,
+    --hole-progress 0.3s ease-out;
+
+  [data-hero].is-loading & {
+    opacity: 1;
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  /* Anillo: puntos de la grilla, solo entre 3 y 5 Rs y solo hasta el avance */
+  &::before {
+    inset: 0;
+    background: conic-gradient(var(--color-c1), var(--color-c2), var(--color-c3), var(--color-c1));
+    mask:
+      radial-gradient(circle, #000 1.1px, transparent 1.6px) 0 0 / 6px 6px,
+      radial-gradient(closest-side, transparent 58%, #000 61% 95%, transparent 98%),
+      conic-gradient(#000 calc(var(--hole-progress) * 1turn), transparent 0);
+    mask-composite: intersect;
+  }
+
+  /* Sombra: ~2,6 Rs de radio, crece con el avance */
+  &::after {
+    inset: 24%;
+    background: var(--color-bg);
+    scale: var(--hole-progress);
+    box-shadow: 0 0 calc(var(--hole-px, 14) * 1.5px)
+      color-mix(in srgb, var(--color-c2) 35%, transparent);
+  }
+}
+
+/*
+ * Hero como diapositiva (decisión 014): se oscurece mientras la hoja del portafolio lo tapa.
+ * Va con el scroll, sin JS; donde no hay `animation-timeline` el hero solo queda tapado.
+ */
+@keyframes hero-dim {
+  to {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    [data-hero] {
+      animation: hero-dim linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+  }
+}
+
+/* Animaciones CSS en pausa con su sección fuera de pantalla (OffscreenPause, #109). */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
 }
 
 /* Texto con el degradado de la paleta */

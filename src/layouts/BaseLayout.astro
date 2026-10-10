@@ -5,7 +5,10 @@ import sansFont from '@fontsource-variable/geist/files/geist-latin-wght-normal.w
 import Footer from '../components/layout/Footer.astro';
 import IconSprite from '../components/layout/IconSprite.astro';
 import Nav from '../components/layout/Nav.astro';
+import OffscreenPause from '../components/layout/OffscreenPause.astro';
+import Reveal from '../components/layout/Reveal.astro';
 import Seo from '../components/layout/Seo.astro';
+import SmoothScroll from '../components/layout/SmoothScroll.astro';
 import StarSky from '../components/layout/StarSky.astro';
 
 interface Props {
@@ -39,12 +42,18 @@ const { title, description } = Astro.props;
     >
       Saltar al contenido
     </a>
-    <!-- z-[1]: el contenido va sobre el cielo de estrellas (StarSky, z-0). -->
-    <main id="contenido" tabindex="-1" class="relative z-[1] outline-none">
+    <!--
+      Sin z-index propio: así el hero (z-1), la hoja (z-2), el cielo de estrellas (z-3) y el
+      contenido (z-4) se ordenan entre sí (ver pages/index.astro).
+    -->
+    <main id="contenido" tabindex="-1" class="relative outline-none">
       <slot />
     </main>
     <Footer />
     <Nav />
     <StarSky />
+    <Reveal />
+    <OffscreenPause />
+    <SmoothScroll />
   </body>
 </html>

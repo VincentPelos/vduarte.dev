@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sortProjects } from './projects';
+import { projectLinks, sortProjects } from './projects';
 
 describe('sortProjects', () => {
   const projects = [
@@ -24,5 +24,20 @@ describe('sortProjects', () => {
     const copy = [...projects];
     sortProjects(projects);
     expect(projects).toEqual(copy);
+  });
+});
+
+describe('projectLinks', () => {
+  const labels = { caseStudy: 'ver caso', repo: 'repo', demo: 'demo' };
+
+  it('ordena caso, repo y demo, y omite los que faltan', () => {
+    expect(projectLinks({ caseStudy: 'colchagua', demo: 'https://ejemplo.cl' }, labels)).toEqual([
+      { href: '/proyectos/colchagua', text: 'ver caso →' },
+      { href: 'https://ejemplo.cl', text: 'demo ↗' },
+    ]);
+  });
+
+  it('devuelve una lista vacía sin enlaces', () => {
+    expect(projectLinks({}, labels)).toEqual([]);
   });
 });

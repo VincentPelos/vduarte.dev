@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Aceptada
+estado: Reemplazada en parte por 011 (trayectorias precalculadas)
 fecha: 2026-10-08
 ---
 
@@ -22,6 +22,8 @@ La malla de partículas del mockup era provisional. El autor probó en un labora
 - **Pasada 2**: dibuja cada celda como punto (cielo · • ●, titileo por escalones) y encima el texto del hero, leído desde una textura con aberración cromática cerca del agujero.
 - El texto real queda en el DOM, transparente: sigue siendo accesible y seleccionable.
 - Sin WebGL: grilla de puntos en CSS y texto normal. Con `prefers-reduced-motion`: un cuadro estático.
+
+_Reemplazado en parte: los rayos se integran una vez al montar y no en cada cuadro; con `prefers-reduced-motion`, el cuadro estático va detrás del texto real ([decisión 011](011-agujero-precalculado.md))._
 
 ## Alternativas consideradas
 - **three.js:** ~530 KB para un solo shader de pantalla completa. WebGL directo pesa ~10 KB.

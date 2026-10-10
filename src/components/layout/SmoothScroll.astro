@@ -1,0 +1,28 @@
+<script>
+  // Smooth scroll con Lenis (decisión 004). Solo suaviza la rueda del mouse: el touch, el teclado
+  // y la barra siguen siendo nativos, y con movimiento reducido no se monta.
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({ autoRaf: true });
+
+    // Anclas de la misma página: scroll suave y, al llegar, el foco va al destino como en el
+    // salto nativo (así "Saltar al contenido" y la nav siguen sirviendo con teclado).
+    document.addEventListener('click', (event) => {
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      const target = link?.hash && document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (!link || !target) return;
+      event.preventDefault();
+      history.pushState(null, '', link.hash);
+      lenis.scrollTo(target, {
+        onComplete: () => {
+          if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+        },
+      });
+    });
+  }
+</script>

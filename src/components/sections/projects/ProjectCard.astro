@@ -2,12 +2,14 @@
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import { linkAttrs } from '../../../lib/links';
+import { projectLinks, type ProjectLinkLabels } from '../../../lib/projects';
+import LinkHint from '../../ui/LinkHint.astro';
 import Chip from '../../ui/Chip.astro';
 import GlassCard from '../../ui/GlassCard.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>['data'];
-  labels: { featured: string; repo: string; demo: string; caseStudy: string };
+  labels: ProjectLinkLabels & { featured: string };
 }
 
 const { project, labels } = Astro.props;
@@ -18,26 +20,18 @@ const grid =
 const glow =
   'radial-gradient(60% 80% at 25% 30%, color-mix(in srgb, var(--color-c1) calc(30% * var(--glow)), transparent), transparent 70%), radial-gradient(60% 80% at 80% 70%, color-mix(in srgb, var(--color-c3) calc(26% * var(--glow)), transparent), transparent 70%)';
 
-const links = [
-  caseStudy && { href: `/proyectos/${caseStudy}`, text: `${labels.caseStudy} →` },
-  repo && { href: repo, text: `${labels.repo} ↗` },
-  demo && { href: demo, text: `${labels.demo} ↗` },
-].filter((link) => !!link);
+const links = projectLinks({ caseStudy, repo, demo }, labels);
 ---
 
-<GlassCard class:list={['group grid grid-rows-[auto_1fr]', featured && 'min-[561px]:col-span-2']}>
-  <div
-    class:list={[
-      'relative max-w-full overflow-hidden border-b border-line',
-      featured ? 'aspect-video' : 'aspect-[4/3]',
-    ]}
-  >
+<!-- Tarjeta de un destacado (#107): imagen de 160 px, relleno compacto, descripción a 3 líneas. -->
+<GlassCard class="group grid grid-rows-[auto_1fr]">
+  <div class="relative h-40 max-w-full overflow-hidden border-b border-line">
     {image ? (
       <Image
         src={image}
         alt=""
         widths={[400, 800, 1200]}
-        sizes="(min-width: 861px) 66vw, 100vw"
+        sizes="(min-width: 861px) 33vw, (min-width: 561px) 50vw, 85vw"
         class="absolute inset-0 size-full object-cover transition-transform duration-600 ease-out-expo group-hover:scale-[1.04]"
       />
     ) : (
@@ -48,7 +42,7 @@ const links = [
       />
     )}
   </div>
-  <div class="grid content-start gap-2.5 px-[22px] pt-5 pb-[22px]">
+  <div class="grid content-start gap-2.5 px-[13px] pt-3 pb-[13px]">
     <p class="flex justify-between gap-3 font-mono text-[0.74rem] leading-none text-muted tabular-nums">
       <span>{year}</span>
       {featured && <span>★ {labels.featured}</span>}
@@ -61,7 +55,7 @@ const links = [
     >
       {title}
     </h3>
-    <p class="text-soft">{description}</p>
+    <p class="line-clamp-3 text-soft">{description}</p>
     {tags.length > 0 && (
       <ul class="mt-0.5 flex flex-wrap gap-1.5">
         {tags.map((tag) => (
@@ -78,6 +72,7 @@ const links = [
             class="border-b border-line-hi pb-[3px] transition-colors hover:border-fg"
           >
             {text}
+            <LinkHint href={href} />
           </a>
         ))}
       </p>

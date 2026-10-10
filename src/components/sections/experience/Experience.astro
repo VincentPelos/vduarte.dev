@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
 import { sortByRecency } from '../../../lib/dates';
 import { linkAttrs } from '../../../lib/links';
+import LinkHint from '../../ui/LinkHint.astro';
 import { pluralize } from '../../../lib/text';
 import Chip from '../../ui/Chip.astro';
 import Period from '../../ui/Period.astro';
@@ -32,7 +33,7 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
         data-constellation-mark
         class="grid gap-x-10 gap-y-3 border-t border-line py-[30px] last:border-b min-[721px]:grid-cols-[13rem_minmax(0,1fr)]"
       >
-        <p class="font-mono text-[0.82rem] leading-normal text-muted">
+        <p data-reveal class="font-mono text-[0.82rem] leading-normal text-muted">
           <Period
             start={job.start}
             end={job.end}
@@ -42,7 +43,7 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
           />
           {job.location && <span class="block">{job.location}</span>}
         </p>
-        <div>
+        <div data-reveal>
           <h3 class="mb-1 text-[clamp(1.15rem,2.4vw,1.4rem)] leading-[1.25] font-semibold">
             {job.role}{' '}
             <span class="font-normal text-muted">
@@ -50,6 +51,7 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
               {job.url ? (
                 <a href={job.url} {...linkAttrs(job.url)} class="hover:text-fg">
                   {job.company}
+                  <LinkHint href={job.url} />
                 </a>
               ) : (
                 job.company
