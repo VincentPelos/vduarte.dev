@@ -15,17 +15,34 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2.
 - **Móvil:** el alto de la ventana cambia al aparecer o esconderse la barra del navegador; eso no debe regenerar escenas, solo reajustar el canvas.
 - **`prefers-reduced-motion`:** un cuadro estático; se redibuja solo al hacer scroll o cambiar el tamaño.
+- **Brillos sin `filter: blur` animado:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil.
+- **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
 - **Peso:** el HTML no repite SVG (íconos como sprite) y las fuentes solo cargan el subset latino.
+- **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida) vive en `src/lib/scene.ts`.
 
 ## Estado
 
 | Regla | Estado |
 |---|---|
 | Carga diferida, DPR ≤ 2, reduced-motion | Cumplida desde v0.3.0 |
-| Pausa fuera de pantalla | Agujero negro sí; cielo de estrellas pendiente (#68) |
-| Lecturas de DOM una vez por cuadro | Pendiente (#68) |
-| Móvil sin regenerar escenas | Pendiente (#68) |
+| Pausa fuera de pantalla | Cumplida: agujero negro con `IntersectionObserver`; cielo a ~10 fps cuando está quieto (#68) |
+| Lecturas de DOM una vez por cuadro | Cumplida (#68) |
+| Móvil sin regenerar escenas | Cumplida (#68) |
+| Brillos sin blur animado | Cumplida (#68) |
 | Íconos en sprite y fuentes latinas | Pendiente (#69) |
+
+## Mediciones
+
+Edge headless con WebGL por software, hilo principal en ms de trabajo por segundo (menos es mejor), 4 s por fase, CPU sin ralentizar. Los valores varían ±30 % entre corridas; sirven para comparar, no como números absolutos.
+
+| Fase (móvil 390 px) | Script antes | Script después (#68) | Trabajo total antes | Trabajo total después |
+|---|---|---|---|---|
+| Hero quieto | 141 | 14–32 | 348 | 170–257 |
+| Sobre mí quieto | 81 | 11–12 | 175 | 112–124 |
+| Experiencia quieta | 830 | 21 | 994 | 384–432 |
+| Scroll continuo | 185 | 34–54 | 415 | 285–322 |
+
+El mayor costo estaba en la línea de tiempo de Experiencia: `getBoundingClientRect` por estrella y por trabajo, en cada cuadro. El resto del trabajo total es pintura y rasterizado (WebGL, vidrio); hay que medirlo en un dispositivo real con GPU.
 
 ## Cómo medir
 

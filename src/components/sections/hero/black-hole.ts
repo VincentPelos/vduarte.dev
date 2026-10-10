@@ -11,6 +11,7 @@
  */
 
 import { hole as shared } from '../../../lib/hole';
+import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
 
 interface Options {
   /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar. */
@@ -20,7 +21,6 @@ interface Options {
 // Valores elegidos por el autor en el laboratorio.
 const SPEED = 0.65;
 const SCALE = 1.6;
-const CELL = 6; // px por celda de la grilla
 const INTENSITY = 1;
 const DOPPLER = 1;
 
@@ -267,12 +267,15 @@ export function mount(
   const textTex = texture(gl);
   const textCanvas = document.createElement('canvas');
 
-  const css = getComputedStyle(document.documentElement);
-  const palette = ['--color-c1', '--color-c2', '--color-c3'].map((name) => {
-    const hex = css.getPropertyValue(name).trim().replace('#', '');
-    return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
-  });
-  const loc = (program: WebGLProgram, name: string) => gl.getUniformLocation(program, name);
+  const palette = readPalette().map((rgb) => rgb.map((v) => v / 255));
+  // Las ubicaciones de los uniforms no cambian: se buscan una vez y no en cada cuadro.
+  const locations = new Map<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
+  const loc = (program: WebGLProgram, name: string) => {
+    let byName = locations.get(program);
+    if (!byName) locations.set(program, (byName = new Map()));
+    if (!byName.has(name)) byName.set(name, gl.getUniformLocation(program, name));
+    return byName.get(name) ?? null;
+  };
   for (const program of [trace, draw]) {
     gl.useProgram(program);
     palette.forEach((rgb, i) => gl.uniform3fv(loc(program, `uC${i + 1}`), rgb));
@@ -296,7 +299,7 @@ export function mount(
     width = container.clientWidth;
     height = container.clientHeight;
     if (!width || !height) return;
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = canvasDpr();
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     cols = Math.ceil(width / CELL);

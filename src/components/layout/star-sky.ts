@@ -22,6 +22,7 @@ import {
   type Rgb,
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
+import { CELL, canvasDpr, readPalette } from '../../lib/scene';
 
 interface Options {
   reducedMotion: boolean;
@@ -50,7 +51,21 @@ interface Target {
 
 type Point = [number, number];
 
-const CELL = 6;
+/** Lo que se lee del DOM, una sola vez por cuadro. */
+interface Layout {
+  /** Rectángulo de cada ancla de constelación. */
+  rects: Map<string, DOMRect>;
+  /** Altura (px de la ventana) de la estrella de cada trabajo en la línea de tiempo. */
+  markYs: number[];
+  /** Índice del trabajo más cerca del centro de la pantalla. */
+  active: number;
+  /** Scroll en que cada sección queda centrada. */
+  centers: number[];
+  heroBottom: number;
+}
+
+/** Quieto, el cielo solo cambia por los destellos: basta con ~10 cuadros por segundo. */
+const IDLE_FRAME_MS = 100;
 const RADII = [0.9, 1.5, 2.2];
 const TIMELINE_GLYPH = 80;
 
@@ -61,15 +76,6 @@ const rand = (i: number, k: number) => {
 const snap = (v: number) => (Math.floor(v / CELL) + 0.5) * CELL;
 const css = (c: Rgb) => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
 const orbitRadius = (s: Star) => 3.6 + s.orbit * 8;
-
-function readPalette(): [Rgb, Rgb, Rgb] {
-  const style = getComputedStyle(document.documentElement);
-  const hex = (name: string): Rgb => {
-    const v = style.getPropertyValue(name).trim().replace('#', '');
-    return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
-  };
-  return [hex('--color-c1'), hex('--color-c2'), hex('--color-c3')];
-}
 
 /** Puntos del símbolo, uno por celda de la grilla: contorno completo y relleno ralo. */
 function sampleGlyph(text: string, size: number, limit: number): Point[] {
@@ -123,9 +129,19 @@ export function mount(
   const sections = [...document.querySelectorAll<HTMLElement>('[data-constellation-section]')];
   const names = sections.map((s) => s.dataset.constellationSection ?? '');
   const anchors = new Map<string, HTMLElement>();
+  const modes = new Map<string, 'timeline' | 'replace' | 'glyph'>();
   for (const name of names) {
     const el = document.querySelector<HTMLElement>(`[data-constellation="${name}"]`);
-    if (el && symbols[name]) anchors.set(name, el);
+    if (!el || !symbols[name]) continue;
+    anchors.set(name, el);
+    modes.set(
+      name,
+      el.dataset.constellationMode === 'timeline'
+        ? 'timeline'
+        : el.hasAttribute('data-constellation-replace')
+          ? 'replace'
+          : 'glyph',
+    );
   }
   const marks = [...document.querySelectorAll<HTMLElement>('[data-constellation-mark]')];
   const replaced = [...document.querySelectorAll<HTMLElement>('[data-constellation-replace]')];
@@ -138,20 +154,23 @@ export function mount(
   const colors = readPalette();
   let width = 0,
     height = 0,
+    // Alto del cielo: no sigue al de la ventana cuando en móvil aparece o se esconde la barra
+    // del navegador, así las estrellas no saltan al hacer scroll.
+    skyHeight = 0,
     stars: Star[] = [];
   const shapes = new Map<string, Point[]>();
 
   const sizeOf = (name: string, r: DOMRect) => {
-    const el = anchors.get(name)!;
-    if (el.dataset.constellationMode === 'timeline') return TIMELINE_GLYPH;
-    if (el.hasAttribute('data-constellation-replace')) return r.height * 1.6;
+    if (modes.get(name) === 'timeline') return TIMELINE_GLYPH;
+    if (modes.get(name) === 'replace') return r.height * 1.6;
     // la @ de Sobre mí es un detalle: no crece aunque la tarjeta crezca
     if (name === 'about') return Math.min(Math.min(r.width, r.height) * 1.25, 130);
     return Math.min(r.width, r.height) * 1.15;
   };
 
   const makeStars = () => {
-    const n = Math.round(1100 * Math.min(1.4, (width * height) / (1280 * 800)));
+    const density = Math.min(1.4, (width * height) / (1280 * 800));
+    const n = Math.round(1100 * density * (skyHeight / height));
     stars = Array.from({ length: n }, (_, i) => {
       const h = rand(i, 1);
       const tint =
@@ -178,25 +197,33 @@ export function mount(
     }
   };
 
-  const activeMark = () => {
-    let best: HTMLElement | null = null,
+  const measure = (): Layout => {
+    const rects = new Map<string, DOMRect>();
+    for (const [name, el] of anchors) rects.set(name, el.getBoundingClientRect());
+    let active = -1,
       dist = Infinity;
-    for (const m of marks) {
+    const markYs = marks.map((m, i) => {
       const r = m.getBoundingClientRect();
       const d = Math.abs(r.top + r.height / 2 - height / 2);
-      if (d < dist) [best, dist] = [m, d];
-    }
-    return best;
+      if (d < dist) [active, dist] = [i, d];
+      return r.top + 34;
+    });
+    let heroBottom = 0;
+    const centers = sections.map((sec, i) => {
+      const r = sec.getBoundingClientRect();
+      if (i === 0) heroBottom = r.bottom;
+      return r.top + scrollY + r.height / 2 - height / 2;
+    });
+    return { rects, markYs, active, centers, heroBottom };
   };
 
   /** Dónde va la estrella `s` en la constelación `name`; null si no participa. */
-  const target = (name: string, s: Star): Target | null => {
-    const el = anchors.get(name),
+  const target = (name: string, s: Star, layout: Layout): Target | null => {
+    const r = layout.rects.get(name),
       pts = shapes.get(name);
-    if (!el || !pts) return null;
-    const r = el.getBoundingClientRect();
+    if (!r || !pts) return null;
     const size = sizeOf(name, r);
-    if (el.dataset.constellationMode === 'timeline') {
+    if (modes.get(name) === 'timeline') {
       const x = r.left + 30;
       if (s.i < pts.length) {
         const p = pts[s.i];
@@ -240,22 +267,19 @@ export function mount(
   const twinkle = (i: number) =>
     !reducedMotion && rand(i, Math.floor(time * 1.2 + rand(i, 9) * 9)) > 0.88 ? -1 : 0;
 
-  const draw = () => {
+  /** Dibuja un cuadro. Devuelve `true` si el siguiente debe dibujarse aunque no haya scroll. */
+  const draw = (): boolean => {
     ctx.clearRect(0, 0, width, height);
-    const centers = sections.map((sec) => {
-      const r = sec.getBoundingClientRect();
-      return r.top + scrollY + r.height / 2 - height / 2;
-    });
-    const { from, to, progress } = segment(centers, scrollY);
+    const layout = measure();
+    const { from, to, progress } = segment(layout.centers, scrollY);
     const a = names[from],
       b = names[to];
-    const heroBottom = sections[0]?.getBoundingClientRect().bottom ?? 0;
-    const active = activeMark();
+    const { heroBottom } = layout;
 
     for (const s of stars) {
-      const home: Target = { x: s.x * width, y: s.y * height, hue: 0 };
-      const tb = target(b, s);
-      let ta = target(a, s);
+      const home: Target = { x: s.x * width, y: s.y * skyHeight, hue: 0 };
+      const tb = target(b, s, layout);
+      let ta = target(a, s, layout);
       const leaving = from === 0 && tb !== null;
       if (leaving) ta = fromHole(s, progress) ?? ta;
       const inA = ta !== null,
@@ -298,7 +322,7 @@ export function mount(
       // el "_" del >_ parpadea como un cursor
       const t = k < 0.5 ? (inA ? ta : null) : tb;
       const name = k < 0.5 ? a : b;
-      if (t && !t.line && anchors.get(name)?.dataset.constellationMode === 'timeline') {
+      if (t && !t.line && modes.get(name) === 'timeline') {
         const p = shapes.get(name)?.[s.i];
         if (p && p[1] > 0.08 && p[0] > -0.02 && Math.floor(time * 1.6) % 2) alpha *= 0.15;
       }
@@ -306,36 +330,50 @@ export function mount(
       if (t?.line) {
         alpha = 0.55;
         level = s.i % 5 === 0 ? 2 : 1;
-        for (const m of marks) {
-          if (Math.abs(y - (m.getBoundingClientRect().top + 34)) < CELL) {
+        layout.markYs.forEach((markY, m) => {
+          if (Math.abs(y - markY) < CELL) {
             level = 2;
-            alpha = m === active ? 1 : 0.8;
+            alpha = m === layout.active ? 1 : 0.8;
           }
-        }
+        });
       }
       dot(x, y, Math.max(0, Math.min(2, level + twinkle(s.i))), color, alpha);
     }
     ctx.globalAlpha = 1;
+    // Desde el hero, las estrellas orbitan el disco del agujero negro aunque no haya scroll.
+    return from === 0 && hole.ready;
   };
 
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const dpr = canvasDpr();
+    const widthChanged = innerWidth !== width;
     width = innerWidth;
     height = innerHeight;
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    makeStars();
-    buildShapes();
+    // Solo un cambio de ancho (o una ventana más alta que el cielo) rehace las estrellas.
+    if (widthChanged || height > skyHeight) {
+      skyHeight = Math.max(height, widthChanged ? screen.height || height : height);
+      makeStars();
+      buildShapes();
+    }
     draw();
   };
 
   let frame = 0,
-    last = performance.now();
+    last = performance.now(),
+    lastDraw = -Infinity,
+    lastScroll = Number.NaN,
+    animating = true;
   const loop = (now: number) => {
     time += Math.min(0.05, (now - last) / 1000);
     last = now;
-    if (!document.hidden) draw();
+    if (animating || scrollY !== lastScroll || now - lastDraw >= IDLE_FRAME_MS) {
+      animating = draw();
+      lastDraw = now;
+      lastScroll = scrollY;
+    }
     frame = requestAnimationFrame(loop);
   };
   const onScroll = () => draw();

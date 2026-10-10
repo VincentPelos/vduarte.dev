@@ -17,6 +17,8 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
 ></canvas>
 
 <script>
+  import { whenIdle } from '../../lib/scene';
+
   const canvas = document.querySelector<HTMLCanvasElement>('[data-star-sky]');
 
   if (canvas) {
@@ -32,7 +34,6 @@ if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
         .then(({ mount }) => mount(canvas, symbols, { reducedMotion }))
         .catch(() => {});
 
-    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
-    else setTimeout(load, 200);
+    whenIdle(load);
   }
 </script>

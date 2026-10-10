@@ -11,16 +11,18 @@ const { strength = 0.55, class: className } = Astro.props;
 <!--
   Brillos difuminados detrás del vidrio. El padre necesita `relative`; con `isolate` quedan
   dentro de la sección, sin él pasan por detrás de las secciones vecinas.
+  Cada brillo es un degradado (`glow-orb`), no un `filter: blur`: con blur, el navegador
+  vuelve a difuminar en cada cuadro de la animación (docs/02-arquitectura/rendimiento.md).
 -->
 <div
   aria-hidden="true"
   class:list={[
-    'pointer-events-none absolute -inset-x-[5%] -inset-y-[10%] -z-10 blur-[110px] [mask-image:linear-gradient(transparent,#000_25%,#000_75%,transparent)]',
+    'pointer-events-none absolute -inset-x-[5%] -inset-y-[10%] -z-10 [mask-image:linear-gradient(transparent,#000_25%,#000_75%,transparent)]',
     className,
   ]}
   style={`opacity: calc(${strength} * var(--glow));`}
 >
-  <span class="absolute top-[10%] left-[2%] aspect-square w-[38%] animate-drift rounded-full bg-c1"></span>
-  <span class="absolute top-[45%] left-[40%] aspect-square w-[32%] animate-drift rounded-full bg-c2 [animation-delay:-6s]"></span>
-  <span class="absolute top-0 right-0 aspect-square w-[30%] animate-drift rounded-full bg-c3 [animation-delay:-12s]"></span>
+  <span class="absolute top-[10%] left-[2%] aspect-square w-[38%] animate-drift glow-orb [--orb:var(--color-c1)]"></span>
+  <span class="absolute top-[45%] left-[40%] aspect-square w-[32%] animate-drift glow-orb [--orb:var(--color-c2)] [animation-delay:-6s]"></span>
+  <span class="absolute top-0 right-0 aspect-square w-[30%] animate-drift glow-orb [--orb:var(--color-c3)] [animation-delay:-12s]"></span>
 </div>
