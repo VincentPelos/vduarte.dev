@@ -72,8 +72,8 @@ const FALL_TEXT_OUT = 0.45;
 const FALL_TEXT_RISE = 70;
 /** Tabla fina para el final de la caída: cubre hasta este radio (Rs) con la misma resolución. */
 const FINE_EXTENT = 6;
-/** Alto de un anillo del cielo que cae, en r^1.5 (igual que FLOW_DR en el shader). */
-const FLOW_DR = 1.6;
+/** Giro del cielo alrededor del agujero, en rad por unidad de tiempo de la escena. */
+const SKY_SPIN = 0.03;
 
 const VERTEX = `
   attribute vec2 aPos;
@@ -169,7 +169,8 @@ const BAKE = `
 const TRACE = `
   ${COMMON}
   uniform vec2 uHole, uSkyC;
-  uniform float uPx, uTime, uInt, uCell, uExtent, uSkyZoom, uFlowN;
+  uniform float uPx, uTime, uInt, uCell, uExtent, uSkyZoom;
+  uniform vec2 uSpin;   // giro del cielo: (cos, sin)
   uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
 
   float noise(vec2 p) {
@@ -179,37 +180,29 @@ const TRACE = `
 
   float unpack16(vec2 v) { return (floor(v.x * 255. + .5) * 256. + floor(v.y * 255. + .5)) / 65535.; }
 
-  // Cielo de terminal que el agujero se come (decisión 015): las estrellas caen en espiral hacia el
-  // agujero. Viven en anillos de r^1.5 (r en Rs) que se corren con el tiempo, así caen más
-  // rápido cerca, y el ángulo gira con la caída. Cada celda de la pantalla mira la estrella de su
-  // anillo y la dibuja solo si su centro cae en ella: los puntos siguen en la grilla.
-  // Devuelve color y tamaño, con niveles 0..3 (como · • ●).
-  const float FLOW_DR = 1.6;   // alto de un anillo, en r^1.5
-  const float FLOW_V = 1.;     // caída, en r^1.5 por unidad de tiempo
-  const float FLOW_S = .34;    // giro de la espiral, en rad por unidad de r^1.5
+  // Cielo de terminal que gira lento alrededor del agujero (decisión 015): cada celda del cielo
+  // tiene un nivel 0..3 (como · • ●). Girado, una estrella no cae justo en una celda de la
+  // pantalla: se dibuja solo en la celda donde queda su centro, mirando el vecindario, para que
+  // no se duplique ni se pierda. Devuelve color y tamaño.
   vec4 sky(vec2 look) {
-    vec4 none = vec4(vec3(.1), .09);
-    vec2 d = look - uHole;
-    float rho = pow(length(d) / uPx, 1.5);
-    float a = (atan(d.y, d.x) + FLOW_S * rho) / 6.2832 * uFlowN;
-    vec2 cell = vec2(floor((rho + FLOW_V * uTime) / FLOW_DR), floor(a));
-    vec2 id = vec2(cell.x, mod(cell.y, uFlowN));       // el ángulo da la vuelta
-    float h = hash(id + 3.7);
-    if (h < .82) return none;
-    // centro de la estrella en su anillo, de vuelta a la pantalla
-    vec2 jit = vec2(hash(id + 1.3), hash(id + 7.9)) * .8 + .1;
-    float rs = (cell.x + jit.x) * FLOW_DR - FLOW_V * uTime;
-    if (rs <= 0.) return none;
-    float ts = (cell.y + jit.y) / uFlowN * 6.2832 - FLOW_S * rs;
-    vec2 at = uHole + pow(rs, 2. / 3.) * uPx * vec2(cos(ts), sin(ts));
-    if (abs(at.x - look.x) > uCell * .5 || abs(at.y - look.y) > uCell * .5) return none;
-    float h2 = hash(id + 5.1);
-    float lv = h2 > .89 ? 3. : h2 > .63 ? 2. : 1.;
-    if (hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
-    if (lv < .5) return none;
-    float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : .17;
-    vec3 c = mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45);
-    return vec4(c, size);
+    mat2 spin = mat2(uSpin.x, uSpin.y, -uSpin.y, uSpin.x);
+    mat2 back = mat2(uSpin.x, -uSpin.y, uSpin.y, uSpin.x);
+    vec2 here = floor(look / uCell);
+    vec2 base = floor((uHole + spin * (look - uHole)) / uCell);
+    for (int i = 0; i < 9; i++) {
+      vec2 id = base + vec2(mod(float(i), 3.), floor(float(i) / 3.)) - 1.;
+      float h = hash(id);
+      float lv = h > .996 ? 3. : h > .987 ? 2. : h > .965 ? 1. : 0.;
+      if (lv < .5) continue;
+      vec2 at = uHole + back * ((id + .5) * uCell - uHole);
+      if (floor(at / uCell) != here) continue;
+      if (hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
+      if (lv < .5) break;
+      float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : .17;
+      vec3 c = mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45);
+      return vec4(c, size);
+    }
+    return vec4(vec3(.1), .09);
   }
 
   // Durante la caída, el cielo se abre desde el punto de caída (las estrellas se alejan).
@@ -497,9 +490,9 @@ export function mount(
     rows = 1,
     dpr = 1,
     pxPerRs = 1,
-    flowN = 1,
     fallZoom = 1,
-    fineReady = false;
+    fineReady = false,
+    fallLen = 1;
 
   const uploadText = () => {
     drawText(section, textCanvas, dpr);
@@ -519,6 +512,9 @@ export function mount(
     rows = Math.ceil(height / CELL);
     pxPerRs = pxPerRsFor(width, height);
     section.style.setProperty('--hole-px', String(pxPerRs));
+    // Largo de la caída: se lee aquí y no en cada cuadro, porque leerlo después de escribir
+    // --fall-out obligaría al navegador a recalcular el layout en cada cuadro del scroll.
+    if (fallSpace) fallLen = Math.max(1, fallSpace.offsetHeight);
     // Zoom con el que la sombra cubre la pantalla con el punto de caída al centro.
     fallZoom = 1;
     while (
@@ -527,17 +523,6 @@ export function mount(
     )
       fallZoom *= 1.05;
     fallZoom *= 1.04;
-    // Estrellas por anillo del cielo que cae: las justas para una densidad parecida a la de
-    // siempre (una estrella cada ~16 celdas) a media pantalla del agujero. Se fija al cambiar
-    // el tamaño, no con el zoom de la caída, para que las estrellas no se reordenen.
-    const ref = (height * 0.6) / pxPerRs;
-    flowN = Math.max(
-      24,
-      Math.round(
-        (2 * Math.PI * ref * pxPerRs ** 2 * FLOW_DR) /
-          (1.5 * Math.sqrt(ref) * CELL ** 2 * 16 * 0.18),
-      ),
-    );
     gl.bindTexture(gl.TEXTURE_2D, cellsTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cols, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -559,10 +544,11 @@ export function mount(
   };
   document.fonts?.addEventListener('loadingdone', onFonts);
 
-  let time = 0;
+  let time = 0,
+    lastOut = -1;
   const render = () => {
     // Caída (decisión 015): cuánto del espacio de scroll ya se recorrió.
-    const fall = fallSpace ? clamp01(scrollY / Math.max(1, fallSpace.offsetHeight)) : 0;
+    const fall = fallSpace ? clamp01(scrollY / fallLen) : 0;
     const k = clamp01(fall / FALL_BLACK);
     const zoom = 1 + k ** 3 * (fallZoom - 1);
     const px = pxPerRs * zoom;
@@ -587,7 +573,8 @@ export function mount(
     const reach = Math.hypot(width / 2, Math.max(holeY, height - holeY)) / px;
     const table = fineReady && reach < FINE_EXTENT * 0.98 ? tables[1] : tables[0];
     const out = clamp01(fall / FALL_TEXT_OUT);
-    section.style.setProperty('--fall-out', String(out));
+    // Solo cuando cambia: escribirla recalcula estilos y repinta los botones de vidrio.
+    if (out !== lastOut) section.style.setProperty('--fall-out', String((lastOut = out)));
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.viewport(0, 0, cols, rows);
@@ -604,7 +591,7 @@ export function mount(
     gl.uniform1f(loc(trace, 'uTime'), time);
     gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
     gl.uniform1f(loc(trace, 'uCell'), CELL);
-    gl.uniform1f(loc(trace, 'uFlowN'), flowN);
+    gl.uniform2f(loc(trace, 'uSpin'), Math.cos(time * SKY_SPIN), Math.sin(time * SKY_SPIN));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -691,7 +678,8 @@ export function mount(
     y: (i % LUT_STRIPS) * strip,
   }));
   let done = 0,
-    bakeFrame = 0;
+    bakeFrame = 0,
+    fineTimer = 0;
   const bakeStart = performance.now();
   gl.useProgram(bake);
   gl.uniform1f(loc(bake, 'uSize'), lutSize);
@@ -724,7 +712,9 @@ export function mount(
     gl.useProgram(bake);
     gl.viewport(0, 0, lutSize, lutSize);
     gl.enable(gl.SCISSOR_TEST);
-    const limit = Math.min(jobs.length, done + BAKE_MAX_JOBS);
+    // Un cuadro no cruza de la tabla de siempre a la fina. La fina no apura nada (la escena ya
+    // se ve), así que va de a un trabajo por cuadro para no dar tirones.
+    const limit = done < perTable ? Math.min(perTable, done + BAKE_MAX_JOBS) : done + 1;
     do {
       const { table, out, y } = jobs[done++];
       gl.bindFramebuffer(gl.FRAMEBUFFER, tables[table].lut[out].fb);
@@ -739,7 +729,17 @@ export function mount(
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     if (!baked) {
       section.style.setProperty('--hole-progress', String(Math.min(1, done / perTable)));
-      if (done >= perTable) reveal();
+      if (done >= perTable) {
+        reveal();
+        // La tabla fina espera a que termine la entrada, para no quitarle cuadros.
+        if (done < jobs.length) {
+          fineTimer = window.setTimeout(
+            () => (bakeFrame = requestAnimationFrame(bakeStep)),
+            COLLAPSE_GROW_MS + COLLAPSE_HOLD_MS + COLLAPSE_SHRINK_MS + 300,
+          );
+          return;
+        }
+      }
     }
     if (done < jobs.length) bakeFrame = requestAnimationFrame(bakeStep);
     else {
@@ -765,6 +765,7 @@ export function mount(
   return () => {
     pause();
     cancelAnimationFrame(bakeFrame);
+    clearTimeout(fineTimer);
     io.disconnect();
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
