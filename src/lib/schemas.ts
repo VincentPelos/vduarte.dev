@@ -155,6 +155,8 @@ export const siteSchema = z.object({
     linkedin: z.string().min(1),
     cv: z.string().min(1),
     pending: z.string().min(1),
+    /** Aviso para lectores de pantalla en los enlaces que abren otra pestaña. */
+    newTab: z.string().min(1),
   }),
 });
 

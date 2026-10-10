@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-09
+actualizado: 2026-10-10
 ---
 
 # Estructura de carpetas
@@ -37,7 +37,7 @@ vduarte.dev/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseHeader, Finding, DownloadCard, charts/
-│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon
+│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon, LinkHint
 │  ├─ content/                 datos del sitio (JSON) y casos de estudio
 │  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)

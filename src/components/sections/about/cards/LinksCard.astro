@@ -1,5 +1,6 @@
 ---
 import { linkAttrs } from '../../../../lib/links';
+import LinkHint from '../../../ui/LinkHint.astro';
 import BentoCard from '../BentoCard.astro';
 
 interface Props {
@@ -20,7 +21,10 @@ const { label, pendingLabel, links } = Astro.props;
           {...linkAttrs(href)}
           class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
         >
-          {text}
+          <span>
+            {text}
+            <LinkHint href={href} />
+          </span>
           <span aria-hidden="true" class="font-mono text-muted">
             ↗
           </span>
@@ -29,10 +33,14 @@ const { label, pendingLabel, links } = Astro.props;
         <span
           role="link"
           aria-disabled="true"
+          tabindex="0"
           title={pendingLabel}
           class="flex items-center justify-between border-t border-line py-2 font-medium text-muted"
         >
-          {text}
+          <span>
+            {text}
+            <span class="sr-only"> ({pendingLabel})</span>
+          </span>
           <span aria-hidden="true" class="font-mono">
             ↗
           </span>
