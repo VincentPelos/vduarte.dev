@@ -12,7 +12,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.3.0 Secciones (2026-10-08).
-- **En curso:** optimización previa a v0.4.0 — documentación (#67), rendimiento de canvas (#68), peso de la página (#69) y duplicación en componentes (#70).
+- **En curso:** optimización previa a v0.4.0 en PR apilados, a mergear en orden: #71 (docs) → #72 (canvas y brillos) → #73 (íconos y fuentes) → #74 (duplicación). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
 - **Hito siguiente:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (VPS en preparación, aún sin desplegar).
@@ -72,6 +72,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
+- [2026-10-09](06-bitacora/2026-10-09.md): auditoría previa a v0.4.0, documentación como memoria y optimización de rendimiento.
 - [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, release v0.3.0 y contenido personal.
 - [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
 - [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
