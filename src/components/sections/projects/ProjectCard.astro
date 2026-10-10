@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
+import { linkAttrs } from '../../../lib/links';
 import Chip from '../../ui/Chip.astro';
 import GlassCard from '../../ui/GlassCard.astro';
 
@@ -18,9 +19,9 @@ const glow =
   'radial-gradient(60% 80% at 25% 30%, color-mix(in srgb, var(--color-c1) calc(30% * var(--glow)), transparent), transparent 70%), radial-gradient(60% 80% at 80% 70%, color-mix(in srgb, var(--color-c3) calc(26% * var(--glow)), transparent), transparent 70%)';
 
 const links = [
-  caseStudy && { href: `/proyectos/${caseStudy}`, text: `${labels.caseStudy} →`, external: false },
-  repo && { href: repo, text: `${labels.repo} ↗`, external: true },
-  demo && { href: demo, text: `${labels.demo} ↗`, external: true },
+  caseStudy && { href: `/proyectos/${caseStudy}`, text: `${labels.caseStudy} →` },
+  repo && { href: repo, text: `${labels.repo} ↗` },
+  demo && { href: demo, text: `${labels.demo} ↗` },
 ].filter((link) => !!link);
 ---
 
@@ -70,11 +71,10 @@ const links = [
     )}
     {links.length > 0 && (
       <p class="mt-1.5 flex flex-wrap gap-[18px] font-mono text-[0.82rem] leading-none font-medium">
-        {links.map(({ href, text, external }) => (
+        {links.map(({ href, text }) => (
           <a
             href={href}
-            target={external ? '_blank' : undefined}
-            rel={external ? 'noopener' : undefined}
+            {...linkAttrs(href)}
             class="border-b border-line-hi pb-[3px] transition-colors hover:border-fg"
           >
             {text}

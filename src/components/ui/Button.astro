@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { linkAttrs } from '../../lib/links';
 
 interface Props extends HTMLAttributes<'a'> {
   href?: string;
@@ -10,7 +11,6 @@ interface Props extends HTMLAttributes<'a'> {
 }
 
 const { href, variant = 'glass', pendingLabel, arrow, class: className, ...attrs } = Astro.props;
-const isExternal = href ? /^https?:\/\//.test(href) : false;
 const arrows = { external: '↗', down: '↓' };
 const classes = [
   'group inline-flex items-center gap-2 rounded-full border px-[18px] py-[13px] text-[0.88rem] leading-none transition',
@@ -27,13 +27,7 @@ const classes = [
 ---
 
 {href ? (
-  <a
-    href={href}
-    target={isExternal ? '_blank' : undefined}
-    rel={isExternal ? 'noopener' : undefined}
-    class:list={classes}
-    {...attrs}
-  >
+  <a href={href} {...linkAttrs(href)} class:list={classes} {...attrs}>
     <slot />
     {arrow && (
       <span

@@ -1,8 +1,7 @@
 ---
-import { getEntry } from 'astro:content';
+import { getSite } from '../../lib/content';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
 // En el home basta con el ancla; desde otras páginas se vuelve al home.
 const base = Astro.url.pathname === '/' ? '' : '/';
@@ -13,7 +12,7 @@ const base = Astro.url.pathname === '/' ? '' : '/';
   class="fixed bottom-[calc(16px+env(safe-area-inset-bottom,0px))] left-1/2 z-50 max-w-[calc(100%-32px)] -translate-x-1/2 overflow-x-auto rounded-full border border-line bg-nav p-1.5 shadow-[0_10px_40px_rgb(0_0_0/0.6)] backdrop-blur-[32px] backdrop-saturate-170 [scrollbar-width:none]"
 >
   <ul class="flex gap-0.5">
-    {site.data.nav.map(({ section, label, ariaLabel }) => (
+    {site.nav.map(({ section, label, ariaLabel }) => (
       <li>
         <a
           href={`${base}#${section}`}

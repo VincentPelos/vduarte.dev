@@ -1,8 +1,7 @@
 ---
-import { getEntry } from 'astro:content';
+import { getSite } from '../../lib/content';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
 const year = new Date().getFullYear();
 ---
@@ -10,7 +9,7 @@ const year = new Date().getFullYear();
 <!-- El padding inferior deja espacio para la nav fija. -->
 <footer class="wrap relative z-[1] flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-line pt-[26px] pb-[calc(106px+env(safe-area-inset-bottom,0px))] font-mono text-[0.76rem] leading-[1.4] text-muted">
   <span>
-    © {year} {site.data.name}
+    © {year} {site.name}
   </span>
-  <span>{site.data.footerNote}</span>
+  <span>{site.footerNote}</span>
 </footer>

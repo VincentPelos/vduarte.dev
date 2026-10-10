@@ -1,13 +1,12 @@
 ---
-import { getEntry } from 'astro:content';
+import { getSite } from '../../../lib/content';
 import Button from '../../ui/Button.astro';
 import Glows from '../../ui/Glows.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const { email, github, linkedin, cvPath, labels } = site.data;
-const texts = site.data.sections.contact;
+const { email, github, linkedin, cvPath, labels } = site;
+const texts = site.sections.contact;
 ---
 
 <section

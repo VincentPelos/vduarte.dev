@@ -1,5 +1,5 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
@@ -10,10 +10,9 @@ interface Props {
 const { label, title, bio } = Astro.props;
 ---
 
-<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:bio]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="justify-between [grid-area:bio]">
   <h2 class="max-w-[22ch] text-[clamp(1.4rem,3vw,2rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-balance">
     {title}
   </h2>
   <p class="max-w-[52ch] text-muted">{bio}</p>
-</GlassCard>
+</BentoCard>

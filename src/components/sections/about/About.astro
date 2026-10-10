@@ -1,5 +1,6 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { getSite } from '../../../lib/content';
 import Glows from '../../ui/Glows.astro';
 import BioCard from './cards/BioCard.astro';
 import ClockCard from './cards/ClockCard.astro';
@@ -10,11 +11,8 @@ import PlayingCard from './cards/PlayingCard.astro';
 import StackCard from './cards/StackCard.astro';
 import StatusCard from './cards/StatusCard.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
-
-const data = site.data;
-const { bento } = data;
+const site = await getSite();
+const { bento } = site;
 
 // El ícono de cada tecnología del stack sale de skills.json, buscando por nombre.
 const icons = new Map(
@@ -22,7 +20,7 @@ const icons = new Map(
     entry.data.items.map((item) => [item.name, item.icon] as const),
   ),
 );
-const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }));
+const stack = site.highlightStack.map((name) => ({ name, icon: icons.get(name) }));
 ---
 
 <section
@@ -36,24 +34,24 @@ const stack = data.highlightStack.map((name) => ({ name, icon: icons.get(name) }
   <div class="wrap">
     <!-- 1 columna → 2 desde 461px → 4 desde 901px, como en la guía. -->
     <div class="grid grid-cols-1 gap-3 [grid-template-areas:'bio'_'status'_'clock'_'stack'_'sky'_'play'_'game'_'links'] min-[461px]:auto-rows-[minmax(150px,auto)] min-[461px]:grid-cols-2 min-[461px]:[grid-template-areas:'bio_bio'_'clock_status'_'stack_stack'_'play_play'_'game_sky'_'links_links'] min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_clock_status'_'bio_bio_stack_sky'_'play_play_game_links']">
-      <BioCard label={bento.about} title={data.bioTitle} bio={data.bio} />
-      <ClockCard label={bento.clock} timezone={data.timezone} location={data.location} />
+      <BioCard label={bento.about} title={site.bioTitle} bio={site.bio} />
+      <ClockCard label={bento.clock} timezone={site.timezone} location={site.location} />
       <StatusCard
         label={bento.status}
-        text={data.available ? bento.available : bento.unavailable}
-        available={data.available}
-        note={data.availabilityNote}
+        text={site.available ? bento.available : bento.unavailable}
+        available={site.available}
+        note={site.availabilityNote}
       />
       <StackCard label={bento.stack} items={stack} />
-      <PlayingCard label={bento.playing} {...data.nowPlaying} />
-      <GamingCard label={bento.gaming} {...data.nowGaming} />
+      <PlayingCard label={bento.playing} {...site.nowPlaying} />
+      <GamingCard label={bento.gaming} {...site.nowGaming} />
       <SkyCard label={bento.constellation} />
       <LinksCard
         label={bento.links}
-        pendingLabel={data.labels.pending}
+        pendingLabel={site.labels.pending}
         links={[
-          { href: data.github, text: data.labels.github },
-          { href: data.linkedin, text: data.labels.linkedin },
+          { href: site.github, text: site.labels.github },
+          { href: site.linkedin, text: site.labels.linkedin },
         ]}
       />
     </div>

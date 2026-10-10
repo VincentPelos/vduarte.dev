@@ -1,5 +1,6 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
+import { linkAttrs } from '../../../../lib/links';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
@@ -10,15 +11,13 @@ interface Props {
 const { label, pendingLabel, links } = Astro.props;
 ---
 
-<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:links]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="justify-between [grid-area:links]">
   <div>
     {links.map(({ href, text }) =>
       href ? (
         <a
           href={href}
-          target="_blank"
-          rel="noopener"
+          {...linkAttrs(href)}
           class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
         >
           {text}
@@ -41,4 +40,4 @@ const { label, pendingLabel, links } = Astro.props;
       ),
     )}
   </div>
-</GlassCard>
+</BentoCard>

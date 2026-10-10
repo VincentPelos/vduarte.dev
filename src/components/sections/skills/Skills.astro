@@ -1,16 +1,16 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import skillsFile from '../../../content/skills.json';
+import { getSite } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
 import GlassCard from '../../ui/GlassCard.astro';
-import Icon from '../../ui/Icon.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
+import TechIcon from '../../ui/TechIcon.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const texts = site.data.sections.skills;
+const texts = site.sections.skills;
 // El loader entrega los grupos ordenados por id; se respeta el orden del JSON.
 const order = skillsFile.map((group) => group.id);
 const groups = (await getCollection('skills'))
@@ -33,11 +33,7 @@ const meta = `${pluralize(groups.length, texts.groups)} · ${pluralize(total, te
                 aria-hidden="true"
                 class="grid size-7 flex-none place-items-center rounded-lg border border-line bg-glass text-[0.95rem]"
               >
-                {item.icon ? (
-                  <Icon name={item.icon} />
-                ) : (
-                  <span class="font-mono text-[0.6rem] font-semibold">{item.name.slice(0, 2)}</span>
-                )}
+                <TechIcon name={item.name} icon={item.icon} fallbackClass="text-[0.6rem]" />
               </span>
               {item.name}
             </li>
