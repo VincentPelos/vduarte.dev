@@ -19,6 +19,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
 - **Peso:** el HTML no repite SVG (íconos como sprite, [010](../03-decisiones/010-iconos-sprite.md)). Martian Mono solo se importa en latín; Geist conserva sus subsets porque las flechas (→ ↗) están en `symbols2`, y el navegador solo baja los que usa.
 - **Fuentes precargadas:** Martian Mono 700 y Geist latín van con `<link rel="preload">` en `BaseLayout`; las escenas esperan las fuentes antes de montarse.
+- **Precalcular lo que no cambia:** si un cálculo caro no depende del tiempo, se hace una vez y se guarda en una textura ([011](../03-decisiones/011-agujero-precalculado.md)). El precálculo se reparte entre cuadros con un tope de trabajos, porque `gl.finish()` no siempre espera a la GPU.
 - **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida) vive en `src/lib/scene.ts`.
 
 ## Estado
@@ -31,6 +32,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 | Móvil sin regenerar escenas | Cumplida (#68) |
 | Brillos sin blur animado | Cumplida (#68) |
 | Íconos en sprite ([010](../03-decisiones/010-iconos-sprite.md)) y precarga de fuentes | Cumplida (#69) |
+| Trayectorias del agujero negro precalculadas | Cumplida (#81) |
 
 ## Mediciones
 
@@ -51,6 +53,18 @@ El mayor costo estaba en la línea de tiempo de Experiencia: `getBoundingClientR
 |---|---|---|
 | `index.html` | 105 KB (30,9 KB gzip) | 94 KB (24,8 KB gzip) |
 | CSS | 41 KB (12,8 KB gzip) | 35 KB (8,2 KB gzip) |
+
+### Agujero negro (#81)
+
+fps del hero quieto con la escena animada, en Edge headless (la GPU por software hace visible el costo de la GPU). "Sin escena" es el techo: la misma página con el agujero oculto. El costo propio de la escena es la diferencia con ese techo.
+
+| Ancho | Sin escena | Antes | Después | Costo de la escena por cuadro |
+|---|---|---|---|---|
+| 390 | 60 fps (tope) | 41 fps | 51–56 fps | ≥10 ms → ≥4 ms |
+| 1280 | 32 fps | 16 fps | 23–25 fps | 31 ms → 10 ms (−68 %) |
+| 1920 | 15 fps | 9–10 fps | 12–13 fps | 45 ms → 17 ms (−62 %) |
+
+El precálculo tarda 140–450 ms en esa GPU por software, repartido en 8 cuadros o más; en una GPU real, decenas de ms.
 
 ## Cómo medir
 
