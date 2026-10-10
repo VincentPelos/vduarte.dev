@@ -72,6 +72,8 @@ const FALL_TEXT_OUT = 0.45;
 const FALL_TEXT_RISE = 70;
 /** Tabla fina para el final de la caída: cubre hasta este radio (Rs) con la misma resolución. */
 const FINE_EXTENT = 6;
+/** Alto de un anillo del cielo que cae, en r^1.5 (igual que FLOW_DR en el shader). */
+const FLOW_DR = 1.6;
 
 const VERTEX = `
   attribute vec2 aPos;
@@ -167,7 +169,7 @@ const BAKE = `
 const TRACE = `
   ${COMMON}
   uniform vec2 uHole, uSkyC;
-  uniform float uPx, uTime, uInt, uCell, uExtent, uSkyZoom;
+  uniform float uPx, uTime, uInt, uCell, uExtent, uSkyZoom, uFlowN;
   uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
 
   float noise(vec2 p) {
@@ -177,13 +179,36 @@ const TRACE = `
 
   float unpack16(vec2 v) { return (floor(v.x * 255. + .5) * 256. + floor(v.y * 255. + .5)) / 65535.; }
 
-  // Cielo de terminal: cada celda tiene un nivel 0..3 (como · • ●). Devuelve color y tamaño.
+  // Cielo de terminal que el agujero se come (decisión 015): las estrellas caen en espiral hacia el
+  // agujero. Viven en anillos de r^1.5 (r en Rs) que se corren con el tiempo, así caen más
+  // rápido cerca, y el ángulo gira con la caída. Cada celda de la pantalla mira la estrella de su
+  // anillo y la dibuja solo si su centro cae en ella: los puntos siguen en la grilla.
+  // Devuelve color y tamaño, con niveles 0..3 (como · • ●).
+  const float FLOW_DR = 1.6;   // alto de un anillo, en r^1.5
+  const float FLOW_V = 1.;     // caída, en r^1.5 por unidad de tiempo
+  const float FLOW_S = .34;    // giro de la espiral, en rad por unidad de r^1.5
   vec4 sky(vec2 look) {
-    vec2 id = floor(look / uCell); float h = hash(id);
-    float lv = h > .996 ? 3. : h > .987 ? 2. : h > .965 ? 1. : 0.;
-    if (lv > 0. && hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
-    float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : lv > .5 ? .17 : .09;
-    vec3 c = lv > .5 ? mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45) : vec3(.1);
+    vec4 none = vec4(vec3(.1), .09);
+    vec2 d = look - uHole;
+    float rho = pow(length(d) / uPx, 1.5);
+    float a = (atan(d.y, d.x) + FLOW_S * rho) / 6.2832 * uFlowN;
+    vec2 cell = vec2(floor((rho + FLOW_V * uTime) / FLOW_DR), floor(a));
+    vec2 id = vec2(cell.x, mod(cell.y, uFlowN));       // el ángulo da la vuelta
+    float h = hash(id + 3.7);
+    if (h < .82) return none;
+    // centro de la estrella en su anillo, de vuelta a la pantalla
+    vec2 jit = vec2(hash(id + 1.3), hash(id + 7.9)) * .8 + .1;
+    float rs = (cell.x + jit.x) * FLOW_DR - FLOW_V * uTime;
+    if (rs <= 0.) return none;
+    float ts = (cell.y + jit.y) / uFlowN * 6.2832 - FLOW_S * rs;
+    vec2 at = uHole + pow(rs, 2. / 3.) * uPx * vec2(cos(ts), sin(ts));
+    if (abs(at.x - look.x) > uCell * .5 || abs(at.y - look.y) > uCell * .5) return none;
+    float h2 = hash(id + 5.1);
+    float lv = h2 > .89 ? 3. : h2 > .63 ? 2. : 1.;
+    if (hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
+    if (lv < .5) return none;
+    float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : .17;
+    vec3 c = mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45);
     return vec4(c, size);
   }
 
@@ -472,6 +497,7 @@ export function mount(
     rows = 1,
     dpr = 1,
     pxPerRs = 1,
+    flowN = 1,
     fallZoom = 1,
     fineReady = false;
 
@@ -501,6 +527,17 @@ export function mount(
     )
       fallZoom *= 1.05;
     fallZoom *= 1.04;
+    // Estrellas por anillo del cielo que cae: las justas para una densidad parecida a la de
+    // siempre (una estrella cada ~16 celdas) a media pantalla del agujero. Se fija al cambiar
+    // el tamaño, no con el zoom de la caída, para que las estrellas no se reordenen.
+    const ref = (height * 0.6) / pxPerRs;
+    flowN = Math.max(
+      24,
+      Math.round(
+        (2 * Math.PI * ref * pxPerRs ** 2 * FLOW_DR) /
+          (1.5 * Math.sqrt(ref) * CELL ** 2 * 16 * 0.18),
+      ),
+    );
     gl.bindTexture(gl.TEXTURE_2D, cellsTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cols, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -567,6 +604,7 @@ export function mount(
     gl.uniform1f(loc(trace, 'uTime'), time);
     gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
     gl.uniform1f(loc(trace, 'uCell'), CELL);
+    gl.uniform1f(loc(trace, 'uFlowN'), flowN);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);

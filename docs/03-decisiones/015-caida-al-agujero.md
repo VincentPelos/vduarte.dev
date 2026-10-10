@@ -18,6 +18,7 @@ Con el hero como diapositiva, el autor pidió repensar su composición y propuso
   - el texto se apaga y sube 70 px en el primer 45 % (el de WebGL con `uTextAlpha`/`uTextRise`; los botones, el cursor y el aviso con `--fall-out`);
   - las estrellas del cielo del agujero se alejan del punto de caída.
 - **Llegada:** el portafolio entra con la pantalla ya negra, así que la hoja no tiene borde (`html[data-fall]`). Sin caída (movimiento reducido o sin WebGL), la hoja conserva su borde redondeado.
+- **El agujero se come las estrellas:** con el agujero quieto, el cielo de la escena ya no se movía, y eso era parte de la gracia. Ahora las estrellas caen en espiral hacia el agujero: viven en anillos de r^1.5 que se corren con el tiempo (caen más rápido cerca) y el ángulo gira con la caída. La lente las curva alrededor del anillo antes de que desaparezcan en la sombra. Siguen en la grilla de 6 px, con la densidad de siempre a media pantalla (`FLOW_*` en el shader).
 - **Tabla fina:** de cerca, la tabla de siempre (20 Rs) se vería en bloques. Se precalcula una segunda tabla de 6 Rs con la misma resolución (3,3 veces más detalle), en segundo plano, después de que aparece la escena. Se usa cuando toda la pantalla cae dentro de ella.
 - La lente del texto mantiene la escala de antes, porque con el agujero más grande deformaba demasiado el nombre.
 - Se quita el oscurecido del hero ligado al scroll de la decisión 014: ahora lo reemplaza la caída.
