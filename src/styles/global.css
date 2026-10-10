@@ -251,6 +251,13 @@
   }
 }
 
+/* Animaciones CSS en pausa con su sección fuera de pantalla (OffscreenPause, #109). */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
 /* Texto con el degradado de la paleta */
 @utility text-grad {
   background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));

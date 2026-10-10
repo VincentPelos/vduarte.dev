@@ -15,7 +15,8 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2.
 - **Móvil:** el alto de la ventana cambia al aparecer o esconderse la barra del navegador; eso no debe regenerar escenas, solo reajustar el canvas.
 - **`prefers-reduced-motion`:** un cuadro estático; se redibuja solo al hacer scroll o cambiar el tamaño.
-- **Sin GPU, escena quieta:** si WebGL va por software (SwiftShader, llvmpipe, Microsoft Basic Render Driver), el agujero negro se muestra como con movimiento reducido. Animado, cada cuadro se dibuja en la CPU y traba la página; en Lighthouse (sin GPU) eso dejaba el bloqueo total en ~80 s (#109).
+- **Sin GPU, sin WebGL:** si WebGL va por software (SwiftShader, llvmpipe, Microsoft Basic Render Driver), el agujero negro no se monta y queda el respaldo (grilla de puntos y texto normal). En la CPU, solo compilar los shaders tardaba ~3 s y cada cuadro trababa la página; en Lighthouse (sin GPU) el bloqueo total llegaba a ~80 s (#109).
+- **Animaciones CSS en pausa fuera de pantalla:** `layout/OffscreenPause.astro` marca con `data-offscreen` las secciones que no se ven y sus animaciones decorativas (brillos, ecualizador, pulso) se pausan. Aunque no se vean, piden cuadros todo el tiempo (#109).
 - **Brillos sin `filter: blur` animado:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil.
 - **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
 - **Peso:** el HTML no repite SVG (íconos como sprite, [010](../03-decisiones/010-iconos-sprite.md)). Martian Mono solo se importa en latín; Geist conserva sus subsets porque las flechas (→ ↗) están en `symbols2`, y el navegador solo baja los que usa.
