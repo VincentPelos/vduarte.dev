@@ -13,8 +13,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 - **Última versión:** v0.3.1 (2026-10-09): perfil real, constelaciones, rendimiento y Docker.
 - **Hecho antes de v0.4.0:** optimización de rendimiento y duplicación (#71–#75) e imagen Docker (#76, entró por `main` y se sincronizó con `develop` en #77). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
-- **En curso (v0.4.0):** entrada del agujero negro por colapso (#83, [decisión 012](03-decisiones/012-entrada-colapso.md)). Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito siguiente:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Hecho en v0.4.0:** entrada del agujero negro por colapso (#83, [decisión 012](03-decisiones/012-entrada-colapso.md)); Lighthouse solo a mano antes de cada versión menor (#85, [decisión 013](03-decisiones/013-lighthouse-manual.md)). Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
+- **Pendiente para cerrar v0.4.0 Movimiento:** reveals (#87), Lenis (#88), nav activa (#89) y accesibilidad de enlaces (#90). Después, Lighthouse a mano sobre `develop` y release.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
