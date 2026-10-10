@@ -1,7 +1,8 @@
 name: Lighthouse
 
+# Solo a mano, sobre develop, antes de cada versión menor o mayor (decisión 013).
 on:
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: lighthouse-${{ github.ref }}
@@ -34,7 +35,6 @@ jobs:
         with:
           configPath: ./.github/lighthouserc.json
           uploadArtifacts: true
-          temporaryPublicStorage: true
 
       - name: Resumen de puntajes
         if: always() && steps.lhci.outputs.manifest
@@ -44,7 +44,7 @@ jobs:
           LINKS: ${{ steps.lhci.outputs.links }}
         with:
           script: |
-            // Se escribe en el Job Summary (no en el PR) para no generar notificaciones.
+            // Se escribe en el Job Summary para no generar notificaciones.
             const manifest = JSON.parse(process.env.MANIFEST);
             const links = JSON.parse(process.env.LINKS || '{}');
             const pct = (v) => (v == null ? '—' : String(Math.round(v * 100)));
@@ -71,7 +71,7 @@ jobs:
                 ...rows,
               ])
               .addRaw(
-                `<sub>Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
+                `<sub>${context.ref.replace('refs/heads/', '')} · commit ${context.sha.slice(0, 7)} · mediana de 3 ejecuciones · perfil móvil por defecto de Lighthouse</sub>`,
                 true,
               )
               .write();
