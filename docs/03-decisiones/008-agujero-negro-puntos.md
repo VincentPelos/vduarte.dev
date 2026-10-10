@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Reemplazada en parte por 011 (trayectorias precalculadas)
+estado: Reemplazada en parte por 011 (trayectorias precalculadas) y 015 (agujero quieto como horizonte)
 fecha: 2026-10-08
 ---
 

@@ -95,6 +95,8 @@ export const siteSchema = z.object({
   footerNote: z.string().min(1),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
+  /** Aviso al pie del hero para seguir bajando (decisión 015). */
+  scrollCue: z.string().min(1),
   /** Etiquetas de las tarjetas del bento "Sobre mí". */
   bento: z.object({
     about: z.string().min(1),

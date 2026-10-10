@@ -39,6 +39,7 @@
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
+    "scrollCue": "desliza",
     "bento": {
       "about": "Sobre mí",
       "clock": "Hora local",

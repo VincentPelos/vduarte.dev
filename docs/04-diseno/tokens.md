@@ -54,7 +54,7 @@ Reemplaza a la paleta Sangre (`#ff0040`, `#9b00ff`, `#ff8a00`) desde la decisió
 | Texto | **Geist** 300–700 | Párrafos, botones |
 | Utilidad | **Geist Mono** 400–500 | Labels, fechas, chips, nav |
 
-Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clamp(2.1rem, 6.5vw, 4.2rem)`, "¿Hablamos?" `clamp(3rem, 13vw, 10rem)`, interletrado negativo (`-0.04em`) en display.
+Escala clave: nombre `clamp(2.2rem, 6.6vw, 5.4rem)` (centrado, en una línea desde 640px), títulos de sección `clamp(2.1rem, 6.5vw, 4.2rem)`, "¿Hablamos?" `clamp(3rem, 13vw, 10rem)`, interletrado negativo (`-0.04em`) en display.
 
 ## Layout
 
@@ -68,8 +68,9 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 
 ## Movimiento
 
-- **Agujero negro del hero:** celdas de 6 px, velocidad `65%`, escala `160%`, Doppler activado; deambula solo (no sigue al mouse), pausa fuera de pantalla. Las letras cercanas se comban con aberración cromática.
-- **Hero como diapositiva:** pantalla completa y pegado arriba; el portafolio sube encima como una hoja (borde redondeado de 28 px, línea `--line-hi`) y el hero se oscurece hasta 25 % ([decisión 014](../03-decisiones/014-hero-diapositiva.md)).
+- **Agujero negro del hero:** celdas de 6 px, velocidad `65%`, escala `160%`, Doppler activado. Composición horizonte: quieto, 3,2 veces más grande y con el centro bajo la pantalla (112 %; 102 % bajo 760px), el disco cruza la parte baja ([decisión 015](../03-decisiones/015-caida-al-agujero.md)). Pausa fuera de pantalla. Las letras cercanas se comban con aberración cromática, con la lente a la escala de antes.
+- **Hero como diapositiva:** pantalla completa y pegado arriba ([decisión 014](../03-decisiones/014-hero-diapositiva.md)), con «desliza ↓» al pie.
+- **Caída al agujero:** 0,6 pantallas de scroll; la cámara cae en la sombra por encima del disco y a 90 % la pantalla queda negra; el texto se apaga y sube 70 px en el primer 45 %. El portafolio llega sin borde. Sin caída (movimiento reducido), la hoja conserva su borde redondeado de 28 px ([decisión 015](../03-decisiones/015-caida-al-agujero.md)).
 - **Entrada del agujero negro:** al terminar el precálculo, la sombra crece hasta cubrir el hero (520 ms, `ease-in` cúbico), se mantiene 140 ms y se contrae de vuelta al agujero (900 ms, `ease-out` exponencial), con un borde de puntos de la paleta y 40 % de desorden de celdas. El texto queda encima ([decisión 012](../03-decisiones/012-entrada-colapso.md)).
 - **Cinemática de constelaciones:** cielo fijo de puntos detrás de la página; en cada sección las estrellas forman su símbolo y viajan en arco al siguiente con el scroll ([decisión 009](../03-decisiones/009-cinematica-constelaciones.md)).
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.

@@ -52,6 +52,26 @@ const COLLAPSE_SHRINK_MS = 900;
 const COLLAPSE_EDGE = 0.4;
 /** Radio de la sombra en radios de Schwarzschild: el colapso empieza y termina ahí. */
 const SHADOW_RS = 2.6;
+/**
+ * Composición del hero (decisión 015): el agujero, quieto y grande, cruza la parte baja de la
+ * pantalla como un horizonte. Tamaño sobre la escala de siempre y centro en fracción del alto.
+ */
+const HOLE_SIZE = 3.2;
+const HOLE_Y = 1.12;
+const HOLE_Y_SMALL = 1.02;
+/**
+ * Caída al agujero (decisión 015): con el scroll, la cámara cae en la sombra hasta que la
+ * pantalla queda negra. Largo en pantallas de scroll, punto de la caída en que queda negro,
+ * y el punto de caída, en Rs sobre el centro de la sombra (se entra por encima del disco).
+ */
+const FALL_LEN = 0.6;
+const FALL_BLACK = 0.9;
+const FALL_ABOVE = 1.5;
+/** El texto se apaga en esta fracción de la caída y sube estos px. */
+const FALL_TEXT_OUT = 0.45;
+const FALL_TEXT_RISE = 70;
+/** Tabla fina para el final de la caída: cubre hasta este radio (Rs) con la misma resolución. */
+const FINE_EXTENT = 6;
 
 const VERTEX = `
   attribute vec2 aPos;
@@ -74,7 +94,7 @@ const COMMON = `
 /** Precálculo: un rayo por texel de la tabla. `uOut` elige qué datos escribe esta pasada. */
 const BAKE = `
   ${COMMON}
-  uniform float uSize, uOut, uDoppler;
+  uniform float uSize, uOut, uDoppler, uExtent;
   const float D = 32.;    // distancia del observador
   const float TILT = .1;
 
@@ -86,7 +106,7 @@ const BAKE = `
   }
 
   void main() {
-    vec2 rel = (gl_FragCoord.xy / uSize - .5) * 2. * BMAX;
+    vec2 rel = (gl_FragCoord.xy / uSize - .5) * 2. * uExtent;
     float b = length(rel);
     if (b > BMAX + .5) { gl_FragColor = vec4(0.); return; }
     float cr = cos(ROLL), sr = sin(ROLL);
@@ -146,8 +166,8 @@ const BAKE = `
 
 const TRACE = `
   ${COMMON}
-  uniform vec2 uHole;
-  uniform float uPx, uTime, uInt, uCell;
+  uniform vec2 uHole, uSkyC;
+  uniform float uPx, uTime, uInt, uCell, uExtent, uSkyZoom;
   uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
 
   float noise(vec2 p) {
@@ -167,14 +187,17 @@ const TRACE = `
     return vec4(c, size);
   }
 
+  // Durante la caída, el cielo se abre desde el punto de caída (las estrellas se alejan).
+  vec4 skyAt(vec2 look) { return sky(uSkyC + (look - uSkyC) / uSkyZoom); }
+
   void main() {
     vec2 cc = gl_FragCoord.xy * uCell;               // centro de la celda, en px CSS
     float cr = cos(ROLL), sr = sin(ROLL);
     mat2 rot = mat2(cr, -sr, sr, cr);
     vec2 rel = rot * (cc - uHole) / uPx;
-    if (length(rel) > BMAX) { gl_FragColor = sky(cc); return; }
+    if (length(rel) > min(BMAX, uExtent)) { gl_FragColor = skyAt(cc); return; }
 
-    vec2 uv = rel / (2. * BMAX) + .5;
+    vec2 uv = rel / (2. * uExtent) + .5;
     vec4 t4 = texture2D(uLut4, uv), t5 = texture2D(uLut5, uv);
     float n = floor(t5.b * 255. + .5);
     vec3 emit = vec3(0.); float trans = 1.;
@@ -201,7 +224,7 @@ const TRACE = `
     if (t5.a < .5) {
       vec4 tl = texture2D(uLut0, uv);
       vec2 dv = vec2(unpack16(tl.rg), unpack16(tl.ba)) * 2. - 1.;
-      s = sky(cc + sign(dv) * dv * dv * LP * uPx);
+      s = skyAt(cc + sign(dv) * dv * dv * LP * uPx);
       s.rgb *= trans;
     }
     // disco en la grilla: el punto crece por escalones con el brillo
@@ -222,10 +245,14 @@ const DRAW = `
   // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado) y si fuera de ella
   // todavía no se ve la escena (1 mientras crece).
   uniform float uCover, uCoverOnly, uEdge;
+  // Caída: el texto se apaga (alfa) y sube (px).
+  uniform float uTextAlpha, uTextRise;
+  // Escala de la lente del texto: la de siempre, aunque el agujero ahora sea más grande.
+  uniform float uLensPx;
 
   vec4 textAt(vec2 px) {
-    vec2 uv = px / uRes;
-    return (uv.x < 0. || uv.y < 0. || uv.x > 1. || uv.y > 1.) ? vec4(0.) : texture2D(uText, uv);
+    vec2 uv = (px - vec2(0., uTextRise)) / uRes;
+    return (uv.x < 0. || uv.y < 0. || uv.x > 1. || uv.y > 1.) ? vec4(0.) : texture2D(uText, uv) * uTextAlpha;
   }
 
   void main() {
@@ -247,12 +274,12 @@ const DRAW = `
     if (uLens < .5) { gl_FragColor = vec4(col, dotAlpha); return; }
 
     // las letras resisten: cerca del agujero se comban y cada canal se dobla distinto
-    vec2 rel = (px - uHole) / uPx;
+    vec2 rel = (px - uHole) / uLensPx;
     float r2 = dot(rel, rel);
     vec3 ks = vec3(.8, 1., 1.22) * 6.5 * (1. - smoothstep(4., 10., sqrt(r2)));
     float textAlpha = 0.;
     for (int i = 0; i < 3; i++) {
-      vec4 t = textAt(uHole + rel * (1. - ks[i] / (r2 + 5.)) * uPx);
+      vec4 t = textAt(uHole + rel * (1. - ks[i] / (r2 + 5.)) * uLensPx);
       col[i] = mix(dotAlpha > 0. ? col[i] : t[i], t[i], t.a);
       textAlpha = max(textAlpha, t.a);
     }
@@ -334,8 +361,11 @@ function drawText(section: HTMLElement, target: HTMLCanvasElement, dpr: number) 
 
 /** Px por radio de Schwarzschild para una escena de `width` × `height`. */
 function pxPerRsFor(width: number, height: number): number {
-  return Math.max(8, Math.min(width, height) * 0.022) * SCALE;
+  return Math.max(8, Math.min(width, height) * 0.022) * SCALE * HOLE_SIZE;
 }
+
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2);
 
 export function mount(
   section: HTMLElement,
@@ -401,24 +431,49 @@ export function mount(
       Math.round((80 * pxPerRsFor(container.clientWidth, container.clientHeight)) / CELL),
     ),
   );
-  const lut = Array.from({ length: LUT_TEXTURES }, () => {
-    const tex = texture(gl, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, lutSize, lutSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    const fb = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-    return { tex, fb };
-  });
+  const makeLut = () =>
+    Array.from({ length: LUT_TEXTURES }, () => {
+      const tex = texture(gl, gl.NEAREST);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        lutSize,
+        lutSize,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        null,
+      );
+      const fb = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      return { tex, fb };
+    });
+  // La tabla de siempre (20 Rs) y, si hay caída, una fina para el final (sin animación no hace falta).
+  const tables = [
+    { lut: makeLut(), extent: 20 },
+    ...(reducedMotion ? [] : [{ lut: makeLut(), extent: FINE_EXTENT }]),
+  ];
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.useProgram(trace);
-  lut.forEach((_, i) => gl.uniform1i(loc(trace, `uLut${i}`), 2 + i));
+  tables[0].lut.forEach((_, i) => gl.uniform1i(loc(trace, `uLut${i}`), 2 + i));
+
+  // Espacio de scroll de la caída, entre el hero y el portafolio (decisión 015).
+  const fallSpace = reducedMotion ? null : document.querySelector<HTMLElement>('[data-hero-fall]');
+  if (fallSpace) {
+    fallSpace.style.height = `${FALL_LEN * 100}svh`;
+    document.documentElement.dataset.fall = '';
+  }
 
   let width = 1,
     height = 1,
     cols = 1,
     rows = 1,
     dpr = 1,
-    pxPerRs = 1;
+    pxPerRs = 1,
+    fallZoom = 1,
+    fineReady = false;
 
   const uploadText = () => {
     drawText(section, textCanvas, dpr);
@@ -438,6 +493,14 @@ export function mount(
     rows = Math.ceil(height / CELL);
     pxPerRs = pxPerRsFor(width, height);
     section.style.setProperty('--hole-px', String(pxPerRs));
+    // Zoom con el que la sombra cubre la pantalla con el punto de caída al centro.
+    fallZoom = 1;
+    while (
+      fallZoom < 200 &&
+      Math.hypot(width / 2, height / 2 + FALL_ABOVE * pxPerRs * fallZoom) > 2.5 * pxPerRs * fallZoom
+    )
+      fallZoom *= 1.05;
+    fallZoom *= 1.04;
     gl.bindTexture(gl.TEXTURE_2D, cellsTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cols, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -461,29 +524,46 @@ export function mount(
 
   let time = 0;
   const render = () => {
+    // Caída (decisión 015): cuánto del espacio de scroll ya se recorrió.
+    const fall = fallSpace ? clamp01(scrollY / Math.max(1, fallSpace.offsetHeight)) : 0;
+    const k = clamp01(fall / FALL_BLACK);
+    const zoom = 1 + k ** 3 * (fallZoom - 1);
+    const px = pxPerRs * zoom;
+    // El punto de caída (sobre la sombra) viaja al centro y el agujero queda bajo él.
+    // Coordenadas de pantalla, con y hacia abajo.
     const small = width < 760;
-    // Deambula solo y lento; de vez en cuando cruza el nombre.
-    const hole = [
-      width * ((small ? 0.5 : 0.6) + 0.32 * Math.sin(time * 0.055)),
-      height * (0.5 + 0.26 * Math.sin(time * 0.083 + 1.3)),
-    ];
+    const q0y = height * (small ? HOLE_Y_SMALL : HOLE_Y) - FALL_ABOVE * pxPerRs;
+    const qx = width / 2;
+    const qy = q0y + (height / 2 - q0y) * easeInOut(k);
+    const holeY = qy + FALL_ABOVE * px;
+    const hole = [qx, height - holeY];
     // Se comparte en px de la ventana para que la cinemática haga escapar estrellas del disco.
     const box = container.getBoundingClientRect();
-    shared.x = box.left + hole[0];
-    shared.y = box.top + height - hole[1];
-    shared.px = pxPerRs;
+    shared.x = box.left + qx;
+    shared.y = box.top + holeY;
+    shared.px = px;
     shared.time = time;
     shared.ready = true;
+
+    // Al final de la caída se ve poco alrededor de la sombra: si toda la pantalla cae dentro de
+    // la tabla fina, se usa esa, que tiene más detalle de cerca.
+    const reach = Math.hypot(width / 2, Math.max(holeY, height - holeY)) / px;
+    const table = fineReady && reach < FINE_EXTENT * 0.98 ? tables[1] : tables[0];
+    const out = clamp01(fall / FALL_TEXT_OUT);
+    section.style.setProperty('--fall-out', String(out));
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.viewport(0, 0, cols, rows);
     gl.useProgram(trace);
-    lut.forEach(({ tex }, i) => {
+    table.lut.forEach(({ tex }, i) => {
       gl.activeTexture(gl.TEXTURE2 + i);
       gl.bindTexture(gl.TEXTURE_2D, tex);
     });
+    gl.uniform1f(loc(trace, 'uExtent'), table.extent);
+    gl.uniform2f(loc(trace, 'uSkyC'), qx, height - qy);
+    gl.uniform1f(loc(trace, 'uSkyZoom'), 1 + k ** 3 * (zoom - 1) * 0.12);
     gl.uniform2fv(loc(trace, 'uHole'), hole);
-    gl.uniform1f(loc(trace, 'uPx'), pxPerRs);
+    gl.uniform1f(loc(trace, 'uPx'), px);
     gl.uniform1f(loc(trace, 'uTime'), time);
     gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
     gl.uniform1f(loc(trace, 'uCell'), CELL);
@@ -504,8 +584,11 @@ export function mount(
     gl.uniform2fv(loc(draw, 'uHole'), hole);
     gl.uniform1f(loc(draw, 'uCell'), CELL);
     gl.uniform1f(loc(draw, 'uDpr'), dpr);
-    gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
+    gl.uniform1f(loc(draw, 'uPx'), px);
     gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
+    gl.uniform1f(loc(draw, 'uTextAlpha'), 1 - out);
+    gl.uniform1f(loc(draw, 'uTextRise'), out * FALL_TEXT_RISE);
+    gl.uniform1f(loc(draw, 'uLensPx'), px / HOLE_SIZE);
     const [cover, coverOnly] = collapse(hole);
     gl.uniform1f(loc(draw, 'uCover'), cover);
     gl.uniform1f(loc(draw, 'uCoverOnly'), coverOnly);
@@ -561,9 +644,12 @@ export function mount(
 
   // Precálculo repartido entre cuadros: cada trabajo es una franja de una textura de la tabla.
   // `--hole-progress` (0..1) mueve la animación de carga del hero.
+  // Primero la tabla de siempre (la escena aparece al terminarla); después, la fina de la caída.
   const strip = Math.ceil(lutSize / LUT_STRIPS);
-  const jobs = Array.from({ length: LUT_TEXTURES * LUT_STRIPS }, (_, i) => ({
-    out: Math.floor(i / LUT_STRIPS),
+  const perTable = LUT_TEXTURES * LUT_STRIPS;
+  const jobs = Array.from({ length: perTable * tables.length }, (_, i) => ({
+    table: Math.floor(i / perTable),
+    out: Math.floor((i % perTable) / LUT_STRIPS),
     y: (i % LUT_STRIPS) * strip,
   }));
   let done = 0,
@@ -580,8 +666,6 @@ export function mount(
 
   const reveal = () => {
     performance.measure('black-hole:bake', { start: bakeStart });
-    gl.deleteProgram(bake);
-    lut.forEach(({ fb }) => gl.deleteFramebuffer(fb));
     baked = true;
     if (reducedMotion) {
       // Cuadro quieto detrás del texto real, sin colapso.
@@ -604,19 +688,27 @@ export function mount(
     gl.enable(gl.SCISSOR_TEST);
     const limit = Math.min(jobs.length, done + BAKE_MAX_JOBS);
     do {
-      const { out, y } = jobs[done++];
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lut[out].fb);
+      const { table, out, y } = jobs[done++];
+      gl.bindFramebuffer(gl.FRAMEBUFFER, tables[table].lut[out].fb);
       gl.scissor(0, y, lutSize, strip);
       gl.uniform1f(loc(bake, 'uOut'), out);
+      gl.uniform1f(loc(bake, 'uExtent'), tables[table].extent);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       // Espera a la GPU para medir de verdad cuánto costó y no pasarse del presupuesto.
       gl.finish();
     } while (done < limit && performance.now() - start < BAKE_BUDGET_MS);
     gl.disable(gl.SCISSOR_TEST);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    section.style.setProperty('--hole-progress', String(done / jobs.length));
+    if (!baked) {
+      section.style.setProperty('--hole-progress', String(Math.min(1, done / perTable)));
+      if (done >= perTable) reveal();
+    }
     if (done < jobs.length) bakeFrame = requestAnimationFrame(bakeStep);
-    else reveal();
+    else {
+      fineReady = tables.length > 1;
+      gl.deleteProgram(bake);
+      tables.forEach(({ lut }) => lut.forEach(({ fb }) => gl.deleteFramebuffer(fb)));
+    }
   };
   bakeFrame = requestAnimationFrame(bakeStep);
 
@@ -639,7 +731,10 @@ export function mount(
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
     section.classList.remove('is-lensing', 'is-loading', 'has-scene');
+    section.style.removeProperty('--fall-out');
     container.style.zIndex = '';
+    if (fallSpace) fallSpace.style.height = '';
+    delete document.documentElement.dataset.fall;
     shared.ready = false;
     canvas.remove();
     gl.getExtension('WEBGL_lose_context')?.loseContext();

@@ -32,6 +32,7 @@ const site = {
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
   prompt: { user: 'vicente@vduarte', command: 'whoami' },
+  scrollCue: 'desliza',
   labels: {
     email: 'Correo',
     github: 'GitHub',

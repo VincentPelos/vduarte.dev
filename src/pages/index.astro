@@ -15,12 +15,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     Hoja del portafolio (decisión 014): sube sobre el hero quieto. Capas: hero (z-1) < fondo de la
     hoja (z-2) < cielo de estrellas (z-3, StarSky) < contenido (z-4). [data-hero-end] marca el borde
     de la hoja: cuando pasa arriba de la pantalla, el hero quedó tapado.
+    [data-hero-fall] es el scroll de la caída al agujero (decisión 015): black-hole.ts le da alto
+    y marca html[data-fall]; ahí la hoja llega con la pantalla ya negra, sin borde.
   -->
+  <div data-hero-fall aria-hidden="true"></div>
   <div class="relative">
     <div data-hero-end aria-hidden="true" class="absolute top-0 h-px w-full"></div>
     <div
       aria-hidden="true"
-      class="absolute inset-0 z-[2] rounded-t-[28px] border-t border-line-hi bg-bg shadow-[0_-30px_60px_rgb(0_0_0/0.8)]"
+      class="absolute inset-0 z-[2] rounded-t-[28px] border-t border-line-hi bg-bg shadow-[0_-30px_60px_rgb(0_0_0/0.8)] [html[data-fall]_&]:rounded-none [html[data-fall]_&]:border-0 [html[data-fall]_&]:shadow-none"
     ></div>
     <div class="relative z-[4]">
       <About />

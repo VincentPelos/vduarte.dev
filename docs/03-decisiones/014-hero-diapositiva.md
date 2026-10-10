@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Aceptada
+estado: Reemplazada en parte por 015 (caída al agujero)
 fecha: 2026-10-10
 ---
 
@@ -12,7 +12,7 @@ El hero medía lo que su texto y la escena del agujero negro se cortaba en su bo
 ## Decisión
 - **El hero ocupa la pantalla entera** (`min-h-svh`) y queda pegado arriba (`sticky`). El portafolio es una **hoja** que sube encima: borde superior redondeado (28 px), línea `--line-hi` y sombra.
 - **Capas** (en `pages/index.astro`): hero `z-1` < fondo de la hoja `z-2` < cielo de estrellas `z-3` < contenido `z-4`. `main` no tiene z-index propio para que se ordenen entre sí; así las estrellas se ven sobre la hoja y nunca sobre el hero.
-- **Se oscurece** hasta 25 % de opacidad mientras la hoja lo tapa, con una animación ligada al scroll (`animation-timeline: scroll()`), sin JS. Donde no hay soporte o con movimiento reducido, solo queda tapado.
+- **Se oscurece** hasta 25 % de opacidad mientras la hoja lo tapa, con una animación ligada al scroll (`animation-timeline: scroll()`), sin JS. Donde no hay soporte o con movimiento reducido, solo queda tapado. _Reemplazado: con la caída al agujero, el portafolio llega con la pantalla negra y la hoja no tiene borde ([decisión 015](015-caida-al-agujero.md))._
 - **`[data-hero-end]`** marca el borde de la hoja. Lo usan el agujero negro (se pausa cuando el borde pasa arriba de la pantalla) y la nav (`~/` está activo mientras el borde está bajo el centro).
 - La cinemática de constelaciones toma el inicio de la página como lugar del hero y el borde de la hoja como fin de su cielo.
 - Aplica a todos los tamaños.

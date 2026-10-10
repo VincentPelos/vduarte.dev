@@ -30,7 +30,7 @@
   --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, Menlo, monospace;
 
-  --text-name: clamp(2.5rem, 10.5vw, 7.5rem);
+  --text-name: clamp(2.2rem, 6.6vw, 5.4rem);
   --text-section: clamp(2.1rem, 6.5vw, 4.2rem);
   --text-cta: clamp(3rem, 13vw, 10rem);
   --tracking-display: -0.04em;
@@ -44,6 +44,13 @@
   --animate-drift: drift 18s ease-in-out infinite alternate;
 
   --animate-blink: blink 1.05s steps(1) infinite;
+  --animate-nudge: nudge 1.6s ease-in-out infinite;
+
+  @keyframes nudge {
+    50% {
+      translate: 0 6px;
+    }
+  }
 
   @keyframes blink {
     50% {
@@ -228,26 +235,6 @@
     scale: var(--hole-progress);
     box-shadow: 0 0 calc(var(--hole-px, 14) * 1.5px)
       color-mix(in srgb, var(--color-c2) 35%, transparent);
-  }
-}
-
-/*
- * Hero como diapositiva (decisión 014): se oscurece mientras la hoja del portafolio lo tapa.
- * Va con el scroll, sin JS; donde no hay `animation-timeline` el hero solo queda tapado.
- */
-@keyframes hero-dim {
-  to {
-    opacity: 0.25;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    [data-hero] {
-      animation: hero-dim linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100svh;
-    }
   }
 }
 

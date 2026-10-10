@@ -4,14 +4,17 @@ import Button from '../../ui/Button.astro';
 
 const site = await getSite();
 
-const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
+const { name, role, tagline, prompt, scrollCue, labels, github, linkedin, cvPath } = site;
+
+// Lo que no dibuja WebGL (cursor, botones, aviso) se apaga y sube con la caída (--fall-out).
+const falling = 'opacity-[calc(1-var(--fall-out,0))] translate-y-[calc(var(--fall-out,0)*-70px)]';
 ---
 
 <section
   id="inicio"
   data-hero
   data-constellation-section="hero"
-  class="group/hero sticky top-0 isolate z-[1] flex min-h-svh items-center overflow-hidden"
+  class="group/hero sticky top-0 isolate z-[1] flex min-h-svh items-start overflow-hidden"
 >
   <!--
     Respaldo sin WebGL: una grilla de puntos tenue en CSS (6px = CELL de lib/scene.ts), que se
@@ -19,8 +22,9 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
     [data-hero-scene] por encima del texto y lo redibuja deformado (`.is-lensing`); el texto real
     queda transparente pero sigue ahí para lectores de pantalla. Con reduced-motion, la escena
     va detrás y el texto real queda visible.
-    Es una diapositiva de pantalla completa que queda quieta mientras el portafolio la tapa
-    (decisión 014): así la escena nunca se corta a media pantalla.
+    Es una diapositiva de pantalla completa (decisión 014). Composición horizonte: el agujero,
+    quieto, cruza la parte baja y el texto va centrado arriba. Al bajar, la cámara cae en la sombra
+    hasta que todo queda negro y de ahí sale el portafolio (decisión 015).
   -->
   <div
     aria-hidden="true"
@@ -32,28 +36,35 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
   -->
   <div
     aria-hidden="true"
-    class="hole-loader pointer-events-none absolute top-1/4 left-1/2 -z-[5] min-[760px]:left-[60%]"
+    class="hole-loader pointer-events-none absolute top-[102%] left-1/2 -z-[5] min-[760px]:top-[112%]"
   ></div>
   <div data-hero-scene aria-hidden="true" class="pointer-events-none absolute inset-0 z-10"></div>
 
-  <div class="wrap grid gap-[26px] pt-[88px] pb-16">
+  <div class="wrap grid justify-items-center gap-[22px] pt-[clamp(96px,16vh,150px)] pb-16 text-center">
     <p
       data-lens
-      class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted group-[.is-lensing]/hero:text-transparent"
+      class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted opacity-[calc(1-var(--fall-out,0))] group-[.is-lensing]/hero:text-transparent"
     >
       <span class="text-fg group-[.is-lensing]/hero:text-transparent">{prompt.user}</span>:~${' '}
       {prompt.command}
       <span
         aria-hidden="true"
-        class="relative z-20 ml-0.5 inline-block h-[1.1em] w-[0.6em] animate-blink bg-fg align-[-0.2em]"
+        class:list={[
+          // El parpadeo pisa la opacidad: el cursor se apaga con su línea y solo sube aquí.
+          'relative z-20 ml-0.5 inline-block h-[1.1em] w-[0.6em] translate-y-[calc(var(--fall-out,0)*-70px)] animate-blink bg-fg align-[-0.2em]',
+        ]}
       ></span>
     </p>
     <h1
       data-lens
-      class="font-display text-name leading-[0.92] font-bold tracking-[-0.045em] group-[.is-lensing]/hero:text-transparent"
+      class="font-display text-name leading-[0.92] font-bold tracking-[-0.045em] text-balance group-[.is-lensing]/hero:text-transparent"
     >
-      {name.split(' ').map((line) => (
-        <span class="block">{line}</span>
+      <!-- Una palabra por línea en celular; desde 640px, el nombre corrido. -->
+      {name.split(' ').map((line, i) => (
+        <span class="block sm:inline">
+          {i > 0 && <span class="hidden sm:inline"> </span>}
+          {line}
+        </span>
       ))}
     </h1>
     <p
@@ -68,7 +79,7 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
     >
       {tagline}
     </p>
-    <div class="relative z-20 flex flex-wrap gap-2.5">
+    <div class:list={['relative z-20 flex flex-wrap justify-center gap-2.5', falling]}>
       <Button href="#contacto" variant="primary" arrow="down">
         {labels.email}
       </Button>
@@ -83,6 +94,16 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
       </Button>
     </div>
   </div>
+  <p
+    aria-hidden="true"
+    class:list={[
+      'absolute bottom-[calc(18px+env(safe-area-inset-bottom,0px))] left-1/2 z-20 grid -translate-x-1/2 justify-items-center gap-1.5 font-mono text-[0.72rem] leading-none text-muted',
+      falling,
+    ]}
+  >
+    {scrollCue}
+    <span class="animate-nudge text-fg">↓</span>
+  </p>
 </section>
 
 <script>
