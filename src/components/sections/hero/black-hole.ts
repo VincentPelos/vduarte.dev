@@ -11,8 +11,8 @@
  * - Pasada 2 (pantalla): dibuja cada celda como un punto y encima el texto del hero, que
  *   resiste la gravedad: solo se comba y se separa en colores (aberración cromática).
  *
- * Con `prefers-reduced-motion`, o si WebGL va por software (sin GPU): un cuadro estático detrás
- * del texto real, sin deformarlo.
+ * Con `prefers-reduced-motion`: un cuadro estático detrás del texto real, sin deformarlo. Si WebGL
+ * va por software (sin GPU), no se monta: queda el respaldo sin WebGL.
  *
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
@@ -352,9 +352,13 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     alpha: true,
   });
   if (!gl) return () => {};
-  // Sin GPU, animar la escena dibuja cada cuadro en la CPU y traba la página: se muestra quieta,
-  // como con movimiento reducido (#109).
-  const reducedMotion = options.reducedMotion || isSoftwareRenderer(webglRenderer(gl));
+  // Sin GPU, WebGL corre en la CPU: solo compilar los shaders tarda segundos y cada cuadro traba
+  // la página. Se queda el respaldo sin WebGL (grilla de puntos y texto normal) (#109).
+  if (isSoftwareRenderer(webglRenderer(gl))) {
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return () => {};
+  }
+  const { reducedMotion } = options;
 
   let bake: WebGLProgram, trace: WebGLProgram, draw: WebGLProgram;
   try {

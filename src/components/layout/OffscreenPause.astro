@@ -1,0 +1,16 @@
+<script>
+  // Las animaciones CSS decorativas (brillos, ecualizador, pulso) se pausan mientras su sección
+  // está fuera de pantalla (#109): aunque no se vean, piden cuadros al navegador todo el tiempo.
+  // Sin JS siguen animando, igual que hoy.
+  const sections = document.querySelectorAll<HTMLElement>('main section');
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries)
+        entry.target.toggleAttribute('data-offscreen', !entry.isIntersecting);
+    },
+    // Un píxel hacia adentro: Sobre mí empieza justo bajo el hero, y tocar el borde ya cuenta
+    // como visible.
+    { rootMargin: '-1px 0px' },
+  );
+  sections.forEach((section) => io.observe(section));
+</script>
