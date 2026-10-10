@@ -10,6 +10,9 @@
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
 
+import { hole as shared } from '../../../lib/hole';
+import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
+
 interface Options {
   /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar. */
   reducedMotion: boolean;
@@ -18,7 +21,6 @@ interface Options {
 // Valores elegidos por el autor en el laboratorio.
 const SPEED = 0.65;
 const SCALE = 1.6;
-const CELL = 6; // px por celda de la grilla
 const INTENSITY = 1;
 const DOPPLER = 1;
 
@@ -265,12 +267,15 @@ export function mount(
   const textTex = texture(gl);
   const textCanvas = document.createElement('canvas');
 
-  const css = getComputedStyle(document.documentElement);
-  const palette = ['--color-c1', '--color-c2', '--color-c3'].map((name) => {
-    const hex = css.getPropertyValue(name).trim().replace('#', '');
-    return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
-  });
-  const loc = (program: WebGLProgram, name: string) => gl.getUniformLocation(program, name);
+  const palette = readPalette().map((rgb) => rgb.map((v) => v / 255));
+  // Las ubicaciones de los uniforms no cambian: se buscan una vez y no en cada cuadro.
+  const locations = new Map<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
+  const loc = (program: WebGLProgram, name: string) => {
+    let byName = locations.get(program);
+    if (!byName) locations.set(program, (byName = new Map()));
+    if (!byName.has(name)) byName.set(name, gl.getUniformLocation(program, name));
+    return byName.get(name) ?? null;
+  };
   for (const program of [trace, draw]) {
     gl.useProgram(program);
     palette.forEach((rgb, i) => gl.uniform3fv(loc(program, `uC${i + 1}`), rgb));
@@ -294,7 +299,7 @@ export function mount(
     width = container.clientWidth;
     height = container.clientHeight;
     if (!width || !height) return;
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = canvasDpr();
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     cols = Math.ceil(width / CELL);
@@ -328,6 +333,13 @@ export function mount(
       width * ((small ? 0.5 : 0.6) + 0.32 * Math.sin(time * 0.055)),
       height * (0.5 + 0.26 * Math.sin(time * 0.083 + 1.3)),
     ];
+    // Se comparte en px de la ventana para que la cinemática haga escapar estrellas del disco.
+    const box = container.getBoundingClientRect();
+    shared.x = box.left + hole[0];
+    shared.y = box.top + height - hole[1];
+    shared.px = pxPerRs;
+    shared.time = time;
+    shared.ready = true;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.viewport(0, 0, cols, rows);
@@ -397,6 +409,7 @@ export function mount(
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
     section.classList.remove('is-lensing');
+    shared.ready = false;
     canvas.remove();
     gl.getExtension('WEBGL_lose_context')?.loseContext();
   };

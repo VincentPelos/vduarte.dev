@@ -1,29 +1,43 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
+import { linkAttrs } from '../../../../lib/links';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
-  links: { href: string; text: string }[];
+  pendingLabel: string;
+  links: { href?: string; text: string }[];
 }
 
-const { label, links } = Astro.props;
+const { label, pendingLabel, links } = Astro.props;
 ---
 
-<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:links]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="justify-between [grid-area:links]">
   <div>
-    {links.map(({ href, text }) => (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener"
-        class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
-      >
-        {text}
-        <span aria-hidden="true" class="font-mono text-muted">
-          ↗
+    {links.map(({ href, text }) =>
+      href ? (
+        <a
+          href={href}
+          {...linkAttrs(href)}
+          class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
+        >
+          {text}
+          <span aria-hidden="true" class="font-mono text-muted">
+            ↗
+          </span>
+        </a>
+      ) : (
+        <span
+          role="link"
+          aria-disabled="true"
+          title={pendingLabel}
+          class="flex items-center justify-between border-t border-line py-2 font-medium text-muted"
+        >
+          {text}
+          <span aria-hidden="true" class="font-mono">
+            ↗
+          </span>
         </span>
-      </a>
-    ))}
+      ),
+    )}
   </div>
-</GlassCard>
+</BentoCard>

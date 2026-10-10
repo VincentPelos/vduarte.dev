@@ -1,10 +1,10 @@
 # vduarte.dev
 
-Portafolio profesional de **Vicente Duarte**, Ingeniero de Software & Datos: desarrollo web, automatización y Business Intelligence. Es también la entrega final de **ISI802 Business Intelligence (AIEP)**, que pide publicar el caso de estudio de Colchagua.
+Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de software con experiencia en soporte e infraestructura TI. Presenta proyectos web, automatización y herramientas internas. Es también la entrega final de **ISI802 Business Intelligence (AIEP)**, que pide publicar el caso de estudio de Colchagua.
 
 [![CI](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml)
 
-- **Producción:** https://vduarte.dev (pendiente de despliegue)
+- **Producción:** desplegado con Coolify; por ahora en https://preview.vduarte.dev (acceso restringido)
 - **Documentación completa:** [`docs/00-index.md`](docs/00-index.md)
 
 ## Stack
@@ -14,7 +14,7 @@ Portafolio profesional de **Vicente Duarte**, Ingeniero de Software & Datos: des
 | Framework  | [Astro](https://astro.build) con TypeScript strict, sin framework de UI ([por qué](docs/03-decisiones/001-astro-sin-framework-ui.md)) |
 | Estilos    | Tailwind CSS v4 con tokens propios en `src/styles/global.css`                                                                         |
 | Contenido  | Un JSON por sección validado con zod ([por qué](docs/03-decisiones/002-json-por-seccion.md))                                          |
-| Animación  | Motion, Lenis y WebGL directo (agujero negro del hero)                                                                                |
+| Animación  | WebGL directo (agujero negro del hero) y canvas 2D (cielo de estrellas); Motion y Lenis llegan en v0.4.0                              |
 | Calidad    | ESLint, Prettier, Vitest, `astro check`, commitlint + husky                                                                           |
 | CI         | GitHub Actions + Lighthouse CI                                                                                                        |
 | Despliegue | Coolify en VPS propio ([por qué](docs/03-decisiones/003-despliegue-coolify.md))                                                       |
@@ -86,4 +86,4 @@ En Coolify, usar el método **Dockerfile** desde el repositorio Git y exponer el
 
 ## Uso de IA
 
-Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic), que se usa para proponer opciones con recomendación, escribir código y configuración, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó. La declaración completa estará en la página `/uso-de-ia`.
+Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic) y **Codex** (OpenAI) para proponer opciones, escribir código, ordenar contenido, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó. La declaración completa estará en la página `/uso-de-ia`.

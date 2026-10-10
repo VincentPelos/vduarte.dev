@@ -1,19 +1,21 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { getSite } from '../../../lib/content';
 import { sortByRecency } from '../../../lib/dates';
+import { linkAttrs } from '../../../lib/links';
 import { pluralize } from '../../../lib/text';
 import Chip from '../../ui/Chip.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const { current, experience: texts } = site.data.sections;
+const { current, experience: texts } = site.sections;
 const jobs = sortByRecency((await getCollection('experience')).map((entry) => entry.data));
 const since = jobs
   .map((job) => job.start)
+  .filter((start): start is string => start !== null)
   .sort()[0]
   ?.slice(0, 4);
 const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${since}`]
@@ -21,13 +23,23 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
   .join(' · ');
 ---
 
-<Section id="experiencia">
+<Section id="experiencia" constellation="experience">
   <SectionHeader file="experience.json" title={texts.title} meta={meta} />
-  <ol>
+  <!-- El margen izquierdo es la línea de tiempo de estrellas (decisión 009). -->
+  <ol data-constellation="experience" data-constellation-mode="timeline" class="pl-[76px]">
     {jobs.map((job) => (
-      <li class="grid gap-x-10 gap-y-3 border-t border-line py-[30px] last:border-b min-[721px]:grid-cols-[13rem_minmax(0,1fr)]">
+      <li
+        data-constellation-mark
+        class="grid gap-x-10 gap-y-3 border-t border-line py-[30px] last:border-b min-[721px]:grid-cols-[13rem_minmax(0,1fr)]"
+      >
         <p class="font-mono text-[0.82rem] leading-normal text-muted">
-          <Period start={job.start} end={job.end} currentLabel={current} />
+          <Period
+            start={job.start}
+            end={job.end}
+            dateNote={job.dateNote}
+            ongoing={job.ongoing}
+            currentLabel={current}
+          />
           {job.location && <span class="block">{job.location}</span>}
         </p>
         <div>
@@ -36,7 +48,7 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
             <span class="font-normal text-muted">
               ·{' '}
               {job.url ? (
-                <a href={job.url} target="_blank" rel="noopener" class="hover:text-fg">
+                <a href={job.url} {...linkAttrs(job.url)} class="hover:text-fg">
                   {job.company}
                 </a>
               ) : (

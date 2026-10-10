@@ -11,12 +11,31 @@ export const month = z
   .string()
   .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Usa el formato AAAA-MM (ej. "2023-03")');
 
-/** Periodo con `end: null` cuando sigue vigente. */
-const period = { start: month, end: month.nullable() };
+const day = z
+  .string()
+  .regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, 'Usa AAAA-MM-DD')
+  .refine((value) => {
+    const year = Number(value.slice(0, 4));
+    const month = Number(value.slice(5, 7));
+    const date = Number(value.slice(8, 10));
+    return date <= new Date(Date.UTC(year, month, 0)).getUTCDate();
+  }, 'Día inexistente en el mes');
+const date = z.union([day, month, z.string().regex(/^\d{4}$/, 'Usa AAAA, AAAA-MM o AAAA-MM-DD')]);
 
-const endAfterStart = (item: { start: string; end: string | null }) =>
-  item.end === null || item.end >= item.start;
+/** Fechas parciales permitidas cuando el autor aún no conoce el mes o el año. */
+const period = {
+  start: date.nullable(),
+  end: date.nullable(),
+  dateNote: z.string().min(1).optional(),
+  ongoing: z.boolean().optional(),
+};
+
+const endAfterStart = (item: { start: string | null; end: string | null }) =>
+  item.start === null || item.end === null || item.end >= item.start;
 const endAfterStartError = { message: '"end" no puede ser anterior a "start"', path: ['end'] };
+const hasDateNote = (item: { start: string | null; dateNote?: string }) =>
+  item.start !== null || !!item.dateNote;
+const dateNoteError = { message: 'Agrega dateNote cuando no se conoce start', path: ['dateNote'] };
 
 const plural = z.object({ one: z.string().min(1), other: z.string().min(1) });
 
@@ -42,8 +61,11 @@ export const siteSchema = z.object({
   ),
   email: z.email(),
   github: z.url(),
-  linkedin: z.url(),
-  cvPath: z.string().startsWith('/', 'Ruta dentro de public/, empezando con "/" (ej. "/cv.pdf")'),
+  linkedin: z.url().optional(),
+  cvPath: z
+    .string()
+    .startsWith('/', 'Ruta dentro de public/, empezando con "/" (ej. "/cv.pdf")')
+    .optional(),
   highlightStack: z.array(z.string().min(1)).min(1),
   nowPlaying: z.object({
     song: z.string().min(1),
@@ -84,13 +106,30 @@ export const siteSchema = z.object({
     playing: z.string().min(1),
     gaming: z.string().min(1),
     links: z.string().min(1),
+    /** Título de la ventana chica donde se forma la constelación de Sobre mí. */
+    constellation: z.string().min(1),
+  }),
+  /** Símbolo que forman las estrellas en cada sección (decisión 009). */
+  constellations: z.object({
+    about: z.string().min(1).max(3),
+    experience: z.string().min(1).max(3),
+    projects: z.string().min(1).max(3),
+    skills: z.string().min(1).max(3),
+    education: z.string().min(1).max(3),
+    contact: z.string().min(1).max(3),
   }),
   /** Títulos y textos de las secciones del home. */
   sections: z.object({
     /** Lo que se muestra en lugar del término de un periodo vigente. */
     current: z.string().min(1),
     experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
-    education: z.object({ title: z.string().min(1), degree: plural, cert: plural }),
+    education: z.object({
+      title: z.string().min(1),
+      degree: plural,
+      cert: plural,
+      training: plural,
+      folio: z.string().min(1),
+    }),
     projects: z.object({
       title: z.string().min(1),
       unit: plural,
@@ -115,6 +154,7 @@ export const siteSchema = z.object({
     github: z.string().min(1),
     linkedin: z.string().min(1),
     cv: z.string().min(1),
+    pending: z.string().min(1),
   }),
 });
 
@@ -130,7 +170,8 @@ export const experienceSchema = z
     stack: z.array(z.string().min(1)).optional(),
     url: z.url().optional(),
   })
-  .refine(endAfterStart, endAfterStartError);
+  .refine(endAfterStart, endAfterStartError)
+  .refine(hasDateNote, dateNoteError);
 
 export const educationSchema = z
   .object({
@@ -138,10 +179,12 @@ export const educationSchema = z
     institution: z.string().min(1),
     title: z.string().min(1),
     ...period,
-    type: z.enum(['degree', 'cert']),
+    type: z.enum(['degree', 'cert', 'training']),
+    folio: z.string().regex(/^\d+$/).optional(),
     url: z.url().optional(),
   })
-  .refine(endAfterStart, endAfterStartError);
+  .refine(endAfterStart, endAfterStartError)
+  .refine(hasDateNote, dateNoteError);
 
 export const skillGroupSchema = z.object({
   id,

@@ -1,15 +1,14 @@
 ---
-import { getEntry } from 'astro:content';
+import { getSite } from '../../lib/content';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const { name, role, tagline } = site.data;
+const { name, role, tagline } = site;
 const { title = `${name} · ${role}`, description = tagline } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---

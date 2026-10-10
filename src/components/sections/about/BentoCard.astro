@@ -1,0 +1,17 @@
+---
+import GlassCard from '../../ui/GlassCard.astro';
+
+interface Props {
+  /** Etiqueta mono de la esquina (`Hora local`, `Estado`…). */
+  label: string;
+  /** Clases extra: siempre el `[grid-area:…]` de la tarjeta en la grilla del bento. */
+  class: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<GlassCard class:list={['flex min-w-0 flex-col gap-3 p-[22px]', className]}>
+  <p class="label">{label}</p>
+  <slot />
+</GlassCard>

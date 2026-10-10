@@ -16,6 +16,7 @@ vduarte.dev/
 │  ├─ pull_request_template.md
 │  ├─ workflows/               ci.yml, lighthouse.yml
 │  └─ lighthouserc.json        umbrales de Lighthouse CI
+├─ .claude/skills/             skills de proyecto para agentes (prototipo-artifact)
 ├─ .husky/                     hooks de git (commit-msg)
 ├─ docs/                       esta bóveda
 ├─ .dockerignore                exclusiones del contexto de build de Docker
@@ -26,17 +27,17 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts
-│  │  │  ├─ about/             About.astro + cards/
+│  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
 │  │  │  ├─ experience/
 │  │  │  ├─ projects/
 │  │  │  ├─ skills/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseHeader, Finding, DownloadCard, charts/
-│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader
+│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon
 │  ├─ content/                 datos del sitio (JSON) y casos de estudio
 │  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)
@@ -62,9 +63,13 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un script que solo usa una sección | Al lado de su componente (`sections/hero/black-hole.ts`) |
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
+| Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
+| `target`/`rel` de un enlace | `linkAttrs()` de `src/lib/links.ts`, nunca a mano |
+| Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
 | Un test | Al lado del archivo que prueba: `lib/dates.ts` → `lib/dates.test.ts` |
+| Un proceso que repiten los agentes | `.claude/skills/<nombre>/SKILL.md` |
 
 ## Convenciones de nombres
 

@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  name: string;
+  /** Ícono de Iconify; si la tecnología no tiene, se muestran sus dos primeras letras. */
+  icon?: string;
+  /** Tamaño de la abreviatura, que depende del contenedor. */
+  fallbackClass?: string;
+}
+
+const { name, icon, fallbackClass } = Astro.props;
+---
+
+{icon ? (
+  <Icon name={icon} />
+) : (
+  <span class:list={['font-mono font-semibold', fallbackClass]}>{name.slice(0, 2)}</span>
+)}

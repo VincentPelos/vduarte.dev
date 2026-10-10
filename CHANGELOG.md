@@ -4,6 +4,32 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.3.1] - 2026-10-09
+
+Entre hitos: perfil real, cinemática de constelaciones, optimización de rendimiento e imagen Docker para el primer despliegue en Coolify.
+
+### Agregado
+
+- Skill de proyecto `prototipo-artifact` para decidir cambios visuales en artifacts antes de implementarlos (#59).
+- Cinemática de constelaciones: cielo de estrellas detrás de la página y un símbolo por sección que viaja con el scroll, escapando del agujero negro desde el hero ([decisión 009](docs/03-decisiones/009-cinematica-constelaciones.md)) (#61).
+- Imagen Docker (Node 22 + Nginx) para desplegar en Coolify y `docker build` en CI (#74).
+- Nota de [rendimiento](docs/02-arquitectura/rendimiento.md) con reglas, estado y mediciones (#67).
+
+### Cambiado
+
+- Perfil, experiencia, proyectos, skills y educación reales en lugar del contenido de ejemplo (#63).
+- La guía visual queda como histórica; `tokens.md` es la fuente de verdad del diseño (#57).
+- `pnpm dev` para probar cambios; los artifacts quedan solo para diseñar (#65).
+- La documentación es la memoria del proyecto: se actualiza en cada PR y se lee por necesidad desde el índice (#67).
+- Íconos en un sprite SVG en vez de en línea ([decisión 010](docs/03-decisiones/010-iconos-sprite.md)) (#69).
+- `getSite()`, `linkAttrs()`, `TechIcon` y `BentoCard` reemplazan código repetido, sin cambios en el HTML generado (#70).
+
+### Rendimiento
+
+- El cielo de estrellas lee el DOM una vez por cuadro (no por estrella), dibuja a ~10 fps cuando está quieto y no salta en móvil al esconderse la barra del navegador (#68).
+- Los brillos usan degradados en vez de `filter: blur` animado (#68).
+- Precarga de las fuentes del nombre y del texto; Martian Mono solo en latín (#69).
+
 ## [0.3.0] - 2026-10-08
 
 Hito **Secciones**: layout, componentes UI, todas las secciones del home y el agujero negro del hero.
@@ -65,7 +91,8 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.3.0...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.3.1...develop
+[0.3.1]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.3.1
 [0.3.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.3.0
 [0.2.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.2.0
 [0.1.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.1.0

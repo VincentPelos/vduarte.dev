@@ -1,5 +1,6 @@
 ---
-import { renderIcon } from '../../lib/icons';
+import { getIconNames } from '../../lib/content';
+import { iconSymbol } from '../../lib/icons';
 
 interface Props {
   /** Nombre de Iconify con prefijo, p. ej. `"simple-icons:python"`. */
@@ -7,7 +8,15 @@ interface Props {
   class?: string;
 }
 
-const { name, class: className = '' } = Astro.props;
+const { name, class: className } = Astro.props;
+const { id, width, height } = iconSymbol(name);
+
+// El dibujo vive una sola vez en el sprite (IconSprite); aquí solo se referencia.
+if (!(await getIconNames()).includes(name)) {
+  throw new Error(`El ícono "${name}" no está en el sprite: agrégalo a skills.json`);
+}
 ---
 
-<Fragment set:html={renderIcon(name, className ? { class: className } : {})} />
+<svg aria-hidden="true" fill="currentColor" width={width} height={height} class={className}>
+  <use href={`#${id}`} />
+</svg>

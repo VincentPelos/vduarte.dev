@@ -1,40 +1,51 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { getSite } from '../../../lib/content';
 import { sortByRecency } from '../../../lib/dates';
+import { linkAttrs } from '../../../lib/links';
 import { pluralize } from '../../../lib/text';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const { current, education: texts } = site.data.sections;
+const { current, education: texts } = site.sections;
 const items = sortByRecency((await getCollection('education')).map((entry) => entry.data));
-const count = (type: 'degree' | 'cert') => items.filter((item) => item.type === type).length;
-const meta = (['degree', 'cert'] as const)
+const count = (type: 'degree' | 'cert' | 'training') =>
+  items.filter((item) => item.type === type).length;
+const meta = (['degree', 'cert', 'training'] as const)
   .filter((type) => count(type) > 0)
   .map((type) => pluralize(count(type), texts[type]))
   .join(' · ');
 ---
 
-<Section id="educacion">
+<Section id="educacion" constellation="education">
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
   <ul>
     {items.map((item) => (
       <li class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-7 gap-y-2 border-t border-line py-[22px] last:border-b min-[621px]:grid-cols-[11rem_minmax(0,1fr)_auto]">
         <p class="col-span-full font-mono text-[0.82rem] leading-none whitespace-nowrap text-muted min-[621px]:col-span-1">
-          <Period start={item.start} end={item.end} currentLabel={current} />
+          <Period
+            start={item.start}
+            end={item.end}
+            dateNote={item.dateNote}
+            ongoing={item.ongoing}
+            currentLabel={current}
+          />
         </p>
         <p class="text-[1.06rem] font-semibold">
           {item.url ? (
-            <a href={item.url} target="_blank" rel="noopener" class="hover:text-white">
+            <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
               {item.title}
             </a>
           ) : (
             item.title
           )}
-          <span class="block text-[0.95rem] font-normal text-muted">{item.institution}</span>
+          <span class="block text-[0.95rem] font-normal text-muted">
+            {item.institution}
+            {item.folio && ` · ${texts.folio} ${item.folio}`}
+          </span>
         </p>
         <span
           class:list={[
@@ -47,4 +58,6 @@ const meta = (['degree', 'cert'] as const)
       </li>
     ))}
   </ul>
+  <!-- Cierre de la sección: aquí las estrellas forman su símbolo (decisión 009). -->
+  <div data-constellation="education" aria-hidden="true" class="mt-7 h-[150px] sm:h-[170px]"></div>
 </Section>

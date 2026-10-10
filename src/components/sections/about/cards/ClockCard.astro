@@ -1,5 +1,5 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
@@ -10,8 +10,7 @@ interface Props {
 const { label, timezone, location } = Astro.props;
 ---
 
-<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:clock]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="justify-between [grid-area:clock]">
   <div>
     <!-- Sin JS queda en --:--: la hora depende del momento de la visita, no del build. -->
     <time
@@ -23,7 +22,7 @@ const { label, timezone, location } = Astro.props;
     </time>
     <p class="mt-1 text-[0.9rem] text-muted">{location}</p>
   </div>
-</GlassCard>
+</BentoCard>
 
 <script>
   import { formatTime } from '../../../../lib/time';

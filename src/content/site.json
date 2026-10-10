@@ -1,29 +1,33 @@
 {
   "main": {
-    "name": "Vicente Duarte",
-    "role": "Ingeniero de Software & Datos",
-    "tagline": "Construyo productos web y convierto datos en decisiones, desde la base de datos hasta el dashboard.",
-    "bioTitle": "Me gusta construir cosas que funcionan rápido y datos que se entienden fácil.",
-    "bio": "Desarrollo web, automatización y Business Intelligence. Si algo se repite más de dos veces, lo automatizo; si hay datos, los convierto en algo que se entienda. Fuera del código: power metal a todo volumen, partidas de estrategia que duran demasiado y tiradas de gacha que no debería hacer.",
+    "name": "Vicente Contreras Duarte",
+    "role": "Desarrollador de Software | Soporte e Infraestructura TI",
+    "tagline": "Desarrollo software, automatizo procesos y construyo soluciones tecnológicas para resolver problemas reales.",
+    "bioTitle": "Software útil e infraestructura que funciona.",
+    "bio": "Estudio Ingeniería en Informática, mención Desarrollo de Sistemas, y tengo formación previa en Programación. Trabajo en soporte TI en la Municipalidad de Placilla, donde desarrollo plataformas, administro servicios Microsoft 365 y resuelvo problemas tecnológicos. También exploro aplicaciones CLI, automatización, inteligencia artificial y sistemas distribuidos. Me interesa crear software eficiente, mantenible y sencillo.",
     "available": true,
-    "availabilityNote": "Proyectos freelance y roles full-time",
-    "location": "Santiago, CL",
+    "availabilityNote": "Abierto a proyectos freelance, preferentemente remotos",
+    "location": "Chile",
     "timezone": "America/Santiago",
-    "email": "hola@vduarte.dev",
+    "email": "vicente.contreras.dev@gmail.com",
     "github": "https://github.com/VincentPelos",
-    "linkedin": "https://www.linkedin.com/in/CAMBIAR",
-    "cvPath": "/cv.pdf",
-    "highlightStack": ["TypeScript", "Astro", "Python", "PostgreSQL", "Power BI", "n8n", "Docker"],
+    "highlightStack": [
+      "TypeScript",
+      "JavaScript",
+      "Python",
+      "Node.js",
+      "React",
+      "SQL",
+      "Linux",
+      "Microsoft 365"
+    ],
     "nowPlaying": {
-      "song": "Through the Fire and Flames",
-      "artist": "DragonForce",
-      "album": "Inhuman Rampage"
+      "song": "Hail to the King",
+      "artist": "Avenged Sevenfold"
     },
     "nowGaming": {
-      "title": "Civilization VI",
-      "hours": 412,
-      "note": "un turno más",
-      "gacha": { "game": "Genshin Impact", "pity": 74 }
+      "title": "Total War: WARHAMMER III",
+      "note": "También juego The Battle Cats y Wuthering Waves"
     },
     "nav": [
       { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
@@ -44,7 +48,16 @@
       "stack": "Stack principal",
       "playing": "Sonando",
       "gaming": "Jugando",
-      "links": "Encuéntrame"
+      "links": "Encuéntrame",
+      "constellation": "~/constelacion"
+    },
+    "constellations": {
+      "about": "@",
+      "experience": ">_",
+      "projects": "</>",
+      "skills": "#",
+      "education": "π",
+      "contact": "?"
     },
     "sections": {
       "current": "actual",
@@ -55,15 +68,17 @@
       },
       "education": {
         "title": "Educación",
-        "degree": { "one": "título", "other": "títulos" },
-        "cert": { "one": "certificación", "other": "certificaciones" }
+        "degree": { "one": "formación", "other": "formaciones" },
+        "cert": { "one": "certificación", "other": "certificaciones" },
+        "training": { "one": "capacitación", "other": "capacitaciones" },
+        "folio": "folio"
       },
       "projects": {
         "title": "Proyectos",
         "unit": { "one": "proyecto", "other": "proyectos" },
         "featured": { "one": "destacado", "other": "destacados" },
         "repo": "repo",
-        "demo": "demo",
+        "demo": "sitio institucional",
         "caseStudy": "ver caso"
       },
       "skills": {
@@ -82,7 +97,8 @@
       "email": "Correo",
       "github": "GitHub",
       "linkedin": "LinkedIn",
-      "cv": "Descargar CV"
+      "cv": "Descargar CV",
+      "pending": "Pendiente de publicación"
     }
   }
 }
