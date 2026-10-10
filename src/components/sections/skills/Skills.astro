@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import skillsFile from '../../../content/skills.json';
 import { getSite } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
-import GlassCard from '../../ui/GlassCard.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 import TechIcon from '../../ui/TechIcon.astro';
@@ -22,24 +21,29 @@ const meta = `${pluralize(groups.length, texts.groups)} · ${pluralize(total, te
 
 <Section id="skills" constellation="skills">
   <SectionHeader file="skills.json" title={texts.title} meta={meta} constellation="skills" />
-  <div class="grid grid-cols-1 gap-3 min-[521px]:grid-cols-2 min-[961px]:grid-cols-4">
+  <!-- Filas sin tarjetas (#98): título del grupo con su cantidad y una línea de puntos; las
+       herramientas como chips con ícono. 1 columna → 2 desde 901px. -->
+  <div class="grid gap-x-14 gap-y-[30px] min-[901px]:grid-cols-2">
     {groups.map((group) => (
-      <GlassCard as="div" class="p-[22px]">
-        <h3 class="label mb-4">{group.group}</h3>
-        <ul class="grid gap-3">
+      <div data-reveal class="grid content-start gap-3">
+        <h3 class="flex items-center gap-2.5 after:h-0.5 after:flex-1 after:bg-[radial-gradient(circle,var(--color-line-hi)_1px,transparent_1.3px)] after:bg-size-[6px_2px] after:content-['']">
+          <span class="label">{group.group}</span>
+          <span class="font-mono text-[0.68rem] leading-none text-muted">{group.items.length}</span>
+        </h3>
+        <ul class="flex flex-wrap gap-1.5">
           {group.items.map((item) => (
-            <li class="flex items-center gap-3 font-medium">
+            <li class="inline-flex items-center gap-2 rounded-full border border-line bg-glass py-1.5 pr-3 pl-1.5 text-[0.88rem] leading-none font-medium backdrop-blur-xl">
               <span
                 aria-hidden="true"
-                class="grid size-7 flex-none place-items-center rounded-lg border border-line bg-glass text-[0.95rem]"
+                class="grid size-6 flex-none place-items-center rounded-full border border-line text-[0.8rem]"
               >
-                <TechIcon name={item.name} icon={item.icon} fallbackClass="text-[0.6rem]" />
+                <TechIcon name={item.name} icon={item.icon} fallbackClass="text-[0.55rem]" />
               </span>
               {item.name}
             </li>
           ))}
         </ul>
-      </GlassCard>
+      </div>
     ))}
   </div>
 </Section>
