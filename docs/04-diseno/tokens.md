@@ -61,7 +61,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - Contenedor máximo `1200px` con gutter `clamp(16px, 4vw, 40px)`.
 - Bento "sobre mí": 4 columnas → 2 (≤900px) → 1 (≤460px).
 - Proyectos: 3 columnas con `grid-auto-flow: dense`; `featured` ocupa 2.
-- Nav: píldora fija abajo y centrada; resalta la sección activa.
+- Nav: píldora fija arriba y centrada; resalta la sección que cruza el centro de la pantalla (`aria-current`, fondo `--glass-hi`).
 
 ## Movimiento
 
