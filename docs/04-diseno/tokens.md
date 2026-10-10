@@ -61,7 +61,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - Contenedor máximo `1200px` con gutter `clamp(16px, 4vw, 40px)`.
 - Bento "sobre mí": 4 columnas → 2 (≤900px) → en celular (≤460px), sobre mí, un carrusel con hora, estado, sonando, jugando y enlaces (`auto-cols-[42%]`, snap), stack y cielo.
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
-- Proyectos: 3 columnas con `grid-auto-flow: dense`; `featured` ocupa 2. En celular (≤560px) son un carrusel (`auto-cols-[84%]`, snap) con la imagen en franja `5/2`.
+- Proyectos: los destacados son tarjetas en una fila (2 columnas desde 561px, 3 desde 861px) con imagen de 160 px, relleno compacto (12–13 px) y descripción a 3 líneas; en celular, un carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás van en una lista con miniatura 4:3 (96 px; 72 px en celular).
 - Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; 1 columna → 2 desde 901px.
 - Educación: línea de vida con estrellas (`--c2`, punteada) y los años de inicio grandes en contorno (`--muted`). Las carreras son estrellas grandes con la paleta; las capacitaciones, estrellas chicas (`--soft`).
 - Nav: píldora fija arriba y centrada; resalta la sección que cruza el centro de la pantalla (`aria-current`, fondo `--glass-hi`).
