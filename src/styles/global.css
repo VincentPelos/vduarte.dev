@@ -1,7 +1,8 @@
 /* Tokens de diseño: ver docs/04-diseno/tokens.md (fuente de verdad). */
 @import 'tailwindcss';
 
-@import '@fontsource/martian-mono/700.css';
+/* Martian Mono solo en latín: se usa en títulos en español. Geist conserva sus subsets por las flechas. */
+@import '@fontsource/martian-mono/latin-700.css';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
 
