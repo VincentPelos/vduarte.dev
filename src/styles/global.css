@@ -155,6 +155,24 @@
   }
 }
 
+/*
+ * Brillo difuminado sin `filter: blur`: un degradado radial con el perfil de un círculo
+ * difuminado (blur ≈ 0,48 × su radio). Se agranda con `scale` para cubrir lo que el blur
+ * extendía, y la animación de `transform` no obliga a volver a difuminar en cada cuadro.
+ * Color en `--orb`.
+ */
+@utility glow-orb {
+  scale: 1.96;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--orb) 88%, transparent),
+    color-mix(in srgb, var(--orb) 80%, transparent) 25%,
+    color-mix(in srgb, var(--orb) 50%, transparent) 51%,
+    color-mix(in srgb, var(--orb) 15%, transparent) 77%,
+    transparent
+  );
+}
+
 /* Texto con el degradado de la paleta */
 @utility text-grad {
   background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));
