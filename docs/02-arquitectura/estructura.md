@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-08
+actualizado: 2026-10-09
 ---
 
 # Estructura de carpetas
@@ -18,6 +18,8 @@ vduarte.dev/
 │  └─ lighthouserc.json        umbrales de Lighthouse CI
 ├─ .husky/                     hooks de git (commit-msg)
 ├─ docs/                       esta bóveda
+├─ .dockerignore                exclusiones del contexto de build de Docker
+├─ Dockerfile                   build de Astro y servidor Nginx para Coolify
 ├─ public/                     archivos servidos tal cual: cv.pdf, favicon.svg, og.png
 ├─ src/
 │  ├─ assets/                  imágenes optimizadas por Astro

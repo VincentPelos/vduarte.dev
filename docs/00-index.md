@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-08
+actualizado: 2026-10-09
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -15,6 +15,7 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - **Hito en curso:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (pendiente de despliegue).
+- **Docker:** imagen de Astro y Nginx preparada para Coolify; falta configurar la aplicación y desplegarla.
 
 ## Mapa
 
@@ -48,10 +49,11 @@ Documentación viva del portafolio de **Vicente Duarte** (Ingeniero de Software 
 - [Commits](05-flujo-git/commits.md): convención y ejemplos.
 
 ### 06 · Bitácora — qué pasó y cuándo
-- [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
-- [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
-- [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
+- [2026-10-09](06-bitacora/2026-10-09.md): Dockerfile y contexto de build para Coolify.
 - [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, agujero negro del hero y release v0.3.0.
+- [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.
+- [2026-10-06](06-bitacora/2026-10-06.md): scaffold Astro, estilos base, lint/tests/CI y README.
+- [2026-10-05](06-bitacora/2026-10-05.md): definición del proyecto, guía de diseño y setup del repo.
 
 ## Convenciones de la bóveda
 
