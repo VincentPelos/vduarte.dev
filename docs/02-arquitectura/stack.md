@@ -14,8 +14,9 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | Paquetes | **pnpm** (vía corepack) | Instalar dependencias | Rápido y estricto; sin instalación global |
 | Estilos | **Tailwind CSS v4** | Utilidades + tokens con `@theme` | Funciona igual en `.astro` y `.ts`; sin CSS suelto por componente |
 | Contenido | **JSON + zod** (content collections) | Datos del sitio | Editar un archivo para agregar contenido; schema falla en build si falta algo. [Decisión 002](../03-decisiones/002-json-por-seccion.md) |
-| Animación | **Motion** (API vanilla) + Web Animations API **(planeado, v0.4.0)** | Entradas, stagger, progreso de scroll | Misma librería que "Framer Motion", sin React. [Decisión 004](../03-decisiones/004-animaciones-vanilla.md) |
-| Scroll | **Lenis** **(planeado, v0.4.0)** | Smooth scroll | ~3 kB; se apaga con reduced-motion |
+| Animación | **Web Animations API** (nativa) | Reveals al hacer scroll (`layout/Reveal.astro`) | Sin dependencias. [Decisión 004](../03-decisiones/004-animaciones-vanilla.md) |
+| Animación | **Motion** (API vanilla) **(planeado, solo si hace falta)** | Secuencias y progreso de scroll | Misma librería que "Framer Motion", sin React. Hasta ahora bastó la API nativa |
+| Scroll | **Lenis** 1.3 | Smooth scroll de la rueda (`layout/SmoothScroll.astro`) | ~5 kB gzip; touch y teclado nativos; no se monta con reduced-motion |
 | Gráficos | **WebGL** directo y canvas 2D | Agujero negro del hero ([008](../03-decisiones/008-agujero-negro-puntos.md)) y cielo de estrellas ([009](../03-decisiones/009-cinematica-constelaciones.md)) | Un shader de pantalla completa; ~10 KB frente a ~530 KB de three.js |
 | Gráficos | **Chart.js** **(planeado, v0.5.0)** | Dashboard web del caso Colchagua | Vanilla, conocido, fácil de tematizar. [Decisión 006](../03-decisiones/006-power-bi-descarga.md) |
 | Íconos | **@iconify/utils** + `@iconify-json/simple-icons` | Logos de tecnologías | SVG incrustado en build, nada externo ([007](../03-decisiones/007-iconos.md)) |

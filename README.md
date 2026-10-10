@@ -14,7 +14,7 @@ Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de softwar
 | Framework  | [Astro](https://astro.build) con TypeScript strict, sin framework de UI ([por qué](docs/03-decisiones/001-astro-sin-framework-ui.md)) |
 | Estilos    | Tailwind CSS v4 con tokens propios en `src/styles/global.css`                                                                         |
 | Contenido  | Un JSON por sección validado con zod ([por qué](docs/03-decisiones/002-json-por-seccion.md))                                          |
-| Animación  | WebGL directo (agujero negro del hero) y canvas 2D (cielo de estrellas); Motion y Lenis llegan en v0.4.0                              |
+| Animación  | WebGL directo (agujero negro del hero), canvas 2D (cielo de estrellas), Web Animations (reveals) y Lenis (smooth scroll)              |
 | Calidad    | ESLint, Prettier, Vitest, `astro check`, commitlint + husky                                                                           |
 | CI         | GitHub Actions + Lighthouse CI                                                                                                        |
 | Despliegue | Coolify en VPS propio ([por qué](docs/03-decisiones/003-despliegue-coolify.md))                                                       |
