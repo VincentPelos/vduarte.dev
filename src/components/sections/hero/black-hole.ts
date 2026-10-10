@@ -620,13 +620,16 @@ export function mount(
   };
   bakeFrame = requestAnimationFrame(bakeStep);
 
+  // El hero queda pegado arriba mientras la hoja del portafolio lo tapa (decisión 014): se ve
+  // mientras el borde de la hoja ([data-hero-end]) no haya pasado arriba de la pantalla.
+  const end = document.querySelector<HTMLElement>('[data-hero-end]');
   const io = new IntersectionObserver(([entry]) => {
-    visible = entry.isIntersecting;
+    visible = end ? entry.isIntersecting || entry.boundingClientRect.top > 0 : entry.isIntersecting;
     if (visible) play();
     else pause();
   });
   const ro = new ResizeObserver(resize);
-  io.observe(section);
+  io.observe(end ?? section);
   ro.observe(container);
 
   return () => {

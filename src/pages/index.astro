@@ -11,10 +11,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout>
   <Hero />
-  <About />
-  <Experience />
-  <Projects />
-  <Skills />
-  <Education />
-  <Contact />
+  <!--
+    Hoja del portafolio (decisión 014): sube sobre el hero quieto. Capas: hero (z-1) < fondo de la
+    hoja (z-2) < cielo de estrellas (z-3, StarSky) < contenido (z-4). [data-hero-end] marca el borde
+    de la hoja: cuando pasa arriba de la pantalla, el hero quedó tapado.
+  -->
+  <div class="relative">
+    <div data-hero-end aria-hidden="true" class="absolute top-0 h-px w-full"></div>
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 z-[2] rounded-t-[28px] border-t border-line-hi bg-bg shadow-[0_-30px_60px_rgb(0_0_0/0.8)]"
+    ></div>
+    <div class="relative z-[4]">
+      <About />
+      <Experience />
+      <Projects />
+      <Skills />
+      <Education />
+      <Contact />
+    </div>
+  </div>
 </BaseLayout>
