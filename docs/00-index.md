@@ -52,6 +52,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [007](03-decisiones/007-iconos.md) | Íconos de Iconify como SVG en el build | UI |
 | [008](03-decisiones/008-agujero-negro-puntos.md) | Hero: agujero negro con puntos de terminal | Movimiento |
 | [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección | Movimiento |
+| [010](03-decisiones/010-iconos-sprite.md) | Íconos en un sprite SVG (reemplaza en parte a 007) | UI |
 
 ### 04 · Diseño — cómo se ve
 

@@ -1,6 +1,6 @@
 ---
 tags: [decision, ui]
-estado: Aceptada
+estado: Reemplazada en parte por 010 (sprite SVG)
 fecha: 2026-10-07
 ---
 
@@ -12,7 +12,7 @@ fecha: 2026-10-07
 ## Decisión
 - **`@iconify-json/simple-icons`**: el set de logos de marcas, como JSON local.
 - **`@iconify/utils`**: convierte el ícono a SVG durante el build.
-- `src/lib/icons.ts` (`renderIcon()`, con tests) y `components/ui/Icon.astro` los envuelven. Los SVG salen en línea, con `fill="currentColor"` y `aria-hidden`.
+- `src/lib/icons.ts` (`renderIcon()`, con tests) y `components/ui/Icon.astro` los envuelven. Los SVG salen en línea, con `fill="currentColor"` y `aria-hidden`. _Reemplazado: salen una vez en un sprite y se referencian con `<use>` ([decisión 010](010-iconos-sprite.md))._
 - Un nombre inválido rompe el build indicando el nombre exacto.
 
 ## Alternativas consideradas
