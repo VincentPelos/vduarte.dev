@@ -41,8 +41,17 @@ const BAKE_BUDGET_MS = 8;
  * y sin tope una GPU débil recibiría toda la tabla en un solo cuadro.
  */
 const BAKE_MAX_JOBS = LUT_TEXTURES;
-/** Fundido de entrada de la escena (ms). */
-const REVEAL_MS = 700;
+/**
+ * Entrada de la escena por colapso (decisión 012): la sombra crece hasta cubrir el hero, se
+ * mantiene y se contrae de vuelta al agujero con la escena ya entera detrás. Valores elegidos
+ * por el autor en el laboratorio (ms; el borde, en fracción de 5 celdas de desorden).
+ */
+const COLLAPSE_GROW_MS = 520;
+const COLLAPSE_HOLD_MS = 140;
+const COLLAPSE_SHRINK_MS = 900;
+const COLLAPSE_EDGE = 0.4;
+/** Radio de la sombra en radios de Schwarzschild: el colapso empieza y termina ahí. */
+const SHADOW_RS = 2.6;
 
 const VERTEX = `
   attribute vec2 aPos;
@@ -210,6 +219,9 @@ const DRAW = `
   uniform sampler2D uCells, uText;
   uniform vec2 uGrid, uRes, uHole;
   uniform float uCell, uDpr, uPx, uLens;
+  // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado) y si fuera de ella
+  // todavía no se ve la escena (1 mientras crece).
+  uniform float uCover, uCoverOnly, uEdge;
 
   vec4 textAt(vec2 px) {
     vec2 uv = px / uRes;
@@ -220,6 +232,14 @@ const DRAW = `
     vec2 px = gl_FragCoord.xy / uDpr;
     vec2 cell = floor(px / uCell);
     vec4 c = texture2D(uCells, (cell + .5) / uGrid);
+    if (uCover >= 0.) {
+      // Celda entera o nada, con un borde de puntos de la paleta: sin fundidos grises.
+      vec2 to = (cell + .5) * uCell - uHole;
+      float d = length(to) + (hash(cell) - .5) * uCell * 5. * uEdge;
+      if (d < uCover - uCell * 1.2) c = vec4(0., 0., 0., 1.);
+      else if (d < uCover) c = vec4(pal(atan(to.y, to.x) / 6.2832 + .5), .3);
+      else if (uCoverOnly > .5) c = vec4(0.);
+    }
     float r = uCell * c.a;
     // Solo se pintan los puntos y las letras: el resto queda transparente y deja ver la página.
     vec3 col = c.rgb;
@@ -340,8 +360,9 @@ export function mount(
     return () => {};
   }
 
-  // La escena entra con un fundido cuando termina el precálculo; mientras, la carga del hero.
-  canvas.style.cssText = `position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity ${REVEAL_MS}ms ease-out`;
+  // La escena aparece cuando termina el precálculo (sin fundido: entra por colapso); mientras,
+  // la carga del hero.
+  canvas.style.cssText = `position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0`;
   container.append(canvas);
   // Sin animación, la escena va detrás del texto real: el contenido no depende de WebGL.
   if (reducedMotion) container.style.zIndex = '-1';
@@ -485,7 +506,34 @@ export function mount(
     gl.uniform1f(loc(draw, 'uDpr'), dpr);
     gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
     gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
+    const [cover, coverOnly] = collapse(hole);
+    gl.uniform1f(loc(draw, 'uCover'), cover);
+    gl.uniform1f(loc(draw, 'uCoverOnly'), coverOnly);
+    gl.uniform1f(loc(draw, 'uEdge'), COLLAPSE_EDGE);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+
+  // Colapso de entrada: devuelve el radio de la sombra que cubre (px, -1 = terminado) y si
+  // fuera de ella todavía no se ve la escena. Avanza con el reloj, no con los cuadros.
+  let collapseStart = -1;
+  const collapse = (hole: number[]): [number, number] => {
+    if (collapseStart < 0) return [-1, 0];
+    const t = performance.now() - collapseStart;
+    const far =
+      Math.hypot(Math.max(hole[0], width - hole[0]), Math.max(hole[1], height - hole[1])) +
+      CELL * 4;
+    const shadow = SHADOW_RS * pxPerRs;
+    if (t < COLLAPSE_GROW_MS) return [shadow + (far - shadow) * (t / COLLAPSE_GROW_MS) ** 3, 1];
+    // Con el hero cubierto se cambian la grilla de respaldo y la carga por la escena sin que se note.
+    section.classList.add('has-scene');
+    section.classList.remove('is-loading');
+    const s = (t - COLLAPSE_GROW_MS - COLLAPSE_HOLD_MS) / COLLAPSE_SHRINK_MS;
+    if (s < 0) return [far, 1];
+    if (s >= 1) {
+      collapseStart = -1;
+      return [-1, 0];
+    }
+    return [far + (shadow - far) * (1 - 2 ** (-10 * s)), 0];
   };
 
   let frame = 0,
@@ -493,8 +541,7 @@ export function mount(
     visible = true,
     running = false,
     ready = false,
-    baked = false,
-    revealTimer = 0;
+    baked = false;
   const loop = (now: number) => {
     time += Math.min(0.05, (now - last) / 1000) * SPEED;
     last = now;
@@ -536,18 +583,18 @@ export function mount(
     gl.deleteProgram(bake);
     lut.forEach(({ fb }) => gl.deleteFramebuffer(fb));
     baked = true;
+    if (reducedMotion) {
+      // Cuadro quieto detrás del texto real, sin colapso.
+      section.classList.remove('is-loading');
+      section.classList.add('has-scene');
+    } else {
+      // La escena entra entera (opacidad 1) bajo el colapso; el texto lo dibuja WebGL desde ya,
+      // también sobre la sombra, así que nunca se tapa.
+      collapseStart = performance.now();
+      section.classList.add('is-lensing');
+    }
     resize();
     canvas.style.opacity = '1';
-    section.classList.remove('is-loading');
-    // El texto real y la grilla de respaldo siguen visibles durante el fundido; al final, la
-    // escena los reemplaza (el texto, solo si hay animación).
-    revealTimer = window.setTimeout(
-      () => {
-        section.classList.add('has-scene');
-        if (!reducedMotion) section.classList.add('is-lensing');
-      },
-      reducedMotion ? 0 : REVEAL_MS,
-    );
   };
 
   const bakeStep = () => {
@@ -585,7 +632,6 @@ export function mount(
   return () => {
     pause();
     cancelAnimationFrame(bakeFrame);
-    clearTimeout(revealTimer);
     io.disconnect();
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
