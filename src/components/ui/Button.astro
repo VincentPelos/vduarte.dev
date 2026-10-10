@@ -1,17 +1,20 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import { linkAttrs } from '../../lib/links';
+import LinkHint from './LinkHint.astro';
 
 interface Props extends HTMLAttributes<'a'> {
   href?: string;
   variant?: 'primary' | 'glass';
   pendingLabel?: string;
-  /** Flecha al final: `external` (↗) para enlaces fuera del sitio, `down` (↓) para descargas. */
+  /** Flecha al final: `external` (↗) para enlaces fuera del sitio, `down` (↓) para descargas o secciones más abajo. */
   arrow?: 'external' | 'down';
 }
 
 const { href, variant = 'glass', pendingLabel, arrow, class: className, ...attrs } = Astro.props;
 const arrows = { external: '↗', down: '↓' };
+// Sin `href`, el botón queda pendiente: enfocable para que el teclado y los lectores de pantalla
+// lo encuentren y anuncien que falta.
 const classes = [
   'group inline-flex items-center gap-2 rounded-full border px-[18px] py-[13px] text-[0.88rem] leading-none transition',
   variant === 'primary'
@@ -29,6 +32,7 @@ const classes = [
 {href ? (
   <a href={href} {...linkAttrs(href)} class:list={classes} {...attrs}>
     <slot />
+    <LinkHint href={href} />
     {arrow && (
       <span
         aria-hidden="true"
@@ -39,8 +43,9 @@ const classes = [
     )}
   </a>
 ) : (
-  <span role="link" aria-disabled="true" title={pendingLabel} class:list={classes}>
+  <span role="link" aria-disabled="true" tabindex="0" title={pendingLabel} class:list={classes}>
     <slot />
+    {pendingLabel && <span class="sr-only"> ({pendingLabel})</span>}
     {arrow && (
       <span aria-hidden="true" class="font-mono">
         {arrows[arrow]}

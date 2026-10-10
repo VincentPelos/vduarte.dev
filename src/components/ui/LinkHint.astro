@@ -1,0 +1,15 @@
+---
+import { getSite } from '../../lib/content';
+import { linkAttrs } from '../../lib/links';
+
+interface Props {
+  href?: string;
+}
+
+// Avisa a los lectores de pantalla que el enlace abre otra pestaña (los externos, ver linkAttrs).
+const { href } = Astro.props;
+const { labels } = await getSite();
+const newTab = href ? linkAttrs(href).target === '_blank' : false;
+---
+
+{newTab && <span class="sr-only"> ({labels.newTab})</span>}

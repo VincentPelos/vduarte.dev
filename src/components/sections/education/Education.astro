@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
 import { sortByRecency } from '../../../lib/dates';
 import { linkAttrs } from '../../../lib/links';
+import LinkHint from '../../ui/LinkHint.astro';
 import { pluralize } from '../../../lib/text';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
@@ -38,6 +39,7 @@ const meta = (['degree', 'cert', 'training'] as const)
           {item.url ? (
             <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
               {item.title}
+              <LinkHint href={item.url} />
             </a>
           ) : (
             item.title
