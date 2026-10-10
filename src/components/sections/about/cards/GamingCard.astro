@@ -1,5 +1,5 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
@@ -13,8 +13,7 @@ const { label, title, hours, note, gacha } = Astro.props;
 const meta = [hours !== undefined && `${hours} h`, note].filter(Boolean).join(' · ');
 ---
 
-<GlassCard class="flex min-w-0 flex-col justify-between gap-3 p-[22px] [grid-area:game]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="justify-between [grid-area:game]">
   <div>
     <p class="text-[1.15rem] leading-[1.25] font-semibold">{title}</p>
     {meta && <p class="mt-1 font-mono text-[0.82rem] leading-none text-muted">{meta}</p>}
@@ -29,4 +28,4 @@ const meta = [hours !== undefined && `${hours} h`, note].filter(Boolean).join(' 
       </span>
     </div>
   )}
-</GlassCard>
+</BentoCard>

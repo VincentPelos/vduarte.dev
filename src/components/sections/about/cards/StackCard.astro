@@ -1,6 +1,6 @@
 ---
-import GlassCard from '../../../ui/GlassCard.astro';
-import Icon from '../../../ui/Icon.astro';
+import TechIcon from '../../../ui/TechIcon.astro';
+import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
@@ -11,20 +11,15 @@ interface Props {
 const { label, items } = Astro.props;
 ---
 
-<GlassCard class="flex min-w-0 flex-col gap-3 p-[22px] [grid-area:stack]">
-  <p class="label">{label}</p>
+<BentoCard label={label} class="[grid-area:stack]">
   <ul class="flex flex-wrap gap-2">
     {items.map(({ name, icon }) => (
       <li class="inline-flex items-center gap-2 rounded-full border border-line bg-glass px-3 py-2 text-[0.88rem] leading-none">
         <span aria-hidden="true" class="grid size-[18px] place-items-center text-[0.95rem]">
-          {icon ? (
-            <Icon name={icon} />
-          ) : (
-            <span class="font-mono text-[0.55rem] font-semibold">{name.slice(0, 2)}</span>
-          )}
+          <TechIcon name={name} icon={icon} fallbackClass="text-[0.55rem]" />
         </span>
         {name}
       </li>
     ))}
   </ul>
-</GlassCard>
+</BentoCard>
