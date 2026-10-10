@@ -11,12 +11,11 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 ## Estado actual
 
-- **Última versión:** v0.3.0 Secciones (2026-10-08).
+- **Última versión:** v0.3.1 (2026-10-09): perfil real, constelaciones, rendimiento y Docker.
 - **Hecho antes de v0.4.0:** optimización de rendimiento y duplicación (#71–#75) e imagen Docker (#76, entró por `main` y se sincronizó con `develop` en #77). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
 - **Hito siguiente:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
-- **Producción:** `https://vduarte.dev` (VPS en preparación, aún sin desplegar).
-- **Docker:** imagen de Astro y Nginx preparada para Coolify; falta configurar la aplicación y desplegarla.
+- **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
 ## Mapa
 

@@ -4,7 +4,7 @@ Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de softwar
 
 [![CI](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml)
 
-- **Producción:** https://vduarte.dev (pendiente de despliegue)
+- **Producción:** desplegado con Coolify; por ahora en https://preview.vduarte.dev (acceso restringido)
 - **Documentación completa:** [`docs/00-index.md`](docs/00-index.md)
 
 ## Stack
