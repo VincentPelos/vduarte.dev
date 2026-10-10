@@ -25,7 +25,10 @@ const meta = (['degree', 'cert', 'training'] as const)
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
   <ul>
     {items.map((item) => (
-      <li class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-7 gap-y-2 border-t border-line py-[22px] last:border-b min-[621px]:grid-cols-[11rem_minmax(0,1fr)_auto]">
+      <li
+        data-reveal
+        class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-7 gap-y-2 border-t border-line py-[22px] last:border-b min-[621px]:grid-cols-[11rem_minmax(0,1fr)_auto]"
+      >
         <p class="col-span-full font-mono text-[0.82rem] leading-none whitespace-nowrap text-muted min-[621px]:col-span-1">
           <Period
             start={item.start}
