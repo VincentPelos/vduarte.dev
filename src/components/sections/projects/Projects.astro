@@ -1,15 +1,15 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { getSite } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
 import { sortProjects } from '../../../lib/projects';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 import ProjectCard from './ProjectCard.astro';
 
-const site = await getEntry('site', 'main');
-if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
+const site = await getSite();
 
-const texts = site.data.sections.projects;
+const texts = site.sections.projects;
 const projects = sortProjects((await getCollection('projects')).map((entry) => entry.data));
 const featured = projects.filter((project) => project.featured).length;
 const meta = [
