@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, rendimiento]
-actualizado: 2026-10-09
+actualizado: 2026-10-10
 ---
 
 # Rendimiento
@@ -68,5 +68,5 @@ El precálculo tarda 140–450 ms en esa GPU por software, repartido en 8 cuadro
 
 ## Cómo medir
 
-- **Lighthouse CI** corre en cada PR y deja los puntajes en el resumen del job (perfil móvil).
+- **Lighthouse CI** se corre a mano sobre `develop` antes de cada versión menor o mayor (`gh workflow run Lighthouse --ref develop`) y deja los puntajes en el resumen del job (perfil móvil). Ver [decisión 013](../03-decisiones/013-lighthouse-manual.md).
 - En local: `pnpm build && pnpm preview`, DevTools → _Performance_ con CPU 4× más lenta, y revisar que el cuadro quede bajo 16 ms al hacer scroll.

@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, despliegue]
-actualizado: 2026-10-09
+actualizado: 2026-10-10
 ---
 
 # Despliegue
@@ -10,7 +10,7 @@ actualizado: 2026-10-09
 ## Pipeline
 
 ```
-issue → rama → PR a develop ──► GitHub Actions (lint · check · test · build · Lighthouse)
+issue → rama → PR a develop ──► GitHub Actions (lint · check · test · build · docker)
                          └────► Coolify: preview del PR en una URL temporal
 develop → PR a main (release) ─► merge ─► Coolify: build + deploy a https://vduarte.dev
 ```
