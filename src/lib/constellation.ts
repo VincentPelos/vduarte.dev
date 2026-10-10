@@ -1,6 +1,8 @@
 /** Funciones puras de la cinemática de constelaciones (ver components/layout/star-sky.ts). */
 
-export type Rgb = [number, number, number];
+import type { Rgb } from './scene';
+
+export type { Rgb };
 
 export interface Segment {
   /** Índice de la sección de la que se viene. */

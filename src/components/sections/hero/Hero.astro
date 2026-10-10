@@ -15,7 +15,7 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
   class="group/hero relative isolate overflow-hidden"
 >
   <!--
-    Respaldo sin WebGL: una grilla de puntos tenue en CSS. Con WebGL, el agujero negro
+    Respaldo sin WebGL: una grilla de puntos tenue en CSS (6px = CELL de lib/scene.ts). Con WebGL, el agujero negro
     (black-hole.ts) se monta en [data-hero-scene] por encima del texto y lo redibuja
     deformado; el texto real queda transparente pero sigue ahí para lectores de pantalla.
   -->
@@ -75,6 +75,8 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
 </section>
 
 <script>
+  import { whenIdle } from '../../../lib/scene';
+
   // El agujero negro se carga diferido: no bloquea la primera pintura y, si falla, queda la
   // grilla de puntos en CSS. Cambiar la animación = cambiar black-hole.ts.
   const section = document.querySelector<HTMLElement>('[data-hero]');
@@ -87,7 +89,6 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site.d
         .then(({ mount }) => mount(section, container, { reducedMotion }))
         .catch(() => {});
 
-    if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
-    else setTimeout(load, 200);
+    whenIdle(load);
   }
 </script>
