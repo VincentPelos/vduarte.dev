@@ -11,7 +11,7 @@ RUN npm install -g pnpm@12.9.1
 ENV HUSKY=0
 
 # Cache dependencies until the manifest or lockfile changes
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy the source and build the static site
