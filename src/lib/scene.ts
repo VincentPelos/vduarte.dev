@@ -30,3 +30,17 @@ export function whenIdle(task: () => void, timeout = 1500): void {
   if ('requestIdleCallback' in globalThis) requestIdleCallback(task, { timeout });
   else setTimeout(task, 200);
 }
+
+/**
+ * `true` si el navegador dibuja WebGL por software (sin GPU): SwiftShader, llvmpipe o el driver
+ * básico de Windows. Ahí una escena animada corre en la CPU y traba la página (#109).
+ */
+export function isSoftwareRenderer(renderer: string): boolean {
+  return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
+}
+
+/** Nombre del renderer de un contexto WebGL (el real si el navegador lo expone). */
+export function webglRenderer(gl: WebGLRenderingContext): string {
+  const info = gl.getExtension('WEBGL_debug_renderer_info');
+  return String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? '');
+}

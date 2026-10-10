@@ -11,13 +11,20 @@
  * - Pasada 2 (pantalla): dibuja cada celda como un punto y encima el texto del hero, que
  *   resiste la gravedad: solo se comba y se separa en colores (aberración cromática).
  *
- * Con `prefers-reduced-motion`: un cuadro estático detrás del texto real, sin deformarlo.
+ * Con `prefers-reduced-motion`, o si WebGL va por software (sin GPU): un cuadro estático detrás
+ * del texto real, sin deformarlo.
  *
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
 
 import { hole as shared } from '../../../lib/hole';
-import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
+import {
+  CELL,
+  canvasDpr,
+  isSoftwareRenderer,
+  readPalette,
+  webglRenderer,
+} from '../../../lib/scene';
 
 interface Options {
   /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar ni deformar el texto. */
@@ -337,11 +344,7 @@ function pxPerRsFor(width: number, height: number): number {
   return Math.max(8, Math.min(width, height) * 0.022) * SCALE;
 }
 
-export function mount(
-  section: HTMLElement,
-  container: HTMLElement,
-  { reducedMotion }: Options,
-): () => void {
+export function mount(section: HTMLElement, container: HTMLElement, options: Options): () => void {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl', {
     antialias: false,
@@ -349,6 +352,9 @@ export function mount(
     alpha: true,
   });
   if (!gl) return () => {};
+  // Sin GPU, animar la escena dibuja cada cuadro en la CPU y traba la página: se muestra quieta,
+  // como con movimiento reducido (#109).
+  const reducedMotion = options.reducedMotion || isSoftwareRenderer(webglRenderer(gl));
 
   let bake: WebGLProgram, trace: WebGLProgram, draw: WebGLProgram;
   try {
