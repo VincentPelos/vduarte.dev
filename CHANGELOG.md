@@ -4,13 +4,38 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.4.0] - 2026-10-10
+
+Hito **Movimiento**: entrada del agujero negro, hero a pantalla completa, reveals, smooth scroll, nav activa y una pasada de UI en celular. Lighthouse sobre `develop`: performance 99, accesibilidad, buenas prácticas y SEO 100.
+
+### Agregado
+
+- La escena del agujero negro entra con un colapso de su sombra en vez de un fundido gris ([decisión 012](docs/03-decisiones/012-entrada-colapso.md)) (#83).
+- Reveals de secciones al hacer scroll, sin ocultar contenido visible (#87).
+- Smooth scroll con Lenis para la rueda; touch y teclado quedan nativos (#88).
+- La nav resalta la sección visible (#89).
+- Hero como diapositiva de pantalla completa que el portafolio tapa al bajar ([decisión 014](docs/03-decisiones/014-hero-diapositiva.md)) (#97).
+
+### Cambiado
+
+- La nav pasa de abajo a arriba (#89).
+- Lighthouse corre a mano antes de cada versión menor y no en cada PR ([decisión 013](docs/03-decisiones/013-lighthouse-manual.md)) (#85).
+- Skills en filas con chips, sin tarjetas (#98).
+- Educación como línea de vida con estrellas (#99).
+- En celular, Sobre mí y Proyectos se deslizan de lado y el texto va al 90 % (#92).
+- Proyectos: destacados en una fila con imagen baja y el resto en una lista con miniatura (#107).
+
 ### Rendimiento
 
 - El agujero negro integra los rayos una vez al cargar y no en cada cuadro; mientras tanto, un anillo de puntos muestra el avance ([decisión 011](docs/03-decisiones/011-agujero-precalculado.md)) (#81).
+- Sin GPU (WebGL por software), el agujero negro no se monta y queda el respaldo sin WebGL, en vez de trabar la página (#109).
+- Las animaciones CSS decorativas se pausan con su sección fuera de pantalla (#109).
 
 ### Corregido
 
 - Con `prefers-reduced-motion`, el hero mostraba el agujero negro pero no el nombre ni el texto: ahora el cuadro estático va detrás del texto real (#81).
+- Accesibilidad de enlaces: "Correo" usa ↓, los enlaces pendientes reciben foco y anuncian que faltan, y los externos avisan que abren otra pestaña (#90).
+- La constelación de Proyectos se forma cuando su símbolo está a la vista (#91).
 
 ## [0.3.1] - 2026-10-09
 
