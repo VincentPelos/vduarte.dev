@@ -212,7 +212,13 @@ export function mount(
       previous = -Infinity;
     const centers = sections.map((sec, i) => {
       const r = sec.getBoundingClientRect();
-      if (i === 0) heroBottom = r.bottom;
+      // El hero queda pegado arriba (decisión 014): su lugar en la página es siempre el inicio,
+      // y lo que tapa es la hoja, que empieza con la sección siguiente.
+      if (i === 0) {
+        heroBottom = sections[1]?.getBoundingClientRect().top ?? r.bottom;
+        previous = r.height / 2 - height / 2;
+        return previous;
+      }
       // Las estrellas llegan cuando su símbolo queda al centro de la pantalla. En una sección
       // alta (Proyectos), el centro de la sección cae lejos del símbolo y este ya no se ve.
       // La línea de tiempo recorre toda la sección, así que usa la sección entera.

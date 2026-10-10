@@ -10,7 +10,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 ## Reglas
 
 - **Carga diferida:** los scripts de canvas se importan en `requestIdleCallback` (máx. 1,5 s) y nunca bloquean la primera pintura. Si fallan, la página se ve igual sin ellos.
-- **Sin animar lo que no se ve:** cada loop se pausa fuera de pantalla (`IntersectionObserver`) y con la pestaña oculta.
+- **Sin animar lo que no se ve:** cada loop se pausa fuera de pantalla (`IntersectionObserver`) y con la pestaña oculta. El hero queda pegado arriba, así que el agujero negro se pausa cuando la hoja del portafolio lo tapa (`[data-hero-end]`, [decisión 014](../03-decisiones/014-hero-diapositiva.md)).
 - **DOM fuera del cuadro por elemento:** en un loop de animación, las lecturas de layout (`getBoundingClientRect`, `scrollY`) se hacen **una vez por cuadro**, nunca por estrella o por partícula.
 - **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2.
 - **Móvil:** el alto de la ventana cambia al aparecer o esconderse la barra del navegador; eso no debe regenerar escenas, solo reajustar el canvas.

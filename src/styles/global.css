@@ -226,6 +226,26 @@
   }
 }
 
+/*
+ * Hero como diapositiva (decisión 014): se oscurece mientras la hoja del portafolio lo tapa.
+ * Va con el scroll, sin JS; donde no hay `animation-timeline` el hero solo queda tapado.
+ */
+@keyframes hero-dim {
+  to {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    [data-hero] {
+      animation: hero-dim linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+  }
+}
+
 /* Texto con el degradado de la paleta */
 @utility text-grad {
   background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));

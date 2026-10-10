@@ -11,7 +11,7 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
   id="inicio"
   data-hero
   data-constellation-section="hero"
-  class="group/hero relative isolate overflow-hidden"
+  class="group/hero sticky top-0 isolate z-[1] flex min-h-svh items-center overflow-hidden"
 >
   <!--
     Respaldo sin WebGL: una grilla de puntos tenue en CSS (6px = CELL de lib/scene.ts), que se
@@ -19,6 +19,8 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
     [data-hero-scene] por encima del texto y lo redibuja deformado (`.is-lensing`); el texto real
     queda transparente pero sigue ahí para lectores de pantalla. Con reduced-motion, la escena
     va detrás y el texto real queda visible.
+    Es una diapositiva de pantalla completa que queda quieta mientras el portafolio la tapa
+    (decisión 014): así la escena nunca se corta a media pantalla.
   -->
   <div
     aria-hidden="true"
@@ -34,7 +36,7 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
   ></div>
   <div data-hero-scene aria-hidden="true" class="pointer-events-none absolute inset-0 z-10"></div>
 
-  <div class="wrap grid gap-[26px] pt-[clamp(80px,15vh,160px)] pb-[clamp(56px,10vh,100px)]">
+  <div class="wrap grid gap-[26px] pt-[88px] pb-16">
     <p
       data-lens
       class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted group-[.is-lensing]/hero:text-transparent"
