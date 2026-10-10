@@ -13,9 +13,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 - **Última versión:** v0.3.1 (2026-10-09): perfil real, constelaciones, rendimiento y Docker.
 - **Hecho antes de v0.4.0:** optimización de rendimiento y duplicación (#71–#75) e imagen Docker (#76, entró por `main` y se sincronizó con `develop` en #77). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
-- **Hecho en v0.4.0:** entrada por colapso (#83), Lighthouse a mano (#85), accesibilidad de enlaces (#90), nav arriba con sección activa (#89), reveals (#87) y Lenis (#88). Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Pendiente para cerrar v0.4.0 Movimiento:** constelaciones que se pierden en el scroll (#91), con el autor. Después, Lighthouse a mano sobre `develop` y release.
-- **Siguiente:** rediseño de la UI en celular (#92), a definir con el autor.
+- **Hecho en v0.4.0:** entrada por colapso (#83), Lighthouse a mano (#85), accesibilidad de enlaces (#90), nav arriba (#89), reveals (#87), Lenis (#88), constelación de Proyectos (#91), hero como diapositiva (#97, [decisión 014](03-decisiones/014-hero-diapositiva.md)), Skills en filas (#98), Educación como línea de vida (#99) y UI en celular (#92). Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
+- **Para cerrar v0.4.0 Movimiento:** revisión del autor en un celular real; después, Lighthouse a mano sobre `develop` y release.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 

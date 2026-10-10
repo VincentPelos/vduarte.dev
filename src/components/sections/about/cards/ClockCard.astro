@@ -10,7 +10,7 @@ interface Props {
 const { label, timezone, location } = Astro.props;
 ---
 
-<BentoCard label={label} class="justify-between [grid-area:clock]">
+<BentoCard label={label} class="justify-between min-[461px]:[grid-area:clock]">
   <div>
     <!-- Sin JS queda en --:--: la hora depende del momento de la visita, no del build. -->
     <time

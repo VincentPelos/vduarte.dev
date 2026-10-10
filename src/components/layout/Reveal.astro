@@ -32,9 +32,14 @@
       { threshold: 0 },
     );
 
-    // Las anclas de las constelaciones no se mueven: las estrellas miden su posición.
+    // Las anclas de las constelaciones no se mueven: las estrellas miden su posición. Tampoco
+    // se animan las tarjetas de un carrusel que se desliza de lado (#92): aparecen al deslizar.
+    const sliding = (el: HTMLElement) => {
+      const rail = el.closest<HTMLElement>('[data-rail]');
+      return !!rail && rail.scrollWidth > rail.clientWidth;
+    };
     const items = [...document.querySelectorAll<HTMLElement>('[data-reveal]')].filter(
-      (el) => !el.querySelector('[data-constellation]'),
+      (el) => !el.querySelector('[data-constellation]') && !sliding(el),
     );
     for (const el of items) {
       if (el.getBoundingClientRect().top < innerHeight) continue;

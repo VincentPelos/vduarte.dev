@@ -30,7 +30,8 @@ const links = [
   <div
     class:list={[
       'relative max-w-full overflow-hidden border-b border-line',
-      featured ? 'aspect-video' : 'aspect-[4/3]',
+      // En el carrusel del celular, una franja baja; desde 561px, la proporción completa.
+      featured ? 'aspect-[5/2] min-[561px]:aspect-video' : 'aspect-[5/2] min-[561px]:aspect-[4/3]',
     ]}
   >
     {image ? (

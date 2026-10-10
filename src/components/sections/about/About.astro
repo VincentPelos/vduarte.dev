@@ -33,28 +33,37 @@ const stack = site.highlightStack.map((name) => ({ name, icon: icons.get(name) }
        hero: la hoja que lo tapa empieza aquí (decisión 014). -->
   <Glows class="top-0 bottom-[-35%]" />
   <div class="wrap">
-    <!-- 1 columna → 2 desde 461px → 4 desde 901px, como en la guía. -->
-    <div class="grid grid-cols-1 gap-3 [grid-template-areas:'bio'_'status'_'clock'_'stack'_'sky'_'play'_'game'_'links'] min-[461px]:auto-rows-[minmax(150px,auto)] min-[461px]:grid-cols-2 min-[461px]:[grid-template-areas:'bio_bio'_'clock_status'_'stack_stack'_'play_play'_'game_sky'_'links_links'] min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_clock_status'_'bio_bio_stack_sky'_'play_play_game_links']">
+    <!--
+      Celular (#92): sobre mí, un carrusel con las tarjetas chicas, el stack y el cielo, en orden.
+      2 columnas desde 461px → 4 desde 901px, como en la guía; ahí el carrusel no existe
+      (display: contents) y cada tarjeta va a su área.
+    -->
+    <div class="grid grid-cols-1 gap-3 min-[461px]:auto-rows-[minmax(150px,auto)] min-[461px]:grid-cols-2 min-[461px]:[grid-template-areas:'bio_bio'_'clock_status'_'stack_stack'_'play_play'_'game_sky'_'links_links'] min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_clock_status'_'bio_bio_stack_sky'_'play_play_game_links']">
       <BioCard label={bento.about} title={site.bioTitle} bio={site.bio} />
-      <ClockCard label={bento.clock} timezone={site.timezone} location={site.location} />
-      <StatusCard
-        label={bento.status}
-        text={site.available ? bento.available : bento.unavailable}
-        available={site.available}
-        note={site.availabilityNote}
-      />
+      <div
+        data-rail
+        class="-mx-4 grid snap-x *:snap-start snap-mandatory auto-cols-[42%] grid-flow-col gap-3 overflow-x-auto scroll-px-4 px-4 [scrollbar-width:none] min-[461px]:contents"
+      >
+        <ClockCard label={bento.clock} timezone={site.timezone} location={site.location} />
+        <StatusCard
+          label={bento.status}
+          text={site.available ? bento.available : bento.unavailable}
+          available={site.available}
+          note={site.availabilityNote}
+        />
+        <PlayingCard label={bento.playing} {...site.nowPlaying} />
+        <GamingCard label={bento.gaming} {...site.nowGaming} />
+        <LinksCard
+          label={bento.links}
+          pendingLabel={site.labels.pending}
+          links={[
+            { href: site.github, text: site.labels.github },
+            { href: site.linkedin, text: site.labels.linkedin },
+          ]}
+        />
+      </div>
       <StackCard label={bento.stack} items={stack} />
-      <PlayingCard label={bento.playing} {...site.nowPlaying} />
-      <GamingCard label={bento.gaming} {...site.nowGaming} />
       <SkyCard label={bento.constellation} />
-      <LinksCard
-        label={bento.links}
-        pendingLabel={site.labels.pending}
-        links={[
-          { href: site.github, text: site.labels.github },
-          { href: site.linkedin, text: site.labels.linkedin },
-        ]}
-      />
     </div>
   </div>
 </section>
