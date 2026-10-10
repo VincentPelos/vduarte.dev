@@ -56,6 +56,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [010](03-decisiones/010-iconos-sprite.md) | Íconos en un sprite SVG (reemplaza en parte a 007) | UI |
 | [011](03-decisiones/011-agujero-precalculado.md) | Agujero negro con trayectorias precalculadas (reemplaza en parte a 008) | Movimiento |
 | [012](03-decisiones/012-entrada-colapso.md) | Entrada del agujero negro por colapso (reemplaza en parte a 011) | Movimiento |
+| [013](03-decisiones/013-lighthouse-manual.md) | Lighthouse a mano antes de cada versión menor | Calidad |
 
 ### 04 · Diseño — cómo se ve
 
@@ -75,7 +76,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
-- [2026-10-10](06-bitacora/2026-10-10.md): laboratorio de animaciones de inicio y entrada por colapso (#83).
+- [2026-10-10](06-bitacora/2026-10-10.md): laboratorio de animaciones de inicio y entrada por colapso (#83); Lighthouse a mano (#85).
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.
 - [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, release v0.3.0 y contenido personal.
 - [2026-10-07](06-bitacora/2026-10-07.md): release v0.2.0 Contenido y secciones de v0.3.0.

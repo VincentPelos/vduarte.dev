@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, stack]
-actualizado: 2026-10-09
+actualizado: 2026-10-10
 ---
 
 # Stack
@@ -23,7 +23,7 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | SEO | **@astrojs/sitemap** **(planeado, v0.6.0)** | Sitemap | Oficial |
 | Calidad | **ESLint**, **Prettier**, **Vitest**, `astro check` | Lint, formato, tests, tipos | Suben la nota en A4 |
 | Commits | **commitlint** + **husky** | Validar mensajes | Historia limpia y trazable |
-| CI | **GitHub Actions** + **Lighthouse CI** | Verificar cada PR | Pipeline reproducible |
+| CI | **GitHub Actions** + **Lighthouse CI** | Verificar cada PR; Lighthouse, a mano antes de cada versión menor | Pipeline reproducible |
 | Despliegue | **Coolify** (VPS propio) **(en preparación)** | Build y publicación | Deploy por push y previews por PR. [Decisión 003](../03-decisiones/003-despliegue-coolify.md) |
 | Formulario | **n8n** (webhook) **(planeado, v0.6.0)** | Recibir mensajes de contacto | Automatización propia, sin servicios de terceros |
 | Analytics | **Umami** **(planeado, v0.6.0)** | Visitas | Self-hosted, sin cookies |

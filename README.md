@@ -66,7 +66,7 @@ Todo el texto del sitio vive en `src/content/*.json`. Agregar un proyecto, traba
 ## Flujo de trabajo
 
 ```
-issue → rama <tipo>/<n>-<slug> → commits convencionales → PR a develop → CI + Lighthouse → merge commit
+issue → rama <tipo>/<n>-<slug> → commits convencionales → PR a develop → CI → merge commit
 develop → PR "release: vX.Y.Z" a main → tag + GitHub Release → despliegue a producción
 ```
 
@@ -77,10 +77,12 @@ develop → PR "release: vX.Y.Z" a main → tag + GitHub Release → despliegue 
 ## Despliegue
 
 ```
-PR a develop ──► GitHub Actions: lint · formato · tipos · tests · build · Lighthouse (puntajes en el resumen del run)
+PR a develop ──► GitHub Actions: lint · formato · tipos · tests · build · docker
              └─► Coolify: preview del PR en una URL temporal
 push a main ───► Coolify: Dockerfile (pnpm build → Nginx en puerto 80) → https://vduarte.dev
 ```
+
+Lighthouse no corre en cada PR: se lanza a mano sobre `develop` antes de cada versión menor o mayor.
 
 En Coolify, usar el método **Dockerfile** desde el repositorio Git y exponer el puerto interno **80**. Variables de entorno (todas opcionales y disponibles durante el build): `PUBLIC_CONTACT_WEBHOOK`, `PUBLIC_UMAMI_WEBSITE_ID`, `PUBLIC_UMAMI_SRC`. Detalle y estado en [`docs/02-arquitectura/despliegue.md`](docs/02-arquitectura/despliegue.md).
 

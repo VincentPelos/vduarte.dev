@@ -1,6 +1,6 @@
 ---
 tags: [git, flujo]
-actualizado: 2026-10-06
+actualizado: 2026-10-10
 ---
 
 # Ramas y pull requests
@@ -46,6 +46,7 @@ Tipos: los mismos que en [commits](commits.md) (`feat`, `fix`, `docs`, `style`, 
 ## Release
 
 1. Todos los issues del milestone cerrados.
+   - Si es versión menor o mayor (`v0.4.0`, `v1.0.0`): correr Lighthouse a mano sobre `develop` (`gh workflow run Lighthouse --ref develop`) y corregir lo que quede bajo 90 antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)).
 2. PR `develop → main` titulado `release: vX.Y.Z`.
 3. Actualizar `CHANGELOG.md` en ese PR.
 4. Merge → tag `vX.Y.Z` → GitHub Release con el resumen → cerrar el milestone.
