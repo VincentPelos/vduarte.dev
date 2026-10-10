@@ -12,7 +12,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.3.0 Secciones (2026-10-08).
-- **En curso:** optimización previa a v0.4.0 en PR apilados, a mergear en orden: #71 (docs) → #72 (canvas y brillos) → #73 (íconos y fuentes) → #74 (duplicación). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
+- **En curso:** optimización previa a v0.4.0 en PR apilados, a mergear en orden: #71 (docs) → #72 (canvas y brillos) → #73 (íconos y fuentes) → #75 (duplicación). Ver [bitácora 2026-10-09](06-bitacora/2026-10-09.md).
 - **Hito siguiente:** v0.4.0 Movimiento — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** `https://vduarte.dev` (VPS en preparación, aún sin desplegar).
