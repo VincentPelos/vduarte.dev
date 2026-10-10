@@ -1,0 +1,13 @@
+---
+import { getIconNames } from '../../lib/content';
+import { iconSymbol } from '../../lib/icons';
+
+// Cada ícono se dibuja una sola vez aquí y `Icon.astro` lo referencia con <use> (decisión 010).
+const symbols = (await getIconNames()).map(iconSymbol);
+---
+
+<svg aria-hidden="true" width="0" height="0" class="absolute">
+  {symbols.map(({ id, viewBox, body }) => (
+    <symbol id={id} viewBox={viewBox} set:html={body} />
+  ))}
+</svg>

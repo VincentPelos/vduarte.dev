@@ -25,7 +25,7 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, StarSky + star-sky.ts
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts
 │  │  │  ├─ about/             About.astro + cards/
@@ -61,6 +61,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un script que solo usa una sección | Al lado de su componente (`sections/hero/black-hole.ts`) |
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
+| Una consulta a las colecciones que usan 2+ componentes | `src/lib/content.ts` |
 | Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |

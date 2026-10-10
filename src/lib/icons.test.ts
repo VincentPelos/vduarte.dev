@@ -1,20 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { renderIcon } from './icons';
+import { iconSymbol } from './icons';
 
-describe('renderIcon', () => {
-  it('genera un svg decorativo que hereda el color', () => {
-    const svg = renderIcon('simple-icons:python');
-    expect(svg).toMatch(/^<svg/);
-    expect(svg).toContain('fill="currentColor"');
-    expect(svg).toContain('aria-hidden="true"');
-  });
-
-  it('acepta atributos extra', () => {
-    expect(renderIcon('simple-icons:python', { class: 'size-4' })).toContain('class="size-4"');
+describe('iconSymbol', () => {
+  it('entrega id, viewBox y tamaño a 1em de alto', () => {
+    const icon = iconSymbol('simple-icons:python');
+    expect(icon.id).toBe('icon-simple-icons-python');
+    expect(icon.viewBox).toBe('0 0 24 24');
+    expect(icon.height).toBe('1em');
+    expect(icon.width).toBe('1em');
+    expect(icon.body).toMatch(/^<path/);
   });
 
   it('falla con el nombre si el set o el ícono no existen', () => {
-    expect(() => renderIcon('lucide:home')).toThrow('"lucide:home"');
-    expect(() => renderIcon('simple-icons:no-existe')).toThrow('"simple-icons:no-existe"');
+    expect(() => iconSymbol('lucide:home')).toThrow('"lucide:home"');
+    expect(() => iconSymbol('simple-icons:no-existe')).toThrow('"simple-icons:no-existe"');
   });
 });

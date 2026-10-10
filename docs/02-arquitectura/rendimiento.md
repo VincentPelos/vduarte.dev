@@ -17,7 +17,8 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **`prefers-reduced-motion`:** un cuadro estático; se redibuja solo al hacer scroll o cambiar el tamaño.
 - **Brillos sin `filter: blur` animado:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil.
 - **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
-- **Peso:** el HTML no repite SVG (íconos como sprite) y las fuentes solo cargan el subset latino.
+- **Peso:** el HTML no repite SVG (íconos como sprite, [010](../03-decisiones/010-iconos-sprite.md)). Martian Mono solo se importa en latín; Geist conserva sus subsets porque las flechas (→ ↗) están en `symbols2`, y el navegador solo baja los que usa.
+- **Fuentes precargadas:** Martian Mono 700 y Geist latín van con `<link rel="preload">` en `BaseLayout`; las escenas esperan las fuentes antes de montarse.
 - **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida) vive en `src/lib/scene.ts`.
 
 ## Estado
@@ -29,7 +30,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 | Lecturas de DOM una vez por cuadro | Cumplida (#68) |
 | Móvil sin regenerar escenas | Cumplida (#68) |
 | Brillos sin blur animado | Cumplida (#68) |
-| Íconos en sprite y fuentes latinas | Pendiente (#69) |
+| Íconos en sprite ([010](../03-decisiones/010-iconos-sprite.md)) y precarga de fuentes | Cumplida (#69) |
 
 ## Mediciones
 
@@ -43,6 +44,13 @@ Edge headless con WebGL por software, hilo principal en ms de trabajo por segund
 | Scroll continuo | 185 | 34–54 | 415 | 285–322 |
 
 El mayor costo estaba en la línea de tiempo de Experiencia: `getBoundingClientRect` por estrella y por trabajo, en cada cuadro. El resto del trabajo total es pintura y rasterizado (WebGL, vidrio); hay que medirlo en un dispositivo real con GPU.
+
+### Peso (#69)
+
+| Archivo | Antes | Después |
+|---|---|---|
+| `index.html` | 105 KB (30,9 KB gzip) | 94 KB (24,8 KB gzip) |
+| CSS | 41 KB (12,8 KB gzip) | 35 KB (8,2 KB gzip) |
 
 ## Cómo medir
 
