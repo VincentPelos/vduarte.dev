@@ -9,7 +9,8 @@ const base = Astro.url.pathname === '/' ? '' : '/';
 
 <nav
   aria-label="Secciones"
-  class="fixed bottom-[calc(16px+env(safe-area-inset-bottom,0px))] left-1/2 z-50 max-w-[calc(100%-32px)] -translate-x-1/2 overflow-x-auto rounded-full border border-line bg-nav p-1.5 shadow-[0_10px_40px_rgb(0_0_0/0.6)] backdrop-blur-[32px] backdrop-saturate-170 [scrollbar-width:none]"
+  data-nav
+  class="fixed top-[calc(16px+env(safe-area-inset-top,0px))] left-1/2 z-50 max-w-[calc(100%-32px)] -translate-x-1/2 overflow-x-auto rounded-full border border-line bg-nav p-1.5 shadow-[0_10px_40px_rgb(0_0_0/0.6)] backdrop-blur-[32px] backdrop-saturate-170 [scrollbar-width:none]"
 >
   <ul class="flex gap-0.5">
     {site.nav.map(({ section, label, ariaLabel }) => (
@@ -17,7 +18,8 @@ const base = Astro.url.pathname === '/' ? '' : '/';
         <a
           href={`${base}#${section}`}
           aria-label={ariaLabel}
-          class="block rounded-full px-[15px] py-[11px] font-mono text-[0.8rem] leading-none whitespace-nowrap text-muted transition-colors hover:text-fg"
+          data-nav-section={base ? undefined : section}
+          class="block rounded-full px-[15px] py-[11px] font-mono text-[0.8rem] leading-none whitespace-nowrap text-muted transition-colors hover:text-fg aria-[current=true]:bg-glass-hi aria-[current=true]:text-fg"
         >
           {label}
         </a>
@@ -25,3 +27,40 @@ const base = Astro.url.pathname === '/' ? '' : '/';
     ))}
   </ul>
 </nav>
+
+<script>
+  // Resalta la sección que cruza el centro de la pantalla. IntersectionObserver no cuesta nada
+  // por cuadro; sin JS la nav funciona igual, sin resaltar. Entre secciones que no están en la nav
+  // (Sobre mí) queda la última activa.
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const links = new Map(
+    [...(nav?.querySelectorAll<HTMLAnchorElement>('[data-nav-section]') ?? [])].map((a) => [
+      a.dataset.navSection!,
+      a,
+    ]),
+  );
+  const sections = [...links.keys()]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (nav && sections.length) {
+    let current: HTMLAnchorElement | undefined;
+    const activate = (id: string) => {
+      const link = links.get(id);
+      if (!link || link === current) return;
+      current?.removeAttribute('aria-current');
+      link.setAttribute('aria-current', 'true');
+      current = link;
+      // En pantallas angostas la nav se desplaza: el enlace activo queda a la vista.
+      const left = link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2;
+      nav.scrollTo({ left, behavior: 'smooth' });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) activate(entry.target.id);
+      },
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    sections.forEach((section) => io.observe(section));
+  }
+</script>
