@@ -208,11 +208,20 @@ export function mount(
       if (d < dist) [active, dist] = [i, d];
       return r.top + 34;
     });
-    let heroBottom = 0;
+    let heroBottom = 0,
+      previous = -Infinity;
     const centers = sections.map((sec, i) => {
       const r = sec.getBoundingClientRect();
       if (i === 0) heroBottom = r.bottom;
-      return r.top + scrollY + r.height / 2 - height / 2;
+      // Las estrellas llegan cuando su símbolo queda al centro de la pantalla. En una sección
+      // alta (Proyectos), el centro de la sección cae lejos del símbolo y este ya no se ve.
+      // La línea de tiempo recorre toda la sección, así que usa la sección entera.
+      const anchor = rects.get(names[i]);
+      const focus = anchor && modes.get(names[i]) !== 'timeline' ? anchor : r;
+      const center = focus.top + scrollY + focus.height / 2 - height / 2;
+      // Siempre en orden, aunque un símbolo quede por encima del de la sección anterior.
+      previous = Math.max(center, previous + 1);
+      return previous;
     });
     return { rects, markYs, active, centers, heroBottom };
   };
