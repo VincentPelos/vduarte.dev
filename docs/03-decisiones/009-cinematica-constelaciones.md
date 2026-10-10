@@ -34,4 +34,5 @@ Con el agujero negro del hero ([decisión 008](008-agujero-negro-puntos.md)), el
 ## Consecuencias
 - Es decorativo: sin JS la página se ve igual, y el `?` de Contacto vuelve a ser texto normal.
 - Con `prefers-reduced-motion`, las estrellas no titilan ni viajan: saltan a la constelación de la sección visible.
+- Las estrellas llegan a cada constelación cuando su símbolo queda al centro de la pantalla (la línea de tiempo de Experiencia usa la sección entera). Al principio se usaba el centro de la sección, y en Proyectos el símbolo ya había salido de la vista al formarse (#91, 2026-10-10).
 - Un símbolo necesita al menos ~80 px para leerse en la grilla de 6 px; `π` no existe en Martian Mono y se dibuja con la fuente de respaldo.
