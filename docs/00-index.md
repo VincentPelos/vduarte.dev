@@ -11,8 +11,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 ## Estado actual
 
-- **Última versión:** v0.4.0 (2026-10-10) Movimiento: entrada por colapso, hero a pantalla completa, reveals, Lenis, nav arriba y activa, UI en celular, Skills, Educación y Proyectos rediseñados. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito siguiente:** v0.5.0 Caso Colchagua — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
+- **Hito siguiente:** v0.6.0 Contacto y extras (incluye mejorar las animaciones, #124) — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 

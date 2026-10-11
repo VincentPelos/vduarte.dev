@@ -4,6 +4,29 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.5.0] - 2026-10-10
+
+Hito **Caso Colchagua**: el proyecto de BI sobre la cereza en Colchagua, con su página propia, y Proyectos con imágenes. Lighthouse sobre `develop`: performance 99 en el home y en el caso; accesibilidad, buenas prácticas y SEO 100.
+
+### Agregado
+
+- Contenido del caso Colchagua en `cases.json`, con su schema (#114).
+- Colchagua en Proyectos y el grupo de competencias Datos y BI en Skills (#118).
+- Página `/proyectos/colchagua`: la pregunta, 4 cifras, capturas del Power BI, 5 hallazgos con gráficos, qué hacer, límites y proceso (#115).
+- Cifras de la investigación en barras HTML, sin JS ([decisión 017](docs/03-decisiones/017-graficos-html.md)) (#116).
+- Descargas del caso: `.pbix`, informe y los 6 notebooks del repo público [colchagua-etl](https://github.com/VincentPelos/colchagua-etl) (#117).
+- Mini galería de imágenes en las tarjetas de proyecto (#122).
+- Imágenes optimizadas con `sharp` ([decisión 016](docs/03-decisiones/016-sharp-imagenes.md)).
+
+### Cambiado
+
+- Destacados: Colchagua, el sitio de la Municipalidad de Placilla (con capturas) y Noneto; el Panel de Monitoreo pasa a la lista.
+- El dashboard del caso se muestra con capturas y descarga en vez de recrearlo con Chart.js (reemplaza en parte a la [decisión 006](docs/03-decisiones/006-power-bi-descarga.md)).
+
+### Corregido
+
+- El cielo de estrellas no calcula `NaN` en páginas sin constelaciones.
+
 ## [0.4.0] - 2026-10-10
 
 Hito **Movimiento**: entrada del agujero negro, hero a pantalla completa, reveals, smooth scroll, nav activa y una pasada de UI en celular. Lighthouse sobre `develop`: performance 99, accesibilidad, buenas prácticas y SEO 100.
