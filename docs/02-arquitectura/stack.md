@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, stack]
-actualizado: 2026-10-10
+actualizado: 2026-10-11
 ---
 
 # Stack
@@ -23,6 +23,7 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | Imágenes | **sharp** (vía `astro:assets`) | Optimizar las imágenes del contenido a WebP en varios anchos | Lo usa `<Image>` de Astro; [decisión 016](../03-decisiones/016-sharp-imagenes.md) |
 | Fuentes | **Fontsource** | Martian Mono, Geist, Geist Mono | Self-hosted vía npm, sin archivos sueltos |
 | SEO | **@astrojs/sitemap** **(planeado, v0.6.0)** | Sitemap | Oficial |
+| CV | **LaTeX** + **Tectonic** 0.17 (fuera de npm) | Compilar `cv/cv.tex` a `public/cv.pdf` con `pnpm cv` | Una columna, texto extraíble, compatible con ATS; un solo binario. [Decisión 019](../03-decisiones/019-cv-latex.md) |
 | Calidad | **ESLint**, **Prettier**, **Vitest**, `astro check` | Lint, formato, tests, tipos | Suben la nota en A4 |
 | Commits | **commitlint** + **husky** | Validar mensajes | Historia limpia y trazable |
 | CI | **GitHub Actions** + **Lighthouse CI** | Verificar cada PR; Lighthouse, a mano antes de cada versión menor | Pipeline reproducible |
