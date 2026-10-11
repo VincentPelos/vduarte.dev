@@ -9,8 +9,6 @@ export const fall = {
 
 /** Duración de la caída hacia el portafolio (ms). Valor elegido por el autor en el laboratorio. */
 export const FALL_MS = 1000;
-/** Duración de la vuelta al hero, cuando la cámara retrocede (ms). */
-export const RISE_MS = 800;
 /** Radio de la sombra en radios de Schwarzschild. */
 export const SHADOW_RS = 2.6;
 /** Con "apagado del texto" en 60 %, el texto del hero desaparece a esta altura de la caída. */

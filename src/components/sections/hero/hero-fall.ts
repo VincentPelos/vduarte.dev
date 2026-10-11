@@ -3,14 +3,15 @@
  *
  * Arriba de todo, el primer gesto hacia abajo (rueda, deslizar, ↓, Av Pág, espacio o la flecha
  * del hero) no hace scroll: dispara la caída, la cámara se acerca al agujero en 1 s hasta que la
- * sombra llena la pantalla, y recién ahí el portafolio sube. Al volver arriba, la cámara retrocede.
+ * sombra llena la pantalla, y recién ahí el portafolio sube. Al subir, la cámara retrocede con el
+ * scroll: cuando la hoja termina de bajar, el hero está como al principio.
  *
  * - Cualquier otro scroll (barra, nav, anclas) sigue funcionando: la caída acompaña al scroll.
  * - Sin escena (sin WebGL o por software) no intercepta nada.
  * - No se monta con `prefers-reduced-motion` (Hero.astro).
  */
 
-import { clamp01, fall, FALL_MS, RISE_MS, textOpacity } from '../../../lib/fall';
+import { clamp01, fall, FALL_MS, textOpacity } from '../../../lib/fall';
 import { hole } from '../../../lib/hole';
 import { smooth } from '../../../lib/smooth';
 
@@ -27,7 +28,8 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
 
   const apply = () => {
     // La caída acompaña también al scroll normal: así la barra o la nav nunca dejan el hero a medias.
-    const p = Math.max(auto, clamp01(scrollY / innerHeight));
+    // Al cuadrado: con la hoja a medio bajar, la cámara ya retrocedió casi entera y el texto vuelve.
+    const p = Math.max(auto, clamp01(scrollY / innerHeight) ** 2);
     fall.progress = p;
     section.style.setProperty('--fall-text', String(textOpacity(p)));
     section.style.setProperty('--fall-cue', String(clamp01(1 - Math.max(scrollY / 80, p * 4))));
@@ -113,10 +115,16 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
     event.stopPropagation();
     jump(event.detail === 0);
   };
-  // De vuelta arriba (por cualquier vía), la cámara retrocede.
+  // Al subir (por cualquier vía) la caída deja de mandar y la cámara sigue al scroll: retrocede
+  // mientras la hoja baja, sin quedar al fondo de la caída hasta llegar arriba (#136).
+  let lastY = scrollY;
   const onScroll = () => {
+    if (!busy && auto > 0 && scrollY < lastY) {
+      cancelAnimationFrame(frame);
+      auto = 0;
+    }
+    lastY = scrollY;
     apply();
-    if (!busy && atTop() && auto > 0) animate(0, RISE_MS);
   };
 
   addEventListener('wheel', onWheel, { capture: true, passive: false });

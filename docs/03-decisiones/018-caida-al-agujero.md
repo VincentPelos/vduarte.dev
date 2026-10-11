@@ -13,11 +13,11 @@ El autor pidió que pasar del hero al contenido fuera un zoom hacia el agujero n
 
 ## Decisión
 - **Salto automático:** arriba de todo, el primer gesto hacia abajo no hace scroll. Puede ser rueda, deslizar el dedo, ↓, Av Pág, espacio o la flecha. Ese gesto dispara la caída: en 1 s la cámara se acerca al agujero, en su posición, hasta que la sombra llena la pantalla. Recién después el portafolio sube con scroll suave.
-- **Vuelta:** al volver arriba por cualquier vía, la cámara retrocede en 0,8 s.
+- **Vuelta:** al subir, por cualquier vía, la cámara retrocede siguiendo el scroll. Cuando la hoja termina de bajar, el hero está como al principio.
 - **Zoom en el shader:** `uZoom` escala la vista alrededor del agujero, de forma exponencial (1× a lo que cubre la esquina más lejana) y con aceleración y frenado cúbicos. Cada estrella sigue siendo un punto de la grilla que se aleja, no un bloque. No agrega pasadas ni canvas.
 - **El texto del hero se apaga** en la primera mitad de la caída: el de WebGL con `uTextFade`, los botones con `--fall-text`.
 - **Flecha F1:** una píldora de vidrio abajo al centro, «portafolio ↓», con la flecha subiendo y bajando suave. Es un ancla a `#sobre-mi`, así que sin JS o sin escena baja normal. Con teclado, el foco queda en Sobre mí.
-- **Nada queda atrapado:** la barra de scroll, la nav y las anclas siguen funcionando. La caída acompaña al scroll (`max(caída, scrollY / alto)`), así el hero nunca queda a medias.
+- **Nada queda atrapado:** la barra de scroll, la nav y las anclas siguen funcionando. La caída acompaña al scroll (`max(caída, (scrollY / alto)²)`), así el hero nunca queda a medias.
 - **Sin escena no se intercepta nada.** Sin escena significa sin WebGL o con WebGL por software. Con `prefers-reduced-motion` tampoco se monta y queda la hoja de la 014.
 - Código: `sections/hero/hero-fall.ts` (gestos y avance), `lib/fall.ts` (estado compartido y cálculos con tests) y `lib/smooth.ts` (Lenis compartido para pausar la rueda durante la caída).
 
