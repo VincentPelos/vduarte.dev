@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, rubrica]
-actualizado: 2026-10-06
+actualizado: 2026-10-10
 ---
 
 # Rúbrica ISI802
@@ -22,7 +22,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 | 3 | Desplegado con CD desde GitHub | Coolify en `vduarte.dev` ([despliegue](../02-arquitectura/despliegue.md)) | ⬜ |
 | 4 | Responsivo | Verificación en 390 / 768 / 1280 px en cada PR | ⬜ |
 | 5 | Power BI y notebooks reales accesibles | Descarga del `.pbix` + dashboard web + notebooks enlazados ([decisión 006](../03-decisiones/006-power-bi-descarga.md)) | ⬜ |
-| 6 | Autoría defendible | Esta bóveda (decisiones + bitácora) + `/uso-de-ia` | 🟨 |
+| 6 | Autoría defendible | Esta bóveda (decisiones + bitácora) + `/uso-de-ia` (hecha, #127) | ✅ |
 
 ## A. Desarrollo técnico (70%)
 
@@ -72,5 +72,5 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 - [ ] Enlaces a los notebooks en GitHub, accesibles.
 - [ ] Síntesis del caso Colchagua con visualizaciones y storytelling.
 - [ ] Conclusiones sobre vulnerabilidad territorial, honestas y respaldadas.
-- [ ] Declaración de uso de IA.
+- [x] Declaración de uso de IA (`/uso-de-ia`).
 - [ ] Capaz de explicar el código y las decisiones técnicas en la defensa.
