@@ -12,7 +12,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito siguiente:** v0.6.0 Contacto y extras (incluye la lista de mejoras del autor, #124 y #129–#134; ver [bitácora 2026-10-11](06-bitacora/2026-10-11.md)) — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Hito en curso:** v0.6.0 Contacto y extras. Hechos: `/uso-de-ia`, footer sólido, entrada sin pausa, caída al agujero con flecha (PR #138). Ver [bitácora 2026-10-11](06-bitacora/2026-10-11.md).
+- **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
@@ -25,6 +26,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 | [Visión](01-proyecto/vision.md) | Objetivo, audiencia, principios | Decides tono, contenido o prioridades |
 | [Alcance](01-proyecto/alcance.md) | Rutas, qué entra y qué no, hitos | Empiezas un hito o dudas si algo corresponde |
 | [Rúbrica ISI802](01-proyecto/rubrica.md) | Criterios de evaluación y su estado | El cambio impacta la nota (label `rúbrica`) |
+| [Pendientes](01-proyecto/pendientes.md) | Qué falta por hito y qué necesita del autor | Empiezas una sesión o cierras un pendiente |
 
 ### 02 · Arquitectura — cómo está construido
 
