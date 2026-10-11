@@ -19,12 +19,12 @@ El autor pidió que pasar del hero al contenido fuera un zoom hacia el agujero n
 - **Flecha F1:** una píldora de vidrio abajo al centro, «portafolio ↓», con la flecha subiendo y bajando suave. Es un ancla a `#sobre-mi`, así que sin JS o sin escena baja normal. Con teclado, el foco queda en Sobre mí.
 - **Nada queda atrapado:** la barra de scroll, la nav y las anclas siguen funcionando. La caída acompaña al scroll (`max(caída, (scrollY / alto)²)`), así el hero nunca queda a medias.
 - **Sin escena no se intercepta nada.** Sin escena significa sin WebGL o con WebGL por software. Con `prefers-reduced-motion` tampoco se monta y queda la hoja de la 014.
-- Código: `sections/hero/hero-fall.ts` (gestos y avance), `lib/fall.ts` (estado compartido y cálculos con tests) y `lib/smooth.ts` (Lenis compartido para pausar la rueda durante la caída).
+- Código: `sections/hero/hero-fall.ts` (gestos y avance), `lib/fall.ts` (estado compartido y cálculos con tests) y `lib/smooth.ts` (Lenis compartido para el scroll suave tras la caída). Durante la caída la rueda se frena antes de llegar a Lenis, sin `lenis.stop()`: ese método esconde la barra de scroll y la página salta de lado.
 
 ## Alternativas consideradas
 - **A, caída ligada al scroll:** suma una pantalla de scroll solo para la transición.
 - **B, zoom bajo la hoja:** más sutil, pero la hoja tapa la mayor parte del zoom.
-- La 014 había descartado el salto (H1) porque secuestrar el scroll pelea con Lenis y el teclado. Aquí se resuelve así: se intercepta solo arriba de todo, Lenis se pausa durante la caída y teclado, toque y anclas tienen su propio camino.
+- La 014 había descartado el salto (H1) porque secuestrar el scroll pelea con Lenis y el teclado. Aquí se resuelve así: se intercepta solo arriba de todo, la rueda se frena antes de llegar a Lenis durante la caída y teclado, toque y anclas tienen su propio camino.
 
 ## Consecuencias
 - Desde el hero, el primer gesto tarda ~1 s más en llevar al portafolio.

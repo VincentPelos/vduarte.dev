@@ -66,7 +66,6 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
     };
     const lenis = smooth.lenis;
     if (lenis) {
-      lenis.start();
       lenis.scrollTo(top, { onComplete: finish });
     } else {
       scrollTo({ top, behavior: 'smooth' });
@@ -74,18 +73,22 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
     }
   };
 
+  // Lenis no se pausa: `lenis.stop()` le pone `overflow: clip` a la página, la barra de scroll
+  // desaparece y todo salta de lado. Los gestos durante la caída se bloquean aquí.
   const jump = (focus = false) => {
     busy = true;
-    smooth.lenis?.stop();
     animate(1, FALL_MS, () => land(focus));
   };
 
   // Intenciones de bajar estando arriba. Se escuchan en captura para adelantarse a Lenis.
   const onWheel = (event: WheelEvent) => {
-    if (busy && atTop()) return event.preventDefault();
+    const block = () => {
+      event.preventDefault();
+      event.stopImmediatePropagation(); // Lenis escucha la rueda en window, después que esto
+    };
+    if (busy && atTop()) return block();
     if (event.deltaY <= 0 || event.ctrlKey || !canFall()) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
+    block();
     jump();
   };
   let touchY = 0;
@@ -144,6 +147,5 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
     document.removeEventListener('click', onCue, { capture: true });
     removeEventListener('scroll', onScroll);
     fall.progress = 0;
-    smooth.lenis?.start();
   };
 }
