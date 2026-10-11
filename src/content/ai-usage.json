@@ -1,0 +1,123 @@
+[
+  {
+    "id": "main",
+    "title": "Uso de IA",
+    "subtitle": "Qué herramientas usé, para qué y qué decidí yo",
+    "intro": "Este sitio y el caso Colchagua se hicieron con asistentes de IA. La IA propuso, escribió código y redactó borradores; yo definí qué se hacía, elegí entre opciones, revisé cada cambio y puedo defender todo lo que está publicado. El registro completo está en las bitácoras del repositorio.",
+    "tools": [
+      {
+        "name": "Claude Code",
+        "maker": "Anthropic · Claude Opus 5.5",
+        "use": "Asistente en la terminal. En este sitio: estructura, componentes, tests, CI, documentación, laboratorios de diseño y verificación. En Colchagua: ETL, modelos, guía del dashboard e informe."
+      },
+      {
+        "name": "Codex",
+        "maker": "OpenAI",
+        "use": "Pasó mis datos profesionales al formato JSON del sitio y preparó el Dockerfile del despliegue."
+      },
+      {
+        "name": "GPT 5.6 Sol",
+        "maker": "OpenAI · investigación profunda",
+        "use": "En Colchagua: búsqueda de datasets, análisis preliminar y descarga de parte de los datos."
+      }
+    ],
+    "projects": [
+      {
+        "id": "sitio",
+        "file": "vduarte.dev",
+        "title": "Este sitio",
+        "decidedBy": "Yo",
+        "rows": [
+          {
+            "task": "Definición",
+            "ai": "Condujo una entrevista, propuso opciones con una recomendación y armó los primeros mockups.",
+            "author": "Todas las decisiones de producto, diseño, stack y flujo de trabajo."
+          },
+          {
+            "task": "Código",
+            "ai": "Escribió el scaffold de Astro, los componentes, los schemas, los tests y los workflows, y abrió los PR.",
+            "author": "El orden del trabajo, revisar cada tanda y aprobar cada merge."
+          },
+          {
+            "task": "Contenido",
+            "ai": "Adaptó mis datos al modelo JSON y redactó textos a partir de mis documentos.",
+            "author": "Todos los datos biográficos y profesionales, qué proyectos destacar y separar capacitación de certificación."
+          },
+          {
+            "task": "Diseño y movimiento",
+            "ai": "Armó laboratorios interactivos con variantes y controles, investigó la física del agujero negro y escribió el shader.",
+            "author": "Cada dirección visual, los valores finales y qué se descarta: un rediseño grande del hero se revirtió completo."
+          },
+          {
+            "task": "Rendimiento",
+            "ai": "Auditó el sitio, midió con Lighthouse y benchmarks antes y después, e implementó los arreglos.",
+            "author": "La prioridad (rendimiento primero) y correr Lighthouse antes de cada versión."
+          },
+          {
+            "task": "Despliegue",
+            "ai": "Preparó el Dockerfile y documentó el pipeline.",
+            "author": "Usar Docker con Coolify; el servidor y el dominio los administro yo."
+          }
+        ]
+      },
+      {
+        "id": "colchagua",
+        "file": "colchagua-etl",
+        "title": "Caso Colchagua",
+        "decidedBy": "El equipo",
+        "rows": [
+          {
+            "task": "Fuentes",
+            "ai": "Encontró datasets (CR2MET, CAMELS-CL, ODEPA, ARClim) y escribió los scripts de descarga.",
+            "author": "Qué fuentes entran, la descarga manual de la DGA y el catastro, y la llave de la API del Banco Central."
+          },
+          {
+            "task": "Enfoque",
+            "ai": "Probó con los datos qué focos eran viables y contrastó el recorte con la rúbrica.",
+            "author": "El foco en la cereza, la regla \"solo Colchagua\", las amenazas a estudiar y el tope en 2025."
+          },
+          {
+            "task": "ETL",
+            "ai": "Escribió la selección, limpieza, variables y el Datamart, y corrigió errores propios.",
+            "author": "Revisar cada tabla y su diccionario columna por columna; decidir variables, cultivos y el desfase temporada–año."
+          },
+          {
+            "task": "Modelos y proyecciones",
+            "ai": "Programó los notebooks de machine learning y forecast, los validó fuera de muestra y corrigió una conclusión que no resistía la validación.",
+            "author": "Pedir proyecciones útiles y validadas, elegir el escenario climático y decidir qué cifras presentar como firmes."
+          },
+          {
+            "task": "Power BI",
+            "ai": "Escribió una guía paso a paso con medidas DAX y generó dos de las páginas.",
+            "author": "Armar a mano las páginas principales, el modelo, las relaciones y las medidas."
+          },
+          {
+            "task": "Informe",
+            "ai": "Redactó el informe a partir de las decisiones y los hallazgos.",
+            "author": "Revisar, ajustar la redacción y defenderlo."
+          }
+        ]
+      }
+    ],
+    "checks": {
+      "title": "Cómo se verificó",
+      "items": [
+        "Cada PR pasa lint, formato, tipos, tests y build, y los cambios visuales se revisan en 390, 768 y 1280 px.",
+        "Ninguna decisión queda en \"lo hizo la IA\": cada una tiene su porqué en las decisiones registradas del repositorio.",
+        "Las cifras del caso Colchagua se reproducen desde los datos con los notebooks públicos.",
+        "Antes de publicar el repositorio de Colchagua se revisó que no quedaran claves ni datos crudos."
+      ]
+    },
+    "links": [
+      {
+        "label": "Declaración de IA de Colchagua",
+        "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/documentacion/uso_de_ia.md"
+      },
+      {
+        "label": "Bitácoras de este sitio",
+        "href": "https://github.com/VincentPelos/vduarte.dev/tree/develop/docs/06-bitacora"
+      }
+    ],
+    "labels": { "back": "volver al inicio", "ai": "La IA", "links": "Registro" }
+  }
+]

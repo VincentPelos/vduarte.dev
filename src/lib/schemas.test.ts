@@ -1,6 +1,7 @@
 import { z } from 'astro/zod';
 import { describe, expect, it } from 'vitest';
 import {
+  aiUsageSchema,
   caseSchema,
   educationSchema,
   experienceSchema,
@@ -312,5 +313,33 @@ describe('caseSchema', () => {
         schema.safeParse({ ...base, resources: { ...base.resources, report: 'informe.pdf' } }),
       ),
     ).toEqual(['resources.report']);
+  });
+});
+
+describe('aiUsageSchema', () => {
+  const row = { task: 'Código', ai: 'Escribió.', author: 'Revisé.' };
+  const base = {
+    id: 'main',
+    title: 'Uso de IA',
+    subtitle: 'Subtítulo',
+    intro: 'Intro.',
+    tools: [{ name: 'Claude Code', maker: 'Anthropic', use: 'Código.' }],
+    projects: [
+      { id: 'sitio', file: 'vduarte.dev', title: 'Este sitio', decidedBy: 'Yo', rows: [row] },
+    ],
+    checks: { title: 'Cómo se verificó', items: ['Tests.'] },
+    links: [{ label: 'Bitácoras', href: 'https://github.com/usuario/repo' }],
+    labels: { back: 'volver', ai: 'La IA', links: 'Registro' },
+  };
+
+  it('acepta una declaración completa', () => {
+    expect(aiUsageSchema.safeParse(base).success).toBe(true);
+  });
+
+  it('exige decir qué decidió una persona en cada tarea', () => {
+    const projects = [{ ...base.projects[0], rows: [{ ...row, author: '' }] }];
+    expect(errorPaths(aiUsageSchema.safeParse({ ...base, projects }))).toEqual([
+      'projects.0.rows.0.author',
+    ]);
   });
 });
