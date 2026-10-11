@@ -57,21 +57,6 @@
     "featured": true
   },
   {
-    "id": "panel-monitoreo-ti",
-    "title": "Panel de Monitoreo TI",
-    "description": "Desarrollo interno. Herramienta para supervisar servicios y recursos institucionales mediante autenticación Device Code Flow, consultas periódicas y visualización de estados. Se prepara para distribuir como ejecutable de Windows.",
-    "tags": ["Node.js", "TypeScript", "MSAL"],
-    "year": 2026,
-    "featured": false
-  },
-  {
-    "id": "mesa-de-ayuda",
-    "title": "Sistema de Mesa de Ayuda",
-    "description": "Desarrollo interno. Sistema para registrar, consultar y organizar solicitudes de soporte, con filtros por estado y fecha, vista de detalles e integración con Microsoft 365.",
-    "tags": ["SharePoint", "SPFx", "Power Apps", "TypeScript", "Microsoft 365"],
-    "year": 2026
-  },
-  {
     "id": "condor",
     "title": "Cóndor",
     "description": "Investigación y diseño, sin prototipo funcional. Propuesta de mensajería descentralizada para emergencias sin Internet. Bluetooth Low Energy, Wi-Fi Direct, LoRa y redes mesh son alternativas en evaluación, no implementaciones terminadas.",
