@@ -16,7 +16,8 @@ Estado de la rúbrica: [rubrica.md](rubrica.md).
 | Pendiente | Issue | Necesita del autor |
 |---|---|---|
 | Primer bento que lo venda desde la entrada | #133 | Elegir en un laboratorio |
-| Experiencia, Skills y Educación con más vida; texto legible sobre las estrellas | #134 | Decir en qué sección se pierde el texto (su mensaje quedó cortado en "como pasa en…") y elegir en un laboratorio |
+| Experiencia y Educación con más vida: hoy son texto flotando sobre las estrellas | #134 | Elegir en un laboratorio |
+| Skills como lluvia de estrellas | #134 | Va después de Experiencia y Educación; el autor tiene ideas |
 | Animaciones de entrada y fundidos | #124 | Elegir en un laboratorio |
 | Caída al agujero y flecha del hero: probar en celular real y Safari | #136, #131 (PR #138) | Probarla en su celular |
 
@@ -24,9 +25,9 @@ Estado de la rúbrica: [rubrica.md](rubrica.md).
 
 | Pendiente | Issue | Necesita del autor |
 |---|---|---|
-| Formulario de contacto hacia n8n | — | URL del webhook de n8n, o decidir dejar solo el correo copiable |
 | SEO e imagen para compartir (Open Graph) | — | Nada |
-| Analytics | — | ID del sitio y URL del script de Umami, o descartarlo |
+
+Descartados (2026-10-11): formulario n8n (queda el `mailto:`) y analytics con Umami (#140).
 
 Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer sólido (#130); entrada sin pausa (#132).
 
@@ -34,11 +35,10 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 
 | Pendiente | Necesita del autor |
 |---|---|
-| LinkedIn y CV: hoy son 5 enlaces deshabilitados ("Pendiente de publicación") | URL de LinkedIn y el CV en PDF (va a `public/`) |
-| Noneto CLI con imágenes, galería y enlace al repo | Publicar el repo y mandar 2 o 3 capturas |
-| Power BI incrustado arriba de las capturas del caso, o la descarga acordada con el docente | Enlace de "Publicar en la web" de Power BI, o confirmar la alternativa con el docente |
-| Revisar los textos en primera persona (caso Colchagua, `/uso-de-ia`) | Leerlos y corregir |
-| Dominio final: de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido | Configurarlo en Coolify (el servidor lo administra él) |
+| CV en LaTeX (compatible con ATS) y LinkedIn: hoy son 5 enlaces deshabilitados ("Pendiente de publicación") | Revisar el CV; actualizar su perfil de LinkedIn |
+| Noneto CLI con imágenes, galería y enlace al repo | Publicar el repo y mandar 2 o 3 capturas (está trabajando en él) |
+| Reducir los textos del caso Colchagua | Más adelante; por ahora quedan así. `/uso-de-ia` la escribe el agente: cuenta lo que hizo la IA |
+| Dominio final: de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido | Lo hace el autor en Coolify; el agente no lo toca |
 | Repo público | Cambiar la visibilidad en GitHub |
 | README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | Nada |
 | Lighthouse antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)) | Nada |

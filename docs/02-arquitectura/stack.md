@@ -27,10 +27,9 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | Commits | **commitlint** + **husky** | Validar mensajes | Historia limpia y trazable |
 | CI | **GitHub Actions** + **Lighthouse CI** | Verificar cada PR; Lighthouse, a mano antes de cada versión menor | Pipeline reproducible |
 | Despliegue | **Coolify** (VPS propio) **(en preparación)** | Build y publicación | Deploy por push y previews por PR. [Decisión 003](../03-decisiones/003-despliegue-coolify.md) |
-| Formulario | **n8n** (webhook) **(planeado, v0.6.0)** | Recibir mensajes de contacto | Automatización propia, sin servicios de terceros |
-| Analytics | **Umami** **(planeado, v0.6.0)** | Visitas | Self-hosted, sin cookies |
 
 ## Lo que no usamos
 
 - **React / Vue / Svelte:** no hay estado complejo que lo justifique. Si aparece, Astro permite agregar una isla sin migrar nada.
+- **Formulario (n8n) y analytics (Umami):** estaban planeados para v0.6.0 y se descartaron el 2026-10-11; el contacto es un `mailto:`.
 - **CMS:** los JSON en el repo cumplen el mismo rol con trazabilidad gratis.
