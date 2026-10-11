@@ -84,7 +84,7 @@ push a main ───► Coolify: Dockerfile (pnpm build → Nginx en puerto 80)
 
 Lighthouse no corre en cada PR: se lanza a mano sobre `develop` antes de cada versión menor o mayor.
 
-En Coolify, usar el método **Dockerfile** desde el repositorio Git y exponer el puerto interno **80**. Variables de entorno (todas opcionales y disponibles durante el build): `PUBLIC_CONTACT_WEBHOOK`, `PUBLIC_UMAMI_WEBSITE_ID`, `PUBLIC_UMAMI_SRC`. Detalle y estado en [`docs/02-arquitectura/despliegue.md`](docs/02-arquitectura/despliegue.md).
+En Coolify, usar el método **Dockerfile** desde el repositorio Git y exponer el puerto interno **80**. No requiere variables de entorno. Detalle y estado en [`docs/02-arquitectura/despliegue.md`](docs/02-arquitectura/despliegue.md).
 
 ## Uso de IA
 

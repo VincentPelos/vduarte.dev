@@ -11,7 +11,7 @@ Documento original: [ISI802_Rubrica_Portafolio_Web.pdf](ISI802_Rubrica_Portafoli
 **Qué se evalúa:** la construcción y despliegue de un portafolio profesional que expone el trabajo de BI sobre Colchagua. No se reevalúa el análisis, sino cómo se **presenta y publica**.
 **Entrega:** URL en producción + repositorio público en GitHub + defensa técnica.
 
-Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
+Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido · ❌ descartado.
 
 ## Admisibilidad (no negociable)
 
@@ -21,7 +21,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 | 2 | Repo **público** con historial real | Flujo issue → rama → PR ([ramas](../05-flujo-git/ramas.md)); se hace público antes de entregar | 🟨 |
 | 3 | Desplegado con CD desde GitHub | Coolify despliega `main` en `preview.vduarte.dev`; falta el dominio final `vduarte.dev` ([despliegue](../02-arquitectura/despliegue.md)) | 🟨 |
 | 4 | Responsivo | Verificación en 390 / 768 / 1280 px en cada PR; falta una pasada en celular real | 🟨 |
-| 5 | Power BI y notebooks reales accesibles | Descarga del `.pbix`, capturas y gráficos HTML en `/proyectos/colchagua`, 6 notebooks en el repo público `colchagua-etl` ([decisiones 006](../03-decisiones/006-power-bi-descarga.md) y [017](../03-decisiones/017-graficos-html.md)); falta incrustarlo o acordar la descarga con el docente | 🟨 |
+| 5 | Power BI y notebooks reales accesibles | Descarga del `.pbix`, capturas y gráficos HTML en `/proyectos/colchagua`, 6 notebooks en el repo público `colchagua-etl` ([decisiones 006](../03-decisiones/006-power-bi-descarga.md) y [017](../03-decisiones/017-graficos-html.md)); sin incrustar: el autor aceptó la alternativa (2026-10-11) | ✅ |
 | 6 | Autoría defendible | Esta bóveda (decisiones + bitácora) + `/uso-de-ia` (hecha, #127) | ✅ |
 
 ## A. Desarrollo técnico (70%)
@@ -32,7 +32,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 | A2 Despliegue continuo | 15% | Deploy por push, builds exitosos, previews por PR, dominio, pipeline documentado en README | Coolify + GitHub App, previews de PR, `vduarte.dev`, README | 🟨 |
 | A3 Responsive y UX/UI | 15% | Diseño profesional, perfecto en 3 tamaños, accesible, carga cuidada | [Tokens](../04-diseno/tokens.md), Lighthouse (performance 99, el resto 100 en v0.5.0), reduced-motion | 🟨 |
 | A4 Calidad de código | 15% | Código limpio, sin duplicación, commits atómicos, README completo | ESLint, Prettier, Vitest, commitlint, [commits](../05-flujo-git/commits.md) | 🟨 |
-| A5 Power BI y notebooks | 10% | Power BI incrustado y funcional, notebooks con links claros | Capturas + descarga del `.pbix` + gráficos HTML + links a los notebooks; falta incrustarlo | 🟨 |
+| A5 Power BI y notebooks | 10% | Power BI incrustado y funcional, notebooks con links claros | Capturas + descarga del `.pbix` + gráficos HTML + links a los notebooks; sin incrustar, alternativa aceptada (2026-10-11) | ✅ |
 
 ## B. Contenido y comunicación de BI (30%)
 
@@ -48,7 +48,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 - ✅ Lighthouse alto (v0.5.0: performance 99; accesibilidad, buenas prácticas y SEO 100).
 - ✅ Tests o CI con lint.
 - ✅ Dark mode (el sitio es oscuro por diseño).
-- ⬜ Formulario de contacto funcional (n8n).
+- ❌ Formulario de contacto funcional (n8n): descartado el 2026-10-11; el contacto es un `mailto:`.
 - 🟨 Historial de commits que muestra el proceso.
 - 🟨 README ejemplar.
 
@@ -68,7 +68,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido.
 - [ ] Desplegado con deploy automático por push y URL en producción.
 - [ ] Responsivo verificado en móvil, tablet y escritorio.
 - [x] Sección de perfil profesional (rol, competencias BI, stack).
-- [ ] Power BI de Colchagua incrustado y cargando (o alternativa acordada con el docente: descarga).
+- [x] Power BI de Colchagua incrustado y cargando (o alternativa: capturas, gráficos y descarga, aceptada el 2026-10-11).
 - [x] Enlaces a los notebooks en GitHub, accesibles.
 - [x] Síntesis del caso Colchagua con visualizaciones y storytelling.
 - [x] Conclusiones sobre vulnerabilidad territorial, honestas y respaldadas.

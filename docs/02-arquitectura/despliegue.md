@@ -1,11 +1,11 @@
 ---
 tags: [arquitectura, despliegue]
-actualizado: 2026-10-10
+actualizado: 2026-10-11
 ---
 
 # Despliegue
 
-> Estado: **pendiente de configurar** en Coolify. Esta nota describe el pipeline objetivo; se completa con capturas y valores reales cuando esté activo.
+> Estado: **activo**. Coolify despliega `main` en `https://preview.vduarte.dev`; el servidor y el dominio final los administra el autor.
 
 ## Pipeline
 
@@ -29,14 +29,10 @@ develop → PR a main (release) ─► merge ─► Coolify: build + deploy a ht
 - La imagen puede probarse con `docker build -t vduarte-dev .` y `docker run --rm -p 8080:80 vduarte-dev`; luego abrir `http://localhost:8080`.
 - GitHub Actions ejecuta `docker build` en cada PR y en los pushes a `develop` y `main` para verificar la imagen.
 
-El Dockerfile queda en el repositorio; la configuración de la aplicación en Coolify y el primer despliegue siguen pendientes.
+El Dockerfile queda en el repositorio; la aplicación en Coolify la configura el autor.
 
 ## Variables de entorno
 
-| Variable | Uso | Obligatoria |
-|---|---|---|
-| `PUBLIC_CONTACT_WEBHOOK` | URL del webhook de n8n para el formulario | No (sin ella el formulario muestra solo el correo) |
-| `PUBLIC_UMAMI_WEBSITE_ID` | ID del sitio en Umami | No |
-| `PUBLIC_UMAMI_SRC` | URL del script de Umami | No |
+Ninguna. Las que había planeadas (`PUBLIC_CONTACT_WEBHOOK` para n8n y `PUBLIC_UMAMI_*` para analytics) se descartaron el 2026-10-11 junto con esas funciones.
 
 Ver la justificación en [decisión 003](../03-decisiones/003-despliegue-coolify.md).
