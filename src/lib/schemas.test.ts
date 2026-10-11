@@ -246,39 +246,63 @@ describe('projectSchema', () => {
 describe('caseSchema', () => {
   const schema = caseSchema(() => z.string());
   const url = 'https://github.com/usuario/repo';
+  const bars = {
+    type: 'bars',
+    max: 60,
+    items: [{ label: 'Chimbarongo', value: 58.9, display: '58,9 %' }],
+  };
   const base = {
     id: 'colchagua',
     title: 'Caso',
     subtitle: 'Subtítulo',
     context: 'Curso',
     question: '¿Pregunta?',
-    summary: 'Resumen.',
     stats: [{ value: '38 %', label: 'de los frutales' }],
-    problem: ['Párrafo.'],
-    data: {
-      territory: 'Colchagua',
-      period: '1991–2025',
-      sources: [{ name: 'SII', what: 'Empleo', url }],
-    },
-    approach: [{ title: 'ETL', body: 'Limpieza.' }],
-    findings: [{ id: 'hallazgo', title: 'Hallazgo', body: 'Texto.' }],
-    conclusions: { answer: 'Respuesta.', actions: ['Acción.'] },
-    limitations: [{ title: 'Asociación', body: 'No causalidad.' }],
+    dashboard: { title: 'El dashboard', take: '5 páginas.' },
+    gallery: [{ image: 'captura.png', alt: 'Mapa', caption: 'Mapa' }],
+    blocks: [
+      {
+        id: 'la-cereza',
+        file: 'hallazgos/la-cereza.md',
+        title: 'Título',
+        take: 'Texto.',
+        panels: [{ title: 'Panel', source: 'SII', chart: bars }],
+      },
+    ],
+    conclusions: { title: 'Qué hacer', answer: 'Respuesta.', actions: ['Acción.'] },
+    limitations: { title: 'Límites', items: [{ title: 'Asociación', body: 'No causalidad.' }] },
+    process: { title: 'Cómo se hizo', text: 'ETL → Datamart → Power BI.' },
     resources: { repo: url, dashboard: url, report: url, notebooks: [{ title: '01', href: url }] },
+    labels: {
+      back: 'proyectos',
+      download: 'Descargar',
+      report: 'Informe',
+      repo: 'Repo',
+      notebooks: 'Notebooks',
+    },
   };
 
-  it('acepta un caso completo y deja la galería vacía por defecto', () => {
+  it('acepta un caso completo y parte las barras desde 0 por defecto', () => {
     const result = schema.safeParse(base);
-    expect(result.success && result.data.gallery).toEqual([]);
+    expect(result.success && result.data.blocks[0].panels[0].chart).toMatchObject({ min: 0 });
   });
 
   it('exige declarar al menos un límite del análisis', () => {
-    expect(errorPaths(schema.safeParse({ ...base, limitations: [] }))).toEqual(['limitations']);
+    const limitations = { title: 'Límites', items: [] };
+    expect(errorPaths(schema.safeParse({ ...base, limitations }))).toEqual(['limitations.items']);
   });
 
-  it('no acepta más de 4 cifras destacadas', () => {
-    const stats = Array.from({ length: 5 }, () => base.stats[0]);
-    expect(errorPaths(schema.safeParse({ ...base, stats }))).toEqual(['stats']);
+  it('exige dos leyendas en un gráfico de pares', () => {
+    const pairs = {
+      type: 'pairs',
+      max: 10,
+      legend: ['2021'],
+      items: [{ label: 'Cerezo', before: 1, after: 2, display: '2' }],
+    };
+    const blocks = [{ ...base.blocks[0], panels: [{ title: 'P', source: 'S', chart: pairs }] }];
+    expect(errorPaths(schema.safeParse({ ...base, blocks }))).toEqual([
+      'blocks.0.panels.0.chart.legend',
+    ]);
   });
 
   it('exige URLs válidas en los recursos', () => {

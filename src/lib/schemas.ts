@@ -230,8 +230,29 @@ const text = z.string().min(1);
 const figure = z.object({ value: text, label: text });
 
 /**
- * Caso de estudio (`cases.json`), contado para alguien no técnico: problema, datos, enfoque,
- * hallazgos con cifras, conclusiones accionables y límites (rúbrica B2 y B3).
+ * Gráfico de barras en HTML (decisión 017). `bars`: una barra por ítem, desde 0 o desde `min`
+ * si hay negativos. `pairs`: dos barras por ítem (antes y después). `display` es el texto de la cifra.
+ */
+const chart = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('bars'),
+    min: z.number().default(0),
+    max: z.number(),
+    items: z.array(z.object({ label: text, value: z.number(), display: text })).min(1),
+  }),
+  z.object({
+    type: z.literal('pairs'),
+    max: z.number().positive(),
+    legend: z.tuple([text, text]),
+    items: z
+      .array(z.object({ label: text, before: z.number(), after: z.number(), display: text }))
+      .min(1),
+  }),
+]);
+
+/**
+ * Caso de estudio (`cases.json`): las cifras de la investigación primero, el Power BI en
+ * capturas con su descarga y el proceso en una línea (rúbrica A5, B2 y B3).
  */
 export const caseSchema = <T extends z.ZodType>(image: () => T) =>
   z.object({
@@ -241,21 +262,31 @@ export const caseSchema = <T extends z.ZodType>(image: () => T) =>
     /** Curso, institución y fecha. */
     context: text,
     question: text,
-    summary: text,
     stats: z.array(figure).min(1).max(4),
-    /** Párrafos. */
-    problem: z.array(text).min(1),
-    data: z.object({
-      territory: text,
-      period: text,
-      sources: z.array(z.object({ name: text, what: text, url: z.url() })).min(1),
-    }),
-    approach: z.array(z.object({ title: text, body: text })).min(1),
-    findings: z.array(z.object({ id, title: text, body: text, figure: figure.optional() })).min(1),
-    conclusions: z.object({ answer: text, actions: z.array(text).min(1) }),
+    dashboard: z.object({ title: text, take: text }),
+    gallery: z.array(z.object({ image: image(), alt: text, caption: text })).min(1),
+    blocks: z
+      .array(
+        z.object({
+          id,
+          /** Ruta que se muestra como `$ cat …` sobre el título. */
+          file: text,
+          title: text,
+          take: text,
+          panels: z
+            .array(z.object({ title: text, source: text, chart }))
+            .min(1)
+            .max(2),
+        }),
+      )
+      .min(1),
+    conclusions: z.object({ title: text, answer: text, actions: z.array(text).min(1) }),
     /** Límites del análisis: la rúbrica pide decir que correlación no es causalidad. */
-    limitations: z.array(z.object({ title: text, body: text })).min(1),
-    gallery: z.array(z.object({ image: image(), alt: text, caption: text })).default([]),
+    limitations: z.object({
+      title: text,
+      items: z.array(z.object({ title: text, body: text })).min(1),
+    }),
+    process: z.object({ title: text, text }),
     resources: z.object({
       repo: z.url(),
       /** Descarga del .pbix. */
@@ -264,4 +295,5 @@ export const caseSchema = <T extends z.ZodType>(image: () => T) =>
       report: z.url(),
       notebooks: z.array(z.object({ title: text, href: z.url() })).min(1),
     }),
+    labels: z.object({ back: text, download: text, report: text, repo: text, notebooks: text }),
   });
