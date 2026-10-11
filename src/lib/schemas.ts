@@ -93,6 +93,8 @@ export const siteSchema = z.object({
     .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))
     .min(1),
   footerNote: z.string().min(1),
+  /** Enlaces del pie de página a otras rutas del sitio (p. ej. `/uso-de-ia`). */
+  footerLinks: z.array(z.object({ label: z.string().min(1), href: z.string().min(1) })).default([]),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
   /** Etiquetas de las tarjetas del bento "Sobre mí". */
@@ -307,3 +309,31 @@ export const caseSchema = <T extends z.ZodType>(image: () => T) =>
     }),
     labels: z.object({ back: text, download: text, report: text, repo: text, notebooks: text }),
   });
+
+/**
+ * Declaración de uso de IA (`ai-usage.json`, ruta `/uso-de-ia`): herramientas, qué hizo la IA y
+ * qué decidió una persona en cada proyecto (rúbrica: admisibilidad 6).
+ */
+export const aiUsageSchema = z.object({
+  id,
+  title: text,
+  subtitle: text,
+  intro: text,
+  tools: z.array(z.object({ name: text, maker: text, use: text })).min(1),
+  projects: z
+    .array(
+      z.object({
+        id,
+        /** Repo que se muestra como `$ cat …` sobre el título. */
+        file: text,
+        title: text,
+        /** Quién decidió en ese proyecto: encabeza la segunda columna. */
+        decidedBy: text,
+        rows: z.array(z.object({ task: text, ai: text, author: text })).min(1),
+      }),
+    )
+    .min(1),
+  checks: z.object({ title: text, items: z.array(text).min(1) }),
+  links: z.array(z.object({ label: text, href: z.url() })).min(1),
+  labels: z.object({ back: text, ai: text, links: text }),
+});

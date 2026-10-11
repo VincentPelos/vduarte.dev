@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { file } from 'astro/loaders';
 import {
+  aiUsageSchema,
   caseSchema,
   educationSchema,
   experienceSchema,
@@ -29,5 +30,9 @@ export const collections = {
   cases: defineCollection({
     loader: file('src/content/cases.json'),
     schema: ({ image }) => caseSchema(image),
+  }),
+  aiUsage: defineCollection({
+    loader: file('src/content/ai-usage.json'),
+    schema: aiUsageSchema,
   }),
 };

@@ -10,5 +10,15 @@ const year = new Date().getFullYear();
   <span>
     © {year} {site.name}
   </span>
-  <span>{site.footerNote}</span>
+  <span class="flex flex-wrap gap-x-5 gap-y-2">
+    {site.footerLinks.map((link) => (
+      <a
+        href={link.href}
+        class="border-b border-line-hi pb-0.5 transition-colors hover:border-fg hover:text-fg"
+      >
+        {link.label}
+      </a>
+    ))}
+    <span>{site.footerNote}</span>
+  </span>
 </footer>

@@ -15,6 +15,13 @@ export async function getSite() {
   return site.data;
 }
 
+/** La declaración de uso de IA (`ai-usage.json`). */
+export async function getAiUsage() {
+  const entry = await getEntry('aiUsage', 'main');
+  if (!entry) throw new Error('Falta la entrada "main" en src/content/ai-usage.json');
+  return entry.data;
+}
+
 /** Un caso de estudio de `cases.json` por su id (el `caseStudy` de un proyecto). */
 export async function getCase(id: string) {
   const entry = await getEntry('cases', id);
