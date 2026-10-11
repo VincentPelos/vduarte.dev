@@ -18,7 +18,7 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | Animación | **Motion** (API vanilla) **(planeado, solo si hace falta)** | Secuencias y progreso de scroll | Misma librería que "Framer Motion", sin React. Hasta ahora bastó la API nativa |
 | Scroll | **Lenis** 1.3 | Smooth scroll de la rueda (`layout/SmoothScroll.astro`) | ~5 kB gzip; touch y teclado nativos; no se monta con reduced-motion |
 | Gráficos | **WebGL** directo y canvas 2D | Agujero negro del hero ([008](../03-decisiones/008-agujero-negro-puntos.md)) y cielo de estrellas ([009](../03-decisiones/009-cinematica-constelaciones.md)) | Un shader de pantalla completa; ~10 KB frente a ~530 KB de three.js |
-| Gráficos | **Chart.js** **(planeado, v0.5.0)** | Dashboard web del caso Colchagua | Vanilla, conocido, fácil de tematizar. [Decisión 006](../03-decisiones/006-power-bi-descarga.md) |
+| Gráficos | Barras en **HTML y CSS** | Cifras del caso Colchagua (`components/case/BarChart.astro`) | Sin JS ni dependencias; reemplaza a Chart.js ([decisión 017](../03-decisiones/017-graficos-html.md)) |
 | Íconos | **@iconify/utils** + `@iconify-json/simple-icons` | Logos de tecnologías | SVG incrustado en build, nada externo ([007](../03-decisiones/007-iconos.md)) |
 | Imágenes | **sharp** (vía `astro:assets`) | Optimizar las imágenes del contenido a WebP en varios anchos | Lo usa `<Image>` de Astro; [decisión 016](../03-decisiones/016-sharp-imagenes.md) |
 | Fuentes | **Fontsource** | Martian Mono, Geist, Geist Mono | Self-hosted vía npm, sin archivos sueltos |

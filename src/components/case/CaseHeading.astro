@@ -1,0 +1,18 @@
+---
+interface Props {
+  /** Ruta que se muestra como `$ cat …` sobre el título. */
+  file: string;
+  title?: string;
+}
+
+const { file, title } = Astro.props;
+---
+
+<p class="font-mono text-[0.78rem] leading-[1.3] text-muted">
+  $ cat <span class="text-fg">{file}</span>
+</p>
+{title && (
+  <h2 class="mt-2 font-display text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.05] font-bold tracking-display text-balance">
+    {title}
+  </h2>
+)}

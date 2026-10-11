@@ -36,7 +36,7 @@ vduarte.dev/
 │  │  │  ├─ skills/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
-│  │  ├─ case/                 piezas de los casos de estudio: CaseHeader, Finding, DownloadCard, charts/
+│  │  ├─ case/                 piezas de los casos de estudio: CaseHeading, CaseDashboard, CaseBlock, BarChart
 │  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon, LinkHint
 │  ├─ content/                 datos del sitio (JSON) y casos de estudio (cases.json)
 │  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
