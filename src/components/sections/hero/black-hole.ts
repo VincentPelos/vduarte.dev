@@ -49,14 +49,16 @@ const BAKE_BUDGET_MS = 8;
  */
 const BAKE_MAX_JOBS = LUT_TEXTURES;
 /**
- * Entrada de la escena por colapso (decisión 012): la sombra crece hasta cubrir el hero, se
- * mantiene y se contrae de vuelta al agujero con la escena ya entera detrás. Valores elegidos
- * por el autor en el laboratorio (ms; el borde, en fracción de 5 celdas de desorden).
+ * Entrada de la escena por colapso (decisión 012): la sombra crece hasta cubrir el hero y se
+ * contrae de vuelta al agujero con la escena ya entera detrás. Sin pausa en medio ni cola lenta
+ * al final: el borde de puntos se deshace mientras llega a la sombra (#132). Valores en ms; el
+ * borde, en fracción de 5 celdas de desorden.
  */
 const COLLAPSE_GROW_MS = 520;
-const COLLAPSE_HOLD_MS = 140;
 const COLLAPSE_SHRINK_MS = 900;
 const COLLAPSE_EDGE = 0.4;
+/** Fracción final de la contracción en que el borde se deshace punto a punto. */
+const COLLAPSE_DISSOLVE = 0.45;
 /** Radio de la sombra en radios de Schwarzschild: el colapso empieza y termina ahí. */
 const SHADOW_RS = 2.6;
 
@@ -226,9 +228,9 @@ const DRAW = `
   uniform sampler2D uCells, uText;
   uniform vec2 uGrid, uRes, uHole;
   uniform float uCell, uDpr, uPx, uLens;
-  // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado) y si fuera de ella
-  // todavía no se ve la escena (1 mientras crece).
-  uniform float uCover, uCoverOnly, uEdge;
+  // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado), si fuera de ella
+  // todavía no se ve la escena (1 mientras crece) y qué fracción del borde de puntos queda.
+  uniform float uCover, uCoverOnly, uEdge, uEdgeKeep;
 
   vec4 textAt(vec2 px) {
     vec2 uv = px / uRes;
@@ -244,7 +246,7 @@ const DRAW = `
       vec2 to = (cell + .5) * uCell - uHole;
       float d = length(to) + (hash(cell) - .5) * uCell * 5. * uEdge;
       if (d < uCover - uCell * 1.2) c = vec4(0., 0., 0., 1.);
-      else if (d < uCover) c = vec4(pal(atan(to.y, to.x) / 6.2832 + .5), .3);
+      else if (d < uCover && hash(cell + 3.7) < uEdgeKeep) c = vec4(pal(atan(to.y, to.x) / 6.2832 + .5), .3);
       else if (uCoverOnly > .5) c = vec4(0.);
     }
     float r = uCell * c.a;
@@ -516,34 +518,40 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     gl.uniform1f(loc(draw, 'uDpr'), dpr);
     gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
     gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
-    const [cover, coverOnly] = collapse(hole);
+    const [cover, coverOnly, edgeKeep] = collapse(hole);
     gl.uniform1f(loc(draw, 'uCover'), cover);
     gl.uniform1f(loc(draw, 'uCoverOnly'), coverOnly);
+    gl.uniform1f(loc(draw, 'uEdgeKeep'), edgeKeep);
     gl.uniform1f(loc(draw, 'uEdge'), COLLAPSE_EDGE);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
-  // Colapso de entrada: devuelve el radio de la sombra que cubre (px, -1 = terminado) y si
-  // fuera de ella todavía no se ve la escena. Avanza con el reloj, no con los cuadros.
+  // Colapso de entrada: devuelve el radio de la sombra que cubre (px, -1 = terminado), si fuera
+  // de ella todavía no se ve la escena y qué fracción del borde queda. Avanza con el reloj desde
+  // el primer cuadro dibujado (no desde el fin del precálculo): si ese cuadro tarda, la sombra
+  // no salta a medio crecer.
   let collapseStart = -1;
-  const collapse = (hole: number[]): [number, number] => {
-    if (collapseStart < 0) return [-1, 0];
+  const COLLAPSE_PENDING = -2;
+  const collapse = (hole: number[]): [number, number, number] => {
+    if (collapseStart === COLLAPSE_PENDING) collapseStart = performance.now();
+    if (collapseStart < 0) return [-1, 0, 1];
     const t = performance.now() - collapseStart;
     const far =
       Math.hypot(Math.max(hole[0], width - hole[0]), Math.max(hole[1], height - hole[1])) +
       CELL * 4;
     const shadow = SHADOW_RS * pxPerRs;
-    if (t < COLLAPSE_GROW_MS) return [shadow + (far - shadow) * (t / COLLAPSE_GROW_MS) ** 3, 1];
+    if (t < COLLAPSE_GROW_MS) return [shadow + (far - shadow) * (t / COLLAPSE_GROW_MS) ** 3, 1, 1];
     // Con el hero cubierto se cambian la grilla de respaldo y la carga por la escena sin que se note.
     section.classList.add('has-scene');
     section.classList.remove('is-loading');
-    const s = (t - COLLAPSE_GROW_MS - COLLAPSE_HOLD_MS) / COLLAPSE_SHRINK_MS;
-    if (s < 0) return [far, 1];
+    const s = (t - COLLAPSE_GROW_MS) / COLLAPSE_SHRINK_MS;
     if (s >= 1) {
       collapseStart = -1;
-      return [-1, 0];
+      return [-1, 0, 1];
     }
-    return [far + (shadow - far) * (1 - 2 ** (-10 * s)), 0];
+    // ease-out cúbico: frena al llegar, pero sin la cola casi quieta del exponencial.
+    const keep = Math.min(1, (1 - s) / COLLAPSE_DISSOLVE);
+    return [far + (shadow - far) * (1 - (1 - s) ** 3), 0, keep];
   };
 
   let frame = 0,
@@ -600,7 +608,7 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     } else {
       // La escena entra entera (opacidad 1) bajo el colapso; el texto lo dibuja WebGL desde ya,
       // también sobre la sombra, así que nunca se tapa.
-      collapseStart = performance.now();
+      collapseStart = COLLAPSE_PENDING;
       section.classList.add('is-lensing');
     }
     resize();
