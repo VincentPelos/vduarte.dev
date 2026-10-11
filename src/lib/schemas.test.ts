@@ -65,7 +65,12 @@ const site = {
   },
   sections: {
     current: 'actual',
-    experience: { title: 'Experiencia', unit: { one: 'rol', other: 'roles' }, since: 'desde' },
+    experience: {
+      title: 'Experiencia',
+      unit: { one: 'rol', other: 'roles' },
+      since: 'desde',
+      highlights: { show: 'ver logros', hide: 'ocultar logros' },
+    },
     education: {
       title: 'Educación',
       degree: { one: 'título', other: 'títulos' },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatMonth, periodParts, sortByRecency } from './dates';
+import { formatDate, formatMonth, groupByYear, periodParts, sortByRecency, yearOf } from './dates';
 
 describe('formatMonth', () => {
   it('formatea AAAA-MM como mes abreviado y año', () => {
@@ -75,5 +75,33 @@ describe('sortByRecency', () => {
       { id: 'actual', start: null, end: null, ongoing: true },
     ];
     expect(sortByRecency(jobs).map((job) => job.id)).toEqual(['actual', 'practica']);
+  });
+});
+
+describe('yearOf', () => {
+  it('usa el año del inicio', () => {
+    expect(yearOf({ start: '2026-03' })).toBe('2026');
+    expect(yearOf({ start: '2026-07-23' })).toBe('2026');
+  });
+
+  it('sin inicio, toma el año que nombra la nota', () => {
+    expect(yearOf({ start: null, dateNote: 'Aprox. 2025 · meses por confirmar' })).toBe('2025');
+    expect(yearOf({ start: null })).toBe('');
+  });
+});
+
+describe('groupByYear', () => {
+  it('agrupa del año más reciente al más antiguo y conserva el orden dentro de cada año', () => {
+    const items = [
+      { id: 'b', start: '2026-08' },
+      { id: 'viejo', start: '2023' },
+      { id: 'a', start: '2026-07' },
+      { id: 'nota', start: null, dateNote: 'Aprox. 2025' },
+    ];
+    expect(groupByYear(items).map(([year, list]) => [year, list.map((i) => i.id)])).toEqual([
+      ['2026', ['b', 'a']],
+      ['2025', ['nota']],
+      ['2023', ['viejo']],
+    ]);
   });
 });
