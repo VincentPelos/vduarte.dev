@@ -14,3 +14,10 @@ export async function getSite() {
   if (!site) throw new Error('Falta la entrada "main" en src/content/site.json');
   return site.data;
 }
+
+/** Un caso de estudio de `cases.json` por su id (el `caseStudy` de un proyecto). */
+export async function getCase(id: string) {
+  const entry = await getEntry('cases', id);
+  if (!entry) throw new Error(`Falta el caso "${id}" en src/content/cases.json`);
+  return entry.data;
+}

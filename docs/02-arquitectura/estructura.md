@@ -25,7 +25,7 @@ vduarte.dev/
 ├─ src/
 │  ├─ assets/                  imágenes optimizadas por Astro
 │  │  ├─ projects/
-│  │  └─ cases/colchagua/
+│  │  └─ cases/colchagua/     capturas del Power BI del caso (galería de cases.json)
 │  ├─ components/
 │  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
@@ -38,7 +38,7 @@ vduarte.dev/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseHeader, Finding, DownloadCard, charts/
 │  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon, LinkHint
-│  ├─ content/                 datos del sitio (JSON) y casos de estudio
+│  ├─ content/                 datos del sitio (JSON) y casos de estudio (cases.json)
 │  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)
 │  ├─ pages/                   rutas: index.astro, proyectos/[slug].astro, uso-de-ia.astro

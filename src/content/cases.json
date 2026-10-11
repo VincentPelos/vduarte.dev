@@ -1,0 +1,217 @@
+[
+  {
+    "id": "colchagua",
+    "title": "Resiliencia agrícola de Colchagua",
+    "subtitle": "La cereza y las comunas que dependen de ella",
+    "context": "Trabajo integrador ISI802 · Business Intelligence (AIEP) · octubre de 2026",
+    "question": "¿Qué comunas, sectores y PYMEs de la provincia de Colchagua son más vulnerables a que un golpe sobre la agricultura se propague a su economía, y qué amenazas, climáticas y de mercado, pesan más?",
+    "summary": "Integré 13 fuentes oficiales de clima, agua, mercado y empleo de las 10 comunas de Colchagua. Los datos mostraron que la provincia depende de la cereza y que la amenaza que más golpeó a las comunas cerezeras no fue la helada, sino el invierno cálido, que además es la que más va a crecer en la próxima década.",
+    "stats": [
+      { "value": "38 %", "label": "de la superficie frutal de Colchagua es cerezo (2024)" },
+      { "value": "+34 %", "label": "creció la superficie de cerezo entre 2021 y 2024" },
+      {
+        "value": "−1.066",
+        "label": "trabajadores-año bajo su tendencia en las comunas cerezeras en 2023"
+      },
+      {
+        "value": "13 % → 40 %",
+        "label": "de las temporadas con invierno cálido, hoy y en 2026–2035"
+      }
+    ],
+    "problem": [
+      "Colchagua vive de la agricultura. Cuando un año sale mal, por una helada, una lluvia en plena cosecha o una caída del precio, el golpe no se queda en el campo: puede llegar al empleo y a los negocios de cada comuna.",
+      "No elegí de antemano qué cultivo ni qué amenaza estudiar. Integré todos los cultivos y todas las amenazas, y los datos apuntaron a uno: la cereza ocupa casi el doble de superficie que el segundo frutal y es la que más creció. En Chimbarongo y San Fernando es cerca del 60 % de los frutales. Por eso el estudio se centró en las amenazas del cerezo y en las comunas que dependen de él."
+    ],
+    "data": {
+      "territory": "Solo las 10 comunas de la provincia de Colchagua. El impacto se mide con datos de cada comuna; lo regional entra solo como amenaza externa (precio de la cereza y dólar).",
+      "period": "Clima y agua 1991–2025; economía y empleo 2005–2024; proyecciones 2026–2035.",
+      "sources": [
+        {
+          "name": "CR2MET v2.5 (CR2)",
+          "what": "Lluvia y temperatura diaria en grilla de ~5 km",
+          "url": "https://ftp.cr2.cl/browse/cr2met/v2.5_best/"
+        },
+        {
+          "name": "CAMELS-CL y DGA",
+          "what": "Caudal del río Tinguiririca, para el agua de riego",
+          "url": "https://dga.mop.gob.cl/estadisticas-estaciones-dga/"
+        },
+        {
+          "name": "Subsecretaría de Agricultura y Minagri",
+          "what": "Comunas en emergencia agrícola, 2008–2025",
+          "url": "https://datos.gob.cl/dataset/5237"
+        },
+        {
+          "name": "SII, estadísticas de empresas",
+          "what": "Empresas y trabajadores por comuna y rubro, 2005–2024",
+          "url": "https://www.sii.cl/sobre_el_sii/estadisticas_de_empresas.html"
+        },
+        {
+          "name": "ODEPA-CIREN e INE",
+          "what": "Catastros frutícolas 2021 y 2024 y Censo Agropecuario",
+          "url": "https://www.odepa.gob.cl"
+        },
+        {
+          "name": "ODEPA con datos de Aduanas",
+          "what": "Volumen y precio de la cereza exportada desde O'Higgins",
+          "url": "https://datos.odepa.gob.cl/dataset/comercio-exterior"
+        },
+        {
+          "name": "Banco Central de Chile",
+          "what": "Dólar observado, 2005–2026",
+          "url": "https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/documentacion.html"
+        },
+        {
+          "name": "INIA Agromet",
+          "what": "Estaciones de Colchagua, para validar el clima",
+          "url": "https://agrometeorologia.cl"
+        },
+        {
+          "name": "ARClim (Ministerio del Medio Ambiente)",
+          "what": "Clima proyectado de 19 modelos, escenario SSP2-4.5",
+          "url": "https://arclim.mma.gob.cl"
+        },
+        {
+          "name": "NOAA, índice ONI",
+          "what": "Índice de El Niño, 1950–2026",
+          "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt"
+        }
+      ]
+    },
+    "approach": [
+      {
+        "title": "Extracción y selección",
+        "body": "Descargué las fuentes con scripts en Python y me quedé solo con lo que responde la pregunta: las 10 comunas, los huertos y los años con datos comparables."
+      },
+      {
+        "title": "Limpieza y validación",
+        "body": "Unifiqué códigos de comuna, fechas y unidades, y validé el clima en grilla contra las estaciones de Colchagua. Los datos ocultos del SII se respetaron tal como vienen."
+      },
+      {
+        "title": "Variables y Datamart",
+        "body": "Convertí el clima en amenazas del cerezo (heladas, invierno cálido, lluvia en cosecha, exceso de humedad) y armé un Datamart en esquema estrella: comuna, tiempo, amenaza y rubro, con sus hechos."
+      },
+      {
+        "title": "Machine learning",
+        "body": "Agrupé las comunas por vulnerabilidad con clustering, marqué las temporadas más dañinas desde 1991 y comparé el empleo agrícola con su tendencia en esos años."
+      },
+      {
+        "title": "Proyecciones",
+        "body": "Estimé la probabilidad de una temporada mala, una alerta de lluvia en cosecha con El Niño (validada fuera de muestra) y el cambio en cada amenaza para 2026–2035 con 19 modelos climáticos."
+      },
+      {
+        "title": "Dashboard en Power BI",
+        "body": "Cinco páginas sobre el Datamart, con 13 relaciones y medidas DAX: por qué la cereza, qué amenaza golpeó más, qué comunas sufren más, el caso 2023 y qué viene."
+      }
+    ],
+    "findings": [
+      {
+        "id": "la-cereza-manda",
+        "title": "Colchagua depende de la cereza",
+        "body": "El cerezo ocupa 12.981 hectáreas, el 38 % de los frutales, casi el doble que el ciruelo europeo. En Chimbarongo y San Fernando supera el 57 %. Además, el 92 % del valor exportado va a un solo comprador: China.",
+        "figure": { "value": "38 %", "label": "de los frutales" }
+      },
+      {
+        "id": "invierno-calido",
+        "title": "La amenaza que más golpeó es el invierno cálido",
+        "body": "Tras los inviernos cálidos de 2005–2006, 2016 y 2023, el empleo agrícola de las comunas cerezeras quedó entre 3 y 11 puntos más bajo que el de las comunas sin cereza. Las heladas, el riesgo más temido, no dejaron esa huella en el empleo formal.",
+        "figure": { "value": "−7,2", "label": "puntos frente a un año habitual" }
+      },
+      {
+        "id": "caso-2023",
+        "title": "2023: cuando todo se juntó",
+        "body": "En una sola temporada coincidieron el invierno cálido, el sistema frontal de agosto (203 mm en 3 días, récord) y la lluvia en la cosecha. El empleo agrícola de Chimbarongo y San Fernando quedó 13,4 % bajo su tendencia; en las comunas de dependencia baja, 8,7 %. En la temporada siguiente el precio cayó 37,5 % por sobreoferta: Chimbarongo encadenó los dos golpes y San Fernando, con una economía más diversa, se recuperó.",
+        "figure": { "value": "−13,4 %", "label": "empleo agrícola cerezero en 2023" }
+      },
+      {
+        "id": "sin-efecto-domino",
+        "title": "El golpe se queda en el agro",
+        "body": "En 2023 y 2024, el resto del empleo privado formal de las comunas cerezeras apenas se movió (−2 %). El golpe lo recibe el empleo agrícola, no el comercio ni los servicios.",
+        "figure": { "value": "−2 %", "label": "resto del empleo privado" }
+      },
+      {
+        "id": "que-viene",
+        "title": "Lo que viene: más inviernos cálidos",
+        "body": "Hay 96 % de probabilidad de al menos una temporada mala en 5 años. Los 19 modelos climáticos coinciden en que los inviernos cálidos pasan de 1 de cada 8 temporadas a 2 de cada 5 en 2026–2035, mientras las heladas bajan a menos de la mitad. Con El Niño fuerte, la probabilidad de lluvia grave en la cosecha 2026-27 sube a 67 %.",
+        "figure": { "value": "40 %", "label": "de temporadas con invierno cálido" }
+      }
+    ],
+    "conclusions": {
+      "answer": "La comuna más vulnerable es Chimbarongo. El sector que recibe el golpe es el empleo agrícola, sin efecto dominó en el empleo formal del resto. La amenaza más determinante es el invierno cálido, y es la que más crece: de 13 % a 40 % de las temporadas en la próxima década.",
+      "actions": [
+        "Priorizar a Chimbarongo y luego a San Fernando, Nancagua y Santa Cruz.",
+        "Adaptar la cereza a inviernos cálidos, con variedades de bajo requerimiento de frío.",
+        "En años de El Niño, preparar la cosecha contra la lluvia, empezando por 2026.",
+        "Diversificar cultivos y mercados, para no depender de un solo fruto ni de un solo comprador.",
+        "Invertir en agua y riego.",
+        "Apoyar al temporero informal, que es el primero en perder trabajo y no aparece en los datos."
+      ]
+    },
+    "limitations": [
+      {
+        "title": "Asociación, no causalidad",
+        "body": "Solo 2 comunas tienen dependencia alta y hay de 2 a 4 incidentes por amenaza. El modelo de los 20 años juntos no confirma un efecto estable: los patrones se ven por evento."
+      },
+      {
+        "title": "Solo empleo formal",
+        "body": "El SII no ve al temporero informal, justo el más expuesto a una mala cosecha."
+      },
+      {
+        "title": "Las proyecciones comparan periodos",
+        "body": "Dicen cómo cambia el riesgo en 2026–2035, no qué pasará en un año puntual. El rango entre modelos sigue siendo amplio."
+      },
+      {
+        "title": "Clima estimado, no medido en el huerto",
+        "body": "CR2MET es una grilla de ~5 km. Se validó contra las estaciones de Colchagua: sigue bien los años (r = 0,80) y con menos precisión las comunas (0,50)."
+      }
+    ],
+    "gallery": [
+      {
+        "image": "../assets/cases/colchagua/dashboard_cereza.png",
+        "alt": "Página del dashboard con la superficie de cerezo, un mapa de calor de amenazas por año, la tabla de incidentes y el pronóstico por amenaza",
+        "caption": "Amenazas por temporada e incidentes de la cereza"
+      },
+      {
+        "image": "../assets/cases/colchagua/mapa_dependencia_cereza.png",
+        "alt": "Mapa de Colchagua con cada comuna coloreada según su dependencia de la cereza",
+        "caption": "Dependencia de la cereza por comuna"
+      },
+      {
+        "image": "../assets/cases/colchagua/mapa_vulnerabilidad.png",
+        "alt": "Mapa de Colchagua con el nivel de vulnerabilidad de cada comuna y el detalle de San Fernando",
+        "caption": "Vulnerabilidad por comuna"
+      }
+    ],
+    "resources": {
+      "repo": "https://github.com/VincentPelos/colchagua-etl",
+      "dashboard": "https://github.com/VincentPelos/colchagua-etl/raw/main/entregables/2_dashboard/colchagua_cereza.pbix",
+      "report": "https://github.com/VincentPelos/colchagua-etl/blob/main/entregables/3_informe/informe_colchagua_cereza.pdf",
+      "notebooks": [
+        {
+          "title": "01 · Extracción y selección",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/01_ETL_extraccion_y_seleccion.ipynb"
+        },
+        {
+          "title": "02 · Limpieza y validación",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/02_ETL_limpieza.ipynb"
+        },
+        {
+          "title": "03 · Variables y Datamart",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/03_ETL_variables_y_datamart.ipynb"
+        },
+        {
+          "title": "04 · Clustering de comunas",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/04_machine_learning_clustering_de_comunas.ipynb"
+        },
+        {
+          "title": "05 · Incidentes e impacto de la cereza",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/05_machine_learning_cereza_incidentes_e_impacto.ipynb"
+        },
+        {
+          "title": "06 · Proyecciones de amenazas",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/06_forecast_amenazas.ipynb"
+        }
+      ]
+    }
+  }
+]

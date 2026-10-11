@@ -224,3 +224,44 @@ export const projectSchema = <T extends z.ZodType>(image: () => T) =>
     featured: z.boolean().default(false),
     caseStudy: id.optional(),
   });
+
+const text = z.string().min(1);
+/** Cifra destacada: el número y qué significa. */
+const figure = z.object({ value: text, label: text });
+
+/**
+ * Caso de estudio (`cases.json`), contado para alguien no técnico: problema, datos, enfoque,
+ * hallazgos con cifras, conclusiones accionables y límites (rúbrica B2 y B3).
+ */
+export const caseSchema = <T extends z.ZodType>(image: () => T) =>
+  z.object({
+    id,
+    title: text,
+    subtitle: text,
+    /** Curso, institución y fecha. */
+    context: text,
+    question: text,
+    summary: text,
+    stats: z.array(figure).min(1).max(4),
+    /** Párrafos. */
+    problem: z.array(text).min(1),
+    data: z.object({
+      territory: text,
+      period: text,
+      sources: z.array(z.object({ name: text, what: text, url: z.url() })).min(1),
+    }),
+    approach: z.array(z.object({ title: text, body: text })).min(1),
+    findings: z.array(z.object({ id, title: text, body: text, figure: figure.optional() })).min(1),
+    conclusions: z.object({ answer: text, actions: z.array(text).min(1) }),
+    /** Límites del análisis: la rúbrica pide decir que correlación no es causalidad. */
+    limitations: z.array(z.object({ title: text, body: text })).min(1),
+    gallery: z.array(z.object({ image: image(), alt: text, caption: text })).default([]),
+    resources: z.object({
+      repo: z.url(),
+      /** Descarga del .pbix. */
+      dashboard: z.url(),
+      /** Informe en PDF. */
+      report: z.url(),
+      notebooks: z.array(z.object({ title: text, href: z.url() })).min(1),
+    }),
+  });

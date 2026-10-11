@@ -16,7 +16,7 @@ Todo lo que se lee en el sitio vive en `src/content/`. Los schemas zod están en
 | `projects.json` | Lista | Sección Proyectos y rutas `/proyectos/[slug]` |
 | `skills.json` | Lista de grupos | Sección Skills |
 | `education.json` | Lista | Sección Educación |
-| `cases/colchagua/` | Por definir con el repo de Colchagua | Página del caso |
+| `cases.json` | Lista | Páginas de los casos de estudio (`/proyectos/<id>`) |
 
 Cada ítem de una lista lleva un `id` único en `kebab-case`.
 
@@ -27,6 +27,8 @@ Cada ítem de una lista lleva un `id` único en `kebab-case`.
 **experience.json** — `id`, `company`, `role`, `start` (`"2023-03"`, `"2023"` o `null`), `end` (`null` si no se conoce o sigue vigente), `dateNote?` (texto visible cuando falta una fecha), `ongoing?` (indica explícitamente si sigue vigente), `location?`, `description`, `highlights[]?`, `stack[]?`, `url?`. Se ordena por fecha automáticamente; un periodo vigente va primero y uno completado sin fechas va al final.
 
 **projects.json** — `id`, `title`, `description`, `tags[]`, `image?`, `repo?`, `demo?`, `year`, `featured?`, `caseStudy?`. Si `featured` es `true`, ocupa doble ancho en el bento. Si tiene `caseStudy`, genera `/proyectos/<caseStudy>`.
+
+**cases.json** — `id` (el `caseStudy` del proyecto), `title`, `subtitle`, `context` (curso y fecha), `question`, `summary`, `stats[] { value, label }` (1 a 4 cifras destacadas), `problem[]` (párrafos), `data { territory, period, sources[] { name, what, url } }`, `approach[] { title, body }`, `findings[] { id, title, body, figure? { value, label } }`, `conclusions { answer, actions[] }`, `limitations[] { title, body }` (al menos uno: la rúbrica pide decir que correlación no es causalidad), `gallery[] { image, alt, caption }` (imágenes en `src/assets/cases/<id>/`), `resources { repo, dashboard, report, notebooks[] { title, href } }`. El caso de Colchagua sale del repo [colchagua-etl](https://github.com/VincentPelos/colchagua-etl): README, `documentacion/hallazgos_cereza.md`, `limitaciones_y_riesgos.md` y el informe. Se lee con `getCase(id)`.
 
 **skills.json** — `id`, `group`, `items[] { name, icon? }`. `icon` es un nombre de Iconify (`"simple-icons:python"`).
 
