@@ -61,6 +61,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [016](03-decisiones/016-sharp-imagenes.md) | `sharp` para optimizar imágenes | Contenido |
 | [017](03-decisiones/017-graficos-html.md) | Gráficos del caso en HTML, sin Chart.js (reemplaza en parte a 006) | BI |
 | [018](03-decisiones/018-caida-al-agujero.md) | Caída al agujero negro al pasar al portafolio (reemplaza en parte a 014) | Movimiento |
+| [019](03-decisiones/019-cv-latex.md) | CV en LaTeX compilado con Tectonic | Contenido |
 
 ### 04 · Diseño — cómo se ve
 

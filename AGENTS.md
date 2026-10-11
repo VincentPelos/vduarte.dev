@@ -30,6 +30,7 @@ Reglas para agentes de IA que trabajen en este repo. **Antes de tocar código, l
 pnpm install    # dependencias + hook commit-msg
 pnpm dev        # http://localhost:4321 (en segundo plano: pnpm astro dev --background)
 pnpm build      # dist/
+pnpm cv         # cv/cv.tex → public/cv.pdf (requiere Tectonic en el PATH)
 pnpm lint | pnpm format | pnpm check | pnpm test
 ```
 

@@ -18,6 +18,7 @@ vduarte.dev/
 │  └─ lighthouserc.json        umbrales de Lighthouse CI
 ├─ .claude/skills/             skills de proyecto para agentes (prototipo-artifact)
 ├─ .husky/                     hooks de git (commit-msg)
+├─ cv/                         cv.tex: fuente LaTeX del CV (`pnpm cv` → public/cv.pdf)
 ├─ docs/                       esta bóveda
 ├─ .dockerignore                exclusiones del contexto de build de Docker
 ├─ Dockerfile                   build de Astro y servidor Nginx para Coolify
@@ -69,6 +70,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Estado que comparten dos scripts en cada cuadro (agujero, caída, Lenis) | `src/lib/hole.ts`, `src/lib/fall.ts`, `src/lib/smooth.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
+| El CV | Fuente en `cv/cv.tex`; el PDF generado con `pnpm cv` va a `public/cv.pdf` y se commitea ([decisión 019](../03-decisiones/019-cv-latex.md)) |
 | Un test | Al lado del archivo que prueba: `lib/dates.ts` → `lib/dates.test.ts` |
 | Un proceso que repiten los agentes | `.claude/skills/<nombre>/SKILL.md` |
 
