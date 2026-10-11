@@ -8,6 +8,10 @@ const colors: [Rgb, Rgb, Rgb] = [
 ];
 
 describe('segment', () => {
+  it('no avanza en una página sin secciones con constelación', () => {
+    expect(segment([], 400)).toEqual({ from: 0, to: 0, progress: 0 });
+  });
+
   const centers = [0, 1000, 2000];
 
   it('ubica el scroll entre dos secciones', () => {

@@ -1,0 +1,77 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+type Chart = CollectionEntry<'cases'>['data']['blocks'][number]['panels'][number]['chart'];
+
+interface Props {
+  chart: Chart;
+}
+
+// Barras en HTML (decisión 017): cada fila es texto legible (nombre y cifra); la barra es decorativa.
+const { chart } = Astro.props;
+const percent = (value: number, min: number, max: number) => ((value - min) / (max - min)) * 100;
+const track =
+  'relative h-3.5 rounded bg-[radial-gradient(circle,var(--color-line-hi)_1px,transparent_1.4px)] bg-size-[6px_6px] bg-position-[0_50%]';
+const fill = (negative: boolean) =>
+  negative
+    ? 'bg-[linear-gradient(90deg,var(--color-c3),var(--color-c2))]'
+    : 'bg-[linear-gradient(90deg,var(--color-c1),var(--color-c2))]';
+/** Posición y ancho de una barra de `bars`, en % del ancho, desde el 0. */
+const span = (value: number, min: number, max: number) => {
+  const zero = percent(0, min, max);
+  const end = percent(value, min, max);
+  return `left:${Math.min(zero, end)}%;width:${Math.max(0.6, Math.abs(end - zero))}%`;
+};
+---
+
+{chart.type === 'pairs' && (
+  <p class="flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.72rem] leading-none text-muted">
+    <span class="flex items-center gap-1.5">
+      <i aria-hidden="true" class="size-2.5 rounded-xs bg-line-hi" />
+      {chart.legend[0]}
+    </span>
+    <span class="flex items-center gap-1.5">
+      <i aria-hidden="true" class="size-2.5 rounded-xs bg-c1" />
+      {chart.legend[1]}
+    </span>
+  </p>
+)}
+<ul class="grid gap-2.5">
+  {chart.items.map((item) => (
+    <li class="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)_auto] items-center gap-2.5 text-[0.82rem] min-[561px]:grid-cols-[minmax(0,10rem)_minmax(0,1fr)_4.5rem] min-[561px]:text-[0.86rem]">
+      <span class="truncate text-soft" title={item.label}>
+        {item.label}
+      </span>
+      <span aria-hidden="true" class={track}>
+        {chart.type === 'bars' && 'value' in item ? (
+          <>
+            {chart.min < 0 && (
+              <i
+                class="absolute -top-0.5 -bottom-0.5 w-px bg-muted"
+                style={`left:${percent(0, chart.min, chart.max)}%`}
+              />
+            )}
+            <i
+              class:list={['absolute inset-y-0 rounded', fill(item.value < 0)]}
+              style={span(item.value, chart.min, chart.max)}
+            />
+          </>
+        ) : chart.type === 'pairs' && 'before' in item ? (
+          <>
+            <i
+              class="absolute top-0 left-0 h-1.5 rounded bg-line-hi"
+              style={`width:${(item.before / chart.max) * 100}%`}
+            />
+            <i
+              class:list={['absolute bottom-0 left-0 h-1.5 rounded', fill(false)]}
+              style={`width:${(item.after / chart.max) * 100}%`}
+            />
+          </>
+        ) : null}
+      </span>
+      <span class="text-right font-mono text-[0.8rem] leading-none tabular-nums">
+        {item.display}
+      </span>
+    </li>
+  ))}
+</ul>
