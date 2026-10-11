@@ -20,6 +20,7 @@ Las filas marcadas **(planeado)** aún no están instaladas: se agregan en el hi
 | Gráficos | **WebGL** directo y canvas 2D | Agujero negro del hero ([008](../03-decisiones/008-agujero-negro-puntos.md)) y cielo de estrellas ([009](../03-decisiones/009-cinematica-constelaciones.md)) | Un shader de pantalla completa; ~10 KB frente a ~530 KB de three.js |
 | Gráficos | **Chart.js** **(planeado, v0.5.0)** | Dashboard web del caso Colchagua | Vanilla, conocido, fácil de tematizar. [Decisión 006](../03-decisiones/006-power-bi-descarga.md) |
 | Íconos | **@iconify/utils** + `@iconify-json/simple-icons` | Logos de tecnologías | SVG incrustado en build, nada externo ([007](../03-decisiones/007-iconos.md)) |
+| Imágenes | **sharp** (vía `astro:assets`) | Optimizar las imágenes del contenido a WebP en varios anchos | Lo usa `<Image>` de Astro; [decisión 016](../03-decisiones/016-sharp-imagenes.md) |
 | Fuentes | **Fontsource** | Martian Mono, Geist, Geist Mono | Self-hosted vía npm, sin archivos sueltos |
 | SEO | **@astrojs/sitemap** **(planeado, v0.6.0)** | Sitemap | Oficial |
 | Calidad | **ESLint**, **Prettier**, **Vitest**, `astro check` | Lint, formato, tests, tipos | Suben la nota en A4 |

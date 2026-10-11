@@ -56,6 +56,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [012](03-decisiones/012-entrada-colapso.md) | Entrada del agujero negro por colapso (reemplaza en parte a 011) | Movimiento |
 | [013](03-decisiones/013-lighthouse-manual.md) | Lighthouse a mano antes de cada versión menor | Calidad |
 | [014](03-decisiones/014-hero-diapositiva.md) | Hero como diapositiva que el portafolio tapa | Movimiento |
+| [016](03-decisiones/016-sharp-imagenes.md) | `sharp` para optimizar imágenes | Contenido |
 
 ### 04 · Diseño — cómo se ve
 
