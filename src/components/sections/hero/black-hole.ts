@@ -11,12 +11,16 @@
  * - Pasada 2 (pantalla): dibuja cada celda como un punto y encima el texto del hero, que
  *   resiste la gravedad: solo se comba y se separa en colores (aberración cromática).
  *
+ * Al pasar al portafolio, la cámara se acerca al agujero hasta que la sombra llena la pantalla
+ * (decisión 018): `fall.progress` lo escribe hero-fall.ts.
+ *
  * Con `prefers-reduced-motion`: un cuadro estático detrás del texto real, sin deformarlo. Si WebGL
  * va por software (sin GPU), no se monta: queda el respaldo sin WebGL.
  *
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
 
+import { coverZoom, fall, fallZoom, SHADOW_RS, textOpacity } from '../../../lib/fall';
 import { hole as shared } from '../../../lib/hole';
 import {
   CELL,
@@ -59,8 +63,6 @@ const COLLAPSE_SHRINK_MS = 900;
 const COLLAPSE_EDGE = 0.4;
 /** Fracción final de la contracción en que el borde se deshace punto a punto. */
 const COLLAPSE_DISSOLVE = 0.45;
-/** Radio de la sombra en radios de Schwarzschild: el colapso empieza y termina ahí. */
-const SHADOW_RS = 2.6;
 
 const VERTEX = `
   attribute vec2 aPos;
@@ -156,7 +158,7 @@ const BAKE = `
 const TRACE = `
   ${COMMON}
   uniform vec2 uHole;
-  uniform float uPx, uTime, uInt, uCell;
+  uniform float uPx, uTime, uInt, uCell, uZoom;
   uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
 
   float noise(vec2 p) {
@@ -170,6 +172,10 @@ const TRACE = `
   vec4 sky(vec2 look) {
     vec2 id = floor(look / uCell); float h = hash(id);
     float lv = h > .996 ? 3. : h > .987 ? 2. : h > .965 ? 1. : 0.;
+    // Con zoom, una celda del cielo abarca varias de la pantalla: la estrella va solo en la de su
+    // centro, así sigue siendo un punto que se aleja y no un bloque.
+    vec2 off = abs(look - (id + .5) * uCell) * uZoom;
+    if (max(off.x, off.y) > uCell * .5) lv = 0.;
     if (lv > 0. && hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
     float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : lv > .5 ? .17 : .09;
     vec3 c = lv > .5 ? mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45) : vec3(.1);
@@ -177,7 +183,8 @@ const TRACE = `
   }
 
   void main() {
-    vec2 cc = gl_FragCoord.xy * uCell;               // centro de la celda, en px CSS
+    // centro de la celda, en px CSS, visto por la cámara (zoom alrededor del agujero)
+    vec2 cc = uHole + (gl_FragCoord.xy * uCell - uHole) / uZoom;
     float cr = cos(ROLL), sr = sin(ROLL);
     mat2 rot = mat2(cr, -sr, sr, cr);
     vec2 rel = rot * (cc - uHole) / uPx;
@@ -227,7 +234,7 @@ const DRAW = `
   ${COMMON}
   uniform sampler2D uCells, uText;
   uniform vec2 uGrid, uRes, uHole;
-  uniform float uCell, uDpr, uPx, uLens;
+  uniform float uCell, uDpr, uPx, uLens, uTextFade;
   // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado), si fuera de ella
   // todavía no se ve la escena (1 mientras crece) y qué fracción del borde de puntos queda.
   uniform float uCover, uCoverOnly, uEdge, uEdgeKeep;
@@ -262,6 +269,7 @@ const DRAW = `
     float textAlpha = 0.;
     for (int i = 0; i < 3; i++) {
       vec4 t = textAt(uHole + rel * (1. - ks[i] / (r2 + 5.)) * uPx);
+      t.a *= uTextFade;
       col[i] = mix(dotAlpha > 0. ? col[i] : t[i], t[i], t.a);
       textAlpha = max(textAlpha, t.a);
     }
@@ -483,7 +491,12 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     const box = container.getBoundingClientRect();
     shared.x = box.left + hole[0];
     shared.y = box.top + height - hole[1];
-    shared.px = pxPerRs;
+    // Caída al portafolio: la cámara se acerca al agujero (1× sin caída).
+    const zoom =
+      fall.progress > 0
+        ? fallZoom(fall.progress, coverZoom([hole[0], hole[1]], width, height, pxPerRs))
+        : 1;
+    shared.px = pxPerRs * zoom;
     shared.time = time;
     shared.ready = true;
 
@@ -499,6 +512,7 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     gl.uniform1f(loc(trace, 'uTime'), time);
     gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
     gl.uniform1f(loc(trace, 'uCell'), CELL);
+    gl.uniform1f(loc(trace, 'uZoom'), zoom);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -518,6 +532,7 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     gl.uniform1f(loc(draw, 'uDpr'), dpr);
     gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
     gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
+    gl.uniform1f(loc(draw, 'uTextFade'), textOpacity(fall.progress));
     const [cover, coverOnly, edgeKeep] = collapse(hole);
     gl.uniform1f(loc(draw, 'uCover'), cover);
     gl.uniform1f(loc(draw, 'uCoverOnly'), coverOnly);

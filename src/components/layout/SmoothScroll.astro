@@ -3,9 +3,11 @@
   // y la barra siguen siendo nativos, y con movimiento reducido no se monta.
   import Lenis from 'lenis';
   import 'lenis/dist/lenis.css';
+  import { smooth } from '../../lib/smooth';
 
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const lenis = new Lenis({ autoRaf: true });
+    smooth.lenis = lenis;
 
     // Anclas de la misma página: scroll suave y, al llegar, el foco va al destino como en el
     // salto nativo (así "Saltar al contenido" y la nav siguen sirviendo con teclado).
