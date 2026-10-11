@@ -59,7 +59,8 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 ## Layout
 
 - Contenedor máximo `1200px` con gutter `clamp(16px, 4vw, 40px)`.
-- Bento "sobre mí": 4 columnas → 2 (≤900px) → en celular (≤460px), sobre mí, un carrusel con hora, estado, sonando, jugando y enlaces (`auto-cols-[42%]`, snap), stack y cielo.
+- Bento "sobre mí" (#133, [decisión 021](../03-decisiones/021-bento-agentes-armado.md)): la frase con los botones GitHub y Descargar CV, Estado, las cuatro áreas (`~/dev` en `--c1`, `~/datos` en `--c2`, `~/infra` en `--c3`, `~/agentes` en `--fg`), el stack solo con logos (gris `--muted`, `--fg` al pasar el mouse) y Encuéntrame. 4 columnas desde 901px; 2 columnas hasta 900px, también en celular, para acortar el scroll: ahí el dibujo baja a 84px y la prueba de cada área se esconde.
+- Dibujos de las áreas (`about/bento-art.ts`): puntos en la grilla de 6px. Código con cursor (530 ms), las barras de la superficie frutal de Colchagua (el cerezo con la paleta, respira en 900 ms), una red con paquetes que viajan y monitos de 5×5 celdas: un orquestador reparte tareas a tres agentes cada 2,6 s.
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
 - Proyectos: los destacados son tarjetas en una fila (2 columnas desde 561px, 3 desde 861px) con imagen de 160 px, relleno compacto (12–13 px) y descripción a 3 líneas; en celular, un carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás van en una lista con miniatura 4:3 (96 px; 72 px en celular). Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
 - Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; 1 columna → 2 desde 901px.
@@ -76,6 +77,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - **Hero como diapositiva:** pantalla completa y pegado arriba; el portafolio sube encima como una hoja (borde redondeado de 28 px, línea `--line-hi`) y el hero se oscurece hasta 25 % ([decisión 014](../03-decisiones/014-hero-diapositiva.md)).
 - **Entrada del agujero negro:** al terminar el precálculo, la sombra crece hasta cubrir el hero (520 ms, `ease-in` cúbico), se mantiene 140 ms y se contrae de vuelta al agujero (900 ms, `ease-out` exponencial), con un borde de puntos de la paleta y 40 % de desorden de celdas. El texto queda encima ([decisión 012](../03-decisiones/012-entrada-colapso.md)).
 - **Cinemática de constelaciones:** cielo fijo de puntos detrás de la página; en cada sección las estrellas forman su símbolo y viajan en arco al siguiente con el scroll ([decisión 009](../03-decisiones/009-cinematica-constelaciones.md)).
+- **Armado del bento** (`about/bento-assemble.ts`): al aterrizar la caída, los puntos salen del agujero arriba al centro y viajan en curva (`ease-out` exponencial) a los bordes y al relleno de cada tarjeta, que aparece cuando le llegan. Duración 1500 ms, 20 % de los puntos (la mitad en celular), desorden 100 %. Una vez por visita.
 - **Flecha del hero:** `animate-bob`, 1,8 s, baja 5 px y vuelve (solo con `motion-safe`).
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).
