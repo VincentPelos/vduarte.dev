@@ -39,6 +39,7 @@
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
     "footerLinks": [{ "label": "Uso de IA", "href": "/uso-de-ia" }],
+    "scrollCue": { "label": "portafolio", "ariaLabel": "Bajar al portafolio" },
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
     "bento": {
       "about": "Sobre mí",
