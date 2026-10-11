@@ -7,6 +7,8 @@
  * scroll: cuando la hoja termina de bajar, el hero está como al principio.
  *
  * - Cualquier otro scroll (barra, nav, anclas) sigue funcionando: la caída acompaña al scroll.
+ * - Nada depende de que el scroll suave termine: si el aterrizaje se interrumpe arriba de todo,
+ *   la cámara retrocede sola, y cualquier gesto hacia arriba la hace retroceder.
  * - Sin escena (sin WebGL o por software) no intercepta nada.
  * - No se monta con `prefers-reduced-motion` (Hero.astro).
  */
@@ -17,14 +19,20 @@ import { smooth } from '../../../lib/smooth';
 
 /** Píxeles de tolerancia para considerar que la página está arriba de todo. */
 const TOP = 2;
-/** Deslizamiento mínimo (px) para tomar un toque como gesto hacia abajo. */
+/** Deslizamiento mínimo (px) para tomar un toque como gesto. */
 const SWIPE = 12;
 const DOWN_KEYS = new Set(['ArrowDown', 'PageDown', ' ']);
+const UP_KEYS = new Set(['ArrowUp', 'PageUp', 'Home']);
+/** Vuelta de la cámara estando arriba de todo (ms). */
+const RISE_MS = 600;
+/** Si tras este tiempo la página sigue arriba (el aterrizaje se interrumpió), la cámara vuelve. */
+const LAND_TIMEOUT_MS = 1200;
 
 export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   let auto = 0; // avance de la caída automática
   let frame = 0;
-  let busy = false;
+  let falling = false; // solo durante el segundo de la caída
+  let landTimer = 0;
 
   const apply = () => {
     // La caída acompaña también al scroll normal: así la barra o la nav nunca dejan el hero a medias.
@@ -51,78 +59,98 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   };
 
   const atTop = () => scrollY <= TOP;
-  // Solo con la escena montada y arriba de todo; mientras cae, se ignora el resto de gestos.
-  const canFall = () => hole.ready && atTop() && auto < 1;
+  const retreat = () => {
+    if (!falling && auto > 0 && atTop()) animate(0, RISE_MS);
+  };
 
   const land = (focus: boolean) => {
+    falling = false;
     const top = end.getBoundingClientRect().top + scrollY;
-    const finish = () => {
-      busy = false;
-      if (!focus) return;
+    const toFocus = () => {
       const target = document.getElementById('sobre-mi');
       if (!target) return;
       if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
       target.focus({ preventScroll: true });
     };
     const lenis = smooth.lenis;
-    if (lenis) {
-      lenis.scrollTo(top, { onComplete: finish });
-    } else {
+    if (lenis) lenis.scrollTo(top, focus ? { onComplete: toFocus } : {});
+    else {
       scrollTo({ top, behavior: 'smooth' });
-      setTimeout(finish, 900);
+      if (focus) setTimeout(toFocus, 900);
     }
+    clearTimeout(landTimer);
+    landTimer = window.setTimeout(retreat, LAND_TIMEOUT_MS);
   };
 
   // Lenis no se pausa: `lenis.stop()` le pone `overflow: clip` a la página, la barra de scroll
   // desaparece y todo salta de lado. Los gestos durante la caída se bloquean aquí.
-  const jump = (focus = false) => {
-    busy = true;
+  const fallDown = (focus = false) => {
+    if (falling) return;
+    // Si ya cayó y el aterrizaje se interrumpió, solo baja.
+    if (auto >= 1) return land(focus);
+    falling = true;
     animate(1, FALL_MS, () => land(focus));
   };
+  /** Arriba de todo y con la escena montada, bajar dispara la caída. */
+  const canFall = () => hole.ready && atTop();
 
-  // Intenciones de bajar estando arriba. Se escuchan en captura para adelantarse a Lenis.
+  // Se escucha en captura para adelantarse a Lenis, que escucha la rueda en window.
   const onWheel = (event: WheelEvent) => {
+    if (event.ctrlKey) return;
     const block = () => {
       event.preventDefault();
-      event.stopImmediatePropagation(); // Lenis escucha la rueda en window, después que esto
+      event.stopImmediatePropagation();
     };
-    if (busy && atTop()) return block();
-    if (event.deltaY <= 0 || event.ctrlKey || !canFall()) return;
-    block();
-    jump();
+    if (falling) return block();
+    if (event.deltaY > 0 && canFall()) {
+      block();
+      fallDown();
+    } else if (event.deltaY < 0) retreat();
   };
   let touchY = 0;
-  const onTouchStart = (event: TouchEvent) => (touchY = event.touches[0]?.clientY ?? 0);
+  let touchUsed = false;
+  const onTouchStart = (event: TouchEvent) => {
+    touchY = event.touches[0]?.clientY ?? 0;
+    touchUsed = false;
+  };
   const onTouchMove = (event: TouchEvent) => {
-    if (busy && atTop()) return event.preventDefault();
-    const y = event.touches[0]?.clientY ?? touchY;
-    if (touchY - y < SWIPE || !canFall()) return;
-    event.preventDefault();
-    jump();
+    if (falling) return event.preventDefault();
+    if (touchUsed) return;
+    const dy = touchY - (event.touches[0]?.clientY ?? touchY);
+    if (dy >= SWIPE && canFall()) {
+      event.preventDefault();
+      touchUsed = true;
+      fallDown();
+    } else if (dy <= -SWIPE) {
+      touchUsed = true;
+      retreat();
+    }
   };
   const onKey = (event: KeyboardEvent) => {
-    if (!DOWN_KEYS.has(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
     const target = event.target as Element | null;
     // El espacio en un botón o enlace lo activa: no se toma como scroll.
     if (target?.closest('input, textarea, select, button, a, [contenteditable]')) return;
-    if (busy && atTop()) return event.preventDefault();
+    if (UP_KEYS.has(event.key)) return retreat();
+    if (!DOWN_KEYS.has(event.key)) return;
+    if (falling) return event.preventDefault();
     if (!canFall()) return;
     event.preventDefault();
-    jump(true);
+    fallDown(true);
   };
   const onCue = (event: MouseEvent) => {
     if (!(event.target as Element | null)?.closest('[data-fall-cue]')) return;
-    if (busy) return event.preventDefault();
+    if (falling) return event.preventDefault();
     if (!canFall()) return;
     event.preventDefault();
     event.stopPropagation();
-    jump(event.detail === 0);
+    fallDown(event.detail === 0);
   };
   // Al subir (por cualquier vía) la caída deja de mandar y la cámara sigue al scroll: retrocede
-  // mientras la hoja baja, sin quedar al fondo de la caída hasta llegar arriba (#136).
+  // mientras la hoja baja, sin quedar al fondo de la caída (#136).
   let lastY = scrollY;
   const onScroll = () => {
-    if (!busy && auto > 0 && scrollY < lastY) {
+    if (!falling && auto > 0 && scrollY < lastY) {
       cancelAnimationFrame(frame);
       auto = 0;
     }
@@ -140,6 +168,7 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
 
   return () => {
     cancelAnimationFrame(frame);
+    clearTimeout(landTimer);
     removeEventListener('wheel', onWheel, { capture: true });
     removeEventListener('touchstart', onTouchStart);
     removeEventListener('touchmove', onTouchMove);

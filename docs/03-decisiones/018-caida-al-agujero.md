@@ -14,6 +14,7 @@ El autor pidió que pasar del hero al contenido fuera un zoom hacia el agujero n
 ## Decisión
 - **Salto automático:** arriba de todo, el primer gesto hacia abajo no hace scroll. Puede ser rueda, deslizar el dedo, ↓, Av Pág, espacio o la flecha. Ese gesto dispara la caída: en 1 s la cámara se acerca al agujero, en su posición, hasta que la sombra llena la pantalla. Recién después el portafolio sube con scroll suave.
 - **Vuelta:** al subir, por cualquier vía, la cámara retrocede siguiendo el scroll. Cuando la hoja termina de bajar, el hero está como al principio.
+- **Nada depende de que termine el scroll suave.** Si el aterrizaje se interrumpe arriba de todo, la cámara retrocede sola a los 1,2 s. Un gesto hacia arriba también la hace retroceder (rueda, deslizar, ↑, Re Pág o Inicio).
 - **Zoom en el shader:** `uZoom` escala la vista alrededor del agujero, de forma exponencial (1× a lo que cubre la esquina más lejana) y con aceleración y frenado cúbicos. Cada estrella sigue siendo un punto de la grilla que se aleja, no un bloque. No agrega pasadas ni canvas.
 - **El texto del hero se apaga** en la primera mitad de la caída: el de WebGL con `uTextFade`, los botones con `--fall-text`.
 - **Flecha F1:** una píldora de vidrio abajo al centro, «portafolio ↓», con la flecha subiendo y bajando suave. Es un ancla a `#sobre-mi`, así que sin JS o sin escena baja normal. Con teclado, el foco queda en Sobre mí.
