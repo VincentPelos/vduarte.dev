@@ -1,5 +1,16 @@
 [
   {
+    "id": "colchagua",
+    "title": "Resiliencia agrícola de Colchagua",
+    "description": "Caso de Business Intelligence con datos oficiales: ETL en Python, Datamart en esquema estrella, machine learning, proyecciones climáticas y un dashboard en Power BI. Muestra que la provincia depende de la cereza y que la amenaza que más golpea su empleo agrícola es el invierno cálido.",
+    "tags": ["Python", "pandas", "scikit-learn", "Power BI", "DAX", "Jupyter"],
+    "image": "../assets/cases/colchagua/dashboard_cereza.png",
+    "repo": "https://github.com/VincentPelos/colchagua-etl",
+    "year": 2026,
+    "featured": true,
+    "caseStudy": "colchagua"
+  },
+  {
     "id": "sitio-municipalidad-placilla",
     "title": "Sitio web Municipalidad de Placilla",
     "description": "En desarrollo. Reconstrucción del portal institucional como aplicación responsiva con navegación mediante hash, noticias en JSON, documentos institucionales y despliegue automatizado. Considera accesibilidad y normativa del sector público.",
