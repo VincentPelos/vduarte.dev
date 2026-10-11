@@ -33,6 +33,22 @@
     ]
   },
   {
+    "id": "datos-bi",
+    "group": "Datos y Business Intelligence",
+    "items": [
+      { "name": "Power BI", "icon": "simple-icons:powerbi" },
+      { "name": "DAX" },
+      { "name": "Power Query" },
+      { "name": "pandas", "icon": "simple-icons:pandas" },
+      { "name": "NumPy", "icon": "simple-icons:numpy" },
+      { "name": "scikit-learn", "icon": "simple-icons:scikitlearn" },
+      { "name": "statsmodels" },
+      { "name": "Jupyter", "icon": "simple-icons:jupyter" },
+      { "name": "ETL" },
+      { "name": "Modelado dimensional" }
+    ]
+  },
+  {
     "id": "sistemas-infraestructura",
     "group": "Sistemas e infraestructura",
     "items": [

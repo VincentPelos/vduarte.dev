@@ -1,0 +1,592 @@
+[
+  {
+    "id": "colchagua",
+    "title": "Resiliencia agrícola de Colchagua",
+    "subtitle": "La cereza y las comunas que dependen de ella",
+    "context": "Trabajo integrador ISI802 · Business Intelligence (AIEP) · octubre de 2026",
+    "question": "¿Qué comunas, sectores y PYMEs de la provincia de Colchagua son más vulnerables a que un golpe sobre la agricultura se propague a su economía, y qué amenazas, climáticas y de mercado, pesan más?",
+    "stats": [
+      {
+        "value": "38 %",
+        "label": "de la superficie frutal es cerezo"
+      },
+      {
+        "value": "−1.066",
+        "label": "trabajadores-año bajo la tendencia en las comunas cerezeras (2023)"
+      },
+      {
+        "value": "96 %",
+        "label": "de tener al menos una temporada mala en 5 años"
+      },
+      {
+        "value": "13 % → 40 %",
+        "label": "temporadas con invierno cálido, hoy y en 2026–2035"
+      }
+    ],
+    "dashboard": {
+      "title": "El dashboard",
+      "take": "5 páginas: por qué la cereza, qué amenaza golpeó más, qué comunas sufren más, el caso 2023 y qué viene."
+    },
+    "gallery": [
+      {
+        "image": "../assets/cases/colchagua/dashboard_cereza.png",
+        "alt": "Página del dashboard con la superficie de cerezo, un mapa de calor de amenazas por año, la tabla de incidentes y el pronóstico por amenaza",
+        "caption": "Amenazas por temporada e incidentes de la cereza"
+      },
+      {
+        "image": "../assets/cases/colchagua/mapa_dependencia_cereza.png",
+        "alt": "Mapa de Colchagua con cada comuna coloreada según su dependencia de la cereza",
+        "caption": "Dependencia de la cereza por comuna"
+      },
+      {
+        "image": "../assets/cases/colchagua/mapa_vulnerabilidad.png",
+        "alt": "Mapa de Colchagua con el nivel de vulnerabilidad de cada comuna y el detalle de San Fernando",
+        "caption": "Vulnerabilidad por comuna"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "la-cereza",
+        "file": "hallazgos/la-cereza.md",
+        "title": "Colchagua depende de la cereza",
+        "take": "El cerezo ocupa casi el doble que el segundo frutal y creció 34 % en tres años. En Chimbarongo y San Fernando es cerca del 60 % de los frutales, y el 92 % del valor exportado va a China.",
+        "panels": [
+          {
+            "title": "Superficie por especie, 2021 → 2024 (ha)",
+            "source": "ODEPA-CIREN, catastros frutícolas 2021 y 2024",
+            "chart": {
+              "type": "pairs",
+              "max": 13000,
+              "legend": ["2021", "2024"],
+              "items": [
+                {
+                  "label": "Cerezo",
+                  "before": 9717,
+                  "after": 12981,
+                  "display": "12.981"
+                },
+                {
+                  "label": "Ciruelo europeo",
+                  "before": 5506,
+                  "after": 6234,
+                  "display": "6.234"
+                },
+                {
+                  "label": "Uva de mesa",
+                  "before": 4361,
+                  "after": 3167,
+                  "display": "3.167"
+                },
+                {
+                  "label": "Manzano rojo",
+                  "before": 2374,
+                  "after": 1815,
+                  "display": "1.815"
+                },
+                {
+                  "label": "Kiwi",
+                  "before": 1081,
+                  "after": 1428,
+                  "display": "1.428"
+                }
+              ]
+            }
+          },
+          {
+            "title": "% de los frutales que es cerezo, por comuna",
+            "source": "Dependencia alta ≥ 50 % · media 25–50 % · baja < 25 %",
+            "chart": {
+              "type": "bars",
+              "max": 60,
+              "items": [
+                {
+                  "label": "Chimbarongo",
+                  "value": 58.9,
+                  "display": "58,9 %"
+                },
+                {
+                  "label": "San Fernando",
+                  "value": 57.6,
+                  "display": "57,6 %"
+                },
+                {
+                  "label": "Palmilla",
+                  "value": 34.0,
+                  "display": "34,0 %"
+                },
+                {
+                  "label": "Placilla",
+                  "value": 32.8,
+                  "display": "32,8 %"
+                },
+                {
+                  "label": "Chépica",
+                  "value": 31.3,
+                  "display": "31,3 %"
+                },
+                {
+                  "label": "Santa Cruz",
+                  "value": 27.2,
+                  "display": "27,2 %"
+                },
+                {
+                  "label": "Nancagua",
+                  "value": 20.6,
+                  "display": "20,6 %"
+                },
+                {
+                  "label": "Peralillo",
+                  "value": 20.0,
+                  "display": "20,0 %"
+                },
+                {
+                  "label": "Pumanque",
+                  "value": 7.3,
+                  "display": "7,3 %"
+                },
+                {
+                  "label": "Lolol",
+                  "value": 4.8,
+                  "display": "4,8 %"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "amenazas",
+        "file": "hallazgos/amenazas.md",
+        "title": "La amenaza que más golpeó es el invierno cálido",
+        "take": "Tras los inviernos cálidos, el empleo agrícola de las comunas cerezeras quedó 7,2 puntos peor que en un año habitual. Las heladas, el riesgo más temido, no dejaron esa huella en el empleo formal.",
+        "panels": [
+          {
+            "title": "Empleo agrícola cerezero frente a un año habitual (puntos)",
+            "source": "Comunas de dependencia alta − baja, en años con incidente · notebook 05",
+            "chart": {
+              "type": "bars",
+              "min": -8,
+              "max": 8,
+              "items": [
+                {
+                  "label": "Invierno cálido",
+                  "value": -7.2,
+                  "display": "−7,2"
+                },
+                {
+                  "label": "Exceso de humedad",
+                  "value": -3.0,
+                  "display": "−3,0"
+                },
+                {
+                  "label": "Lluvia tardía en la cosecha",
+                  "value": 3.2,
+                  "display": "+3,2"
+                },
+                {
+                  "label": "Caída del precio",
+                  "value": 4.2,
+                  "display": "+4,2"
+                },
+                {
+                  "label": "Heladas en floración",
+                  "value": 5.3,
+                  "display": "+5,3"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Incidentes graves de la cereza, 2005–2024",
+            "source": "Percentil de daño desde 1991 (100 = la peor temporada)",
+            "chart": {
+              "type": "bars",
+              "max": 100,
+              "items": [
+                {
+                  "label": "2005 · Invierno cálido",
+                  "value": 96,
+                  "display": "p96"
+                },
+                {
+                  "label": "2006 · Invierno cálido",
+                  "value": 99,
+                  "display": "p99"
+                },
+                {
+                  "label": "2007 · Helada en floración",
+                  "value": 86,
+                  "display": "p86"
+                },
+                {
+                  "label": "2008 · Exceso de humedad",
+                  "value": 86,
+                  "display": "p86"
+                },
+                {
+                  "label": "2012 · Lluvia en cosecha",
+                  "value": 99,
+                  "display": "p99"
+                },
+                {
+                  "label": "2013 · Helada en floración",
+                  "value": 100,
+                  "display": "p100"
+                },
+                {
+                  "label": "2014 · Caída del precio",
+                  "value": 90,
+                  "display": "p90"
+                },
+                {
+                  "label": "2016 · Invierno cálido",
+                  "value": 88,
+                  "display": "p88"
+                },
+                {
+                  "label": "2020 · Caída del precio",
+                  "value": 95,
+                  "display": "p95"
+                },
+                {
+                  "label": "2023 · Exceso de humedad",
+                  "value": 99,
+                  "display": "p99"
+                },
+                {
+                  "label": "2023 · Invierno cálido",
+                  "value": 92,
+                  "display": "p92"
+                },
+                {
+                  "label": "2023 · Lluvia en cosecha",
+                  "value": 86,
+                  "display": "p86"
+                },
+                {
+                  "label": "2024 · Caída del precio",
+                  "value": 100,
+                  "display": "p100"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "caso-2023",
+        "file": "hallazgos/caso-2023.md",
+        "title": "2023: cuando todo se juntó",
+        "take": "Invierno cálido, el sistema frontal de agosto (203 mm en 3 días, récord) y lluvia en la cosecha en una sola temporada. El empleo agrícola de Chimbarongo y San Fernando quedó 13,4 % bajo su tendencia (−1.066 trabajadores-año); en las comunas de dependencia baja, 8,7 %. El resto del empleo privado casi no se movió (−2 %).",
+        "panels": [
+          {
+            "title": "Empleo agrícola frente a su tendencia, 2023 (%)",
+            "source": "SII · tendencia Theil–Sen",
+            "chart": {
+              "type": "bars",
+              "min": -25,
+              "max": 25,
+              "items": [
+                {
+                  "label": "Chimbarongo",
+                  "value": -17.7,
+                  "display": "−17,7 %"
+                },
+                {
+                  "label": "San Fernando",
+                  "value": -9.8,
+                  "display": "−9,8 %"
+                },
+                {
+                  "label": "Palmilla",
+                  "value": -1.6,
+                  "display": "−1,6 %"
+                },
+                {
+                  "label": "Placilla",
+                  "value": -1.3,
+                  "display": "−1,3 %"
+                },
+                {
+                  "label": "Chépica",
+                  "value": 10.7,
+                  "display": "+10,7 %"
+                },
+                {
+                  "label": "Santa Cruz",
+                  "value": -12.0,
+                  "display": "−12,0 %"
+                },
+                {
+                  "label": "Nancagua",
+                  "value": -20.5,
+                  "display": "−20,5 %"
+                },
+                {
+                  "label": "Peralillo",
+                  "value": 6.9,
+                  "display": "+6,9 %"
+                },
+                {
+                  "label": "Pumanque",
+                  "value": 2.7,
+                  "display": "+2,7 %"
+                },
+                {
+                  "label": "Lolol",
+                  "value": -3.0,
+                  "display": "−3,0 %"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Trabajadores agrícolas en riesgo si se repite 2023",
+            "source": "Prueba de estrés, no pronóstico · total ≈ −1.500 trabajadores-año",
+            "chart": {
+              "type": "bars",
+              "min": -700,
+              "max": 0,
+              "items": [
+                {
+                  "label": "Chimbarongo",
+                  "value": -658,
+                  "display": "−658"
+                },
+                {
+                  "label": "San Fernando",
+                  "value": -419,
+                  "display": "−419"
+                },
+                {
+                  "label": "Palmilla",
+                  "value": -20,
+                  "display": "−20"
+                },
+                {
+                  "label": "Placilla",
+                  "value": -8,
+                  "display": "−8"
+                },
+                {
+                  "label": "Santa Cruz",
+                  "value": -259,
+                  "display": "−259"
+                },
+                {
+                  "label": "Nancagua",
+                  "value": -333,
+                  "display": "−333"
+                },
+                {
+                  "label": "Lolol",
+                  "value": -30,
+                  "display": "−30"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "precio",
+        "file": "hallazgos/precio.md",
+        "title": "El precio cae por sobreoferta",
+        "take": "Precios altos → se planta más cerezo → oferta récord → cae el precio. En 2024 se exportaron 384 millones de kg (récord) y el precio cayó 37,5 %.",
+        "panels": [
+          {
+            "title": "Cereza exportada desde O'Higgins (millones de kg)",
+            "source": "ODEPA con datos de Aduanas · cereza fresca",
+            "chart": {
+              "type": "bars",
+              "max": 400,
+              "items": [
+                {
+                  "label": "2014",
+                  "value": 66,
+                  "display": "66 M kg"
+                },
+                {
+                  "label": "2017",
+                  "value": 113,
+                  "display": "113 M kg"
+                },
+                {
+                  "label": "2020",
+                  "value": 241,
+                  "display": "241 M kg"
+                },
+                {
+                  "label": "2024",
+                  "value": 384,
+                  "display": "384 M kg"
+                }
+              ]
+            }
+          },
+          {
+            "title": "Cambio del precio esa temporada (%)",
+            "source": "Cada caída del precio coincidió con un salto del volumen",
+            "chart": {
+              "type": "bars",
+              "min": -40,
+              "max": 0,
+              "items": [
+                {
+                  "label": "2014",
+                  "value": -24.0,
+                  "display": "−24,0 %"
+                },
+                {
+                  "label": "2017",
+                  "value": -18.0,
+                  "display": "−18,0 %"
+                },
+                {
+                  "label": "2020",
+                  "value": -26.0,
+                  "display": "−26,0 %"
+                },
+                {
+                  "label": "2024",
+                  "value": -37.5,
+                  "display": "−37,5 %"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "que-viene",
+        "file": "hallazgos/que-viene.md",
+        "title": "Lo que viene: más inviernos cálidos",
+        "take": "96 % de tener al menos una temporada mala en 5 años. Los inviernos cálidos pasan de 1 de cada 8 temporadas a 2 de cada 5, y las heladas bajan a menos de la mitad. Con El Niño fuerte, la lluvia grave en la cosecha 2026-27 sube a 67 %.",
+        "panels": [
+          {
+            "title": "Temporadas malas: hoy (1991–2020) → 2026–2035",
+            "source": "ARClim, 19 modelos, SSP2-4.5, con el sesgo corregido contra CR2MET",
+            "chart": {
+              "type": "pairs",
+              "max": 60,
+              "legend": ["Hoy", "2026–2035"],
+              "items": [
+                {
+                  "label": "Olas de calor",
+                  "before": 17,
+                  "after": 60,
+                  "display": "17 → 60 %"
+                },
+                {
+                  "label": "Invierno cálido",
+                  "before": 13,
+                  "after": 40,
+                  "display": "13 → 40 %"
+                },
+                {
+                  "label": "Sequía invernal",
+                  "before": 13,
+                  "after": 20,
+                  "display": "13 → 20 %"
+                },
+                {
+                  "label": "Lluvia tardía en cosecha",
+                  "before": 13,
+                  "after": 20,
+                  "display": "13 → 20 %"
+                },
+                {
+                  "label": "Exceso de humedad",
+                  "before": 20,
+                  "after": 20,
+                  "display": "20 → 20 %"
+                },
+                {
+                  "label": "Heladas en floración",
+                  "before": 23,
+                  "after": 10,
+                  "display": "23 → 10 %"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "conclusions": {
+      "title": "Qué hacer",
+      "answer": "La comuna más vulnerable es Chimbarongo. El sector que recibe el golpe es el empleo agrícola, sin efecto dominó en el empleo formal del resto. La amenaza más determinante es el invierno cálido, y es la que más crece: de 13 % a 40 % de las temporadas en la próxima década.",
+      "actions": [
+        "Priorizar a Chimbarongo y luego a San Fernando, Nancagua y Santa Cruz.",
+        "Adaptar la cereza a inviernos cálidos, con variedades de bajo requerimiento de frío.",
+        "En años de El Niño, preparar la cosecha contra la lluvia, empezando por 2026.",
+        "Diversificar cultivos y mercados, para no depender de un solo fruto ni de un solo comprador.",
+        "Invertir en agua y riego.",
+        "Apoyar al temporero informal, que es el primero en perder trabajo y no aparece en los datos."
+      ]
+    },
+    "limitations": {
+      "title": "Límites",
+      "items": [
+        {
+          "title": "Asociación, no causalidad",
+          "body": "Solo 2 comunas de dependencia alta y de 2 a 4 incidentes por amenaza; los patrones se ven por evento."
+        },
+        {
+          "title": "Solo empleo formal",
+          "body": "El SII no ve al temporero informal, el más expuesto a una mala cosecha."
+        },
+        {
+          "title": "Las proyecciones comparan periodos",
+          "body": "Dicen cómo cambia el riesgo en 2026–2035, no qué pasará en un año puntual."
+        },
+        {
+          "title": "Clima estimado",
+          "body": "CR2MET es una grilla de ~5 km, validada contra las estaciones de Colchagua (r = 0,80)."
+        }
+      ]
+    },
+    "process": {
+      "title": "Cómo se hizo",
+      "text": "ETL en Python con 10 fuentes oficiales → Datamart en esquema estrella → clustering, incidentes y proyecciones → Power BI."
+    },
+    "resources": {
+      "repo": "https://github.com/VincentPelos/colchagua-etl",
+      "dashboard": "https://github.com/VincentPelos/colchagua-etl/raw/main/entregables/2_dashboard/colchagua_cereza.pbix",
+      "report": "https://github.com/VincentPelos/colchagua-etl/blob/main/entregables/3_informe/informe_colchagua_cereza.pdf",
+      "notebooks": [
+        {
+          "title": "01 · Extracción",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/01_ETL_extraccion_y_seleccion.ipynb"
+        },
+        {
+          "title": "02 · Limpieza",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/02_ETL_limpieza.ipynb"
+        },
+        {
+          "title": "03 · Datamart",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/03_ETL_variables_y_datamart.ipynb"
+        },
+        {
+          "title": "04 · Clustering",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/04_machine_learning_clustering_de_comunas.ipynb"
+        },
+        {
+          "title": "05 · Incidentes e impacto",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/05_machine_learning_cereza_incidentes_e_impacto.ipynb"
+        },
+        {
+          "title": "06 · Proyecciones",
+          "href": "https://github.com/VincentPelos/colchagua-etl/blob/main/notebooks/06_forecast_amenazas.ipynb"
+        }
+      ]
+    },
+    "labels": {
+      "back": "proyectos",
+      "download": "Descargar el Power BI (.pbix)",
+      "report": "Informe PDF",
+      "repo": "Repositorio",
+      "notebooks": "Notebooks"
+    }
+  }
+]

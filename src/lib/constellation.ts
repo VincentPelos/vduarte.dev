@@ -18,6 +18,8 @@ export interface Segment {
  * de scroll en que queda centrada en pantalla (en orden).
  */
 export function segment(centers: readonly number[], scroll: number): Segment {
+  // Una página sin secciones con constelación (el caso de un proyecto): el cielo queda quieto.
+  if (centers.length === 0) return { from: 0, to: 0, progress: 0 };
   let from = 0;
   while (from < centers.length - 1 && scroll >= centers[from + 1]) from++;
   const to = Math.min(from + 1, centers.length - 1);
