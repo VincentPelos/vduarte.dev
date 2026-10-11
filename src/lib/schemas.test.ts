@@ -1,6 +1,7 @@
 import { z } from 'astro/zod';
 import { describe, expect, it } from 'vitest';
 import {
+  caseSchema,
   educationSchema,
   experienceSchema,
   month,
@@ -239,5 +240,52 @@ describe('projectSchema', () => {
     expect(errorPaths(schema.safeParse({ ...project, caseStudy: 'Caso Colchagua' }))).toEqual([
       'caseStudy',
     ]);
+  });
+});
+
+describe('caseSchema', () => {
+  const schema = caseSchema(() => z.string());
+  const url = 'https://github.com/usuario/repo';
+  const base = {
+    id: 'colchagua',
+    title: 'Caso',
+    subtitle: 'Subtítulo',
+    context: 'Curso',
+    question: '¿Pregunta?',
+    summary: 'Resumen.',
+    stats: [{ value: '38 %', label: 'de los frutales' }],
+    problem: ['Párrafo.'],
+    data: {
+      territory: 'Colchagua',
+      period: '1991–2025',
+      sources: [{ name: 'SII', what: 'Empleo', url }],
+    },
+    approach: [{ title: 'ETL', body: 'Limpieza.' }],
+    findings: [{ id: 'hallazgo', title: 'Hallazgo', body: 'Texto.' }],
+    conclusions: { answer: 'Respuesta.', actions: ['Acción.'] },
+    limitations: [{ title: 'Asociación', body: 'No causalidad.' }],
+    resources: { repo: url, dashboard: url, report: url, notebooks: [{ title: '01', href: url }] },
+  };
+
+  it('acepta un caso completo y deja la galería vacía por defecto', () => {
+    const result = schema.safeParse(base);
+    expect(result.success && result.data.gallery).toEqual([]);
+  });
+
+  it('exige declarar al menos un límite del análisis', () => {
+    expect(errorPaths(schema.safeParse({ ...base, limitations: [] }))).toEqual(['limitations']);
+  });
+
+  it('no acepta más de 4 cifras destacadas', () => {
+    const stats = Array.from({ length: 5 }, () => base.stats[0]);
+    expect(errorPaths(schema.safeParse({ ...base, stats }))).toEqual(['stats']);
+  });
+
+  it('exige URLs válidas en los recursos', () => {
+    expect(
+      errorPaths(
+        schema.safeParse({ ...base, resources: { ...base.resources, report: 'informe.pdf' } }),
+      ),
+    ).toEqual(['resources.report']);
   });
 });
