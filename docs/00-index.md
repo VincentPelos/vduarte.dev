@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-10
+actualizado: 2026-10-11
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -12,7 +12,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito siguiente:** v0.6.0 Contacto y extras (incluye mejorar las animaciones, #124) — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Hito siguiente:** v0.6.0 Contacto y extras (incluye la lista de mejoras del autor, #124 y #129–#134; ver [bitácora 2026-10-11](06-bitacora/2026-10-11.md)) — ver [alcance](01-proyecto/alcance.md#hitos).
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
