@@ -15,8 +15,9 @@ interface Props {
 }
 
 const { project, labels, gallery: galleryLabels } = Astro.props;
-const { id, title, description, tags, image, repo, demo, year, featured, caseStudy, gallery } =
-  project;
+const { id, title, description, tags, image, repo, demo, year, featured, caseStudy } = project;
+// El schema pone `gallery: []` por defecto; el respaldo cubre un caché de contenido viejo en dev.
+const gallery = project.gallery ?? [];
 // Con 2 o más imágenes, la portada abre el visor (ProjectGallery).
 const hasGallery = gallery.length > 1;
 
