@@ -27,3 +27,11 @@ Con la 011, la escena entraba con un fundido de 700 ms: el canvas pasaba de opac
 - La entrada dura ~1,56 s después del precálculo, en vez de 0,7 s. El texto se puede leer todo el tiempo.
 - El colapso avanza con el reloj: si el hero está fuera de pantalla al terminar el precálculo, al volver la escena ya está entera.
 - Cambiar duraciones o borde = cambiar las constantes `COLLAPSE_*` de `black-hole.ts`.
+
+## Ajuste (2026-10-11, #132)
+El autor notó que al terminar la entrada la escena "se pegaba" ~1 s y después el borde desaparecía de golpe, desentonando con el agujero. Medido con GPU real: no había cuadros trabados; era la cola del `ease-out` exponencial, que dejaba el borde de puntos casi quieto junto a la sombra hasta que se apagaba de una vez.
+- Sin la pausa de 140 ms entre crecer y contraerse.
+- La contracción usa `ease-out` cúbico (sin cola casi quieta).
+- En el último 45 % de la contracción el borde se deshace punto a punto (`uEdgeKeep`, `COLLAPSE_DISSOLVE`), así llega a la sombra sin un corte.
+- El reloj del colapso parte en el primer cuadro dibujado, no al terminar el precálculo.
+- La entrada dura ~1,42 s después del precálculo.
