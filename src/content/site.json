@@ -79,7 +79,14 @@
         "featured": { "one": "destacado", "other": "destacados" },
         "repo": "repo",
         "demo": "sitio institucional",
-        "caseStudy": "ver caso"
+        "caseStudy": "ver caso",
+        "gallery": {
+          "open": "Ver las imágenes de",
+          "close": "Cerrar",
+          "prev": "Imagen anterior",
+          "next": "Imagen siguiente",
+          "of": "de"
+        }
       },
       "skills": {
         "title": "Skills",

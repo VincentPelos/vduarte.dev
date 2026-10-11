@@ -258,6 +258,11 @@
   animation-play-state: paused !important;
 }
 
+/* Con un visor de imágenes abierto (ProjectGallery), la página de atrás no se mueve. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 /* Texto con el degradado de la paleta */
 @utility text-grad {
   background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));

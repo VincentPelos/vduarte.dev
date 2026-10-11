@@ -6,14 +6,19 @@ import { projectLinks, type ProjectLinkLabels } from '../../../lib/projects';
 import LinkHint from '../../ui/LinkHint.astro';
 import Chip from '../../ui/Chip.astro';
 import GlassCard from '../../ui/GlassCard.astro';
+import ProjectGallery from './ProjectGallery.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>['data'];
   labels: ProjectLinkLabels & { featured: string };
+  gallery: { open: string; close: string; prev: string; next: string; of: string };
 }
 
-const { project, labels } = Astro.props;
-const { title, description, tags, image, repo, demo, year, featured, caseStudy } = project;
+const { project, labels, gallery: galleryLabels } = Astro.props;
+const { id, title, description, tags, image, repo, demo, year, featured, caseStudy, gallery } =
+  project;
+// Con 2 o más imágenes, la portada abre el visor (ProjectGallery).
+const hasGallery = gallery.length > 1;
 
 const grid =
   'linear-gradient(var(--color-glass-hi) 1px, transparent 1px) 0 0 / 22px 22px, linear-gradient(90deg, var(--color-glass-hi) 1px, transparent 1px) 0 0 / 22px 22px';
@@ -25,23 +30,46 @@ const links = projectLinks({ caseStudy, repo, demo }, labels);
 
 <!-- Tarjeta de un destacado (#107): imagen de 160 px, relleno compacto, descripción a 3 líneas. -->
 <GlassCard class="group grid grid-rows-[auto_1fr]">
-  <div class="relative h-40 max-w-full overflow-hidden border-b border-line">
-    {image ? (
+  {hasGallery ? (
+    <button
+      type="button"
+      data-gallery-open={id}
+      aria-label={`${galleryLabels.open} ${title} (${gallery.length})`}
+      class="relative block h-40 w-full cursor-zoom-in overflow-hidden border-b border-line focus-visible:outline-offset-[-2px]"
+    >
       <Image
-        src={image}
+        src={gallery[0].image}
         alt=""
         widths={[400, 800, 1200]}
         sizes="(min-width: 861px) 33vw, (min-width: 561px) 50vw, 85vw"
         class="absolute inset-0 size-full object-cover transition-transform duration-600 ease-out-expo group-hover:scale-[1.04]"
       />
-    ) : (
-      <div
+      <span
         aria-hidden="true"
-        class="absolute inset-0 transition-transform duration-600 ease-out-expo group-hover:scale-[1.04]"
-        style={`background: ${featured ? `${grid}, ${glow}` : grid};`}
-      />
-    )}
-  </div>
+        class="absolute right-2.5 bottom-2.5 rounded-full border border-line-hi bg-nav px-2.5 py-1.5 font-mono text-[0.7rem] leading-none text-fg backdrop-blur-md"
+      >
+        ⧉ {gallery.length}
+      </span>
+    </button>
+  ) : (
+    <div class="relative h-40 max-w-full overflow-hidden border-b border-line">
+      {image ? (
+        <Image
+          src={image}
+          alt=""
+          widths={[400, 800, 1200]}
+          sizes="(min-width: 861px) 33vw, (min-width: 561px) 50vw, 85vw"
+          class="absolute inset-0 size-full object-cover transition-transform duration-600 ease-out-expo group-hover:scale-[1.04]"
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          class="absolute inset-0 transition-transform duration-600 ease-out-expo group-hover:scale-[1.04]"
+          style={`background: ${featured ? `${grid}, ${glow}` : grid};`}
+        />
+      )}
+    </div>
+  )}
   <div class="grid content-start gap-2.5 px-[13px] pt-3 pb-[13px]">
     <p class="flex justify-between gap-3 font-mono text-[0.74rem] leading-none text-muted tabular-nums">
       <span>{year}</span>
@@ -79,3 +107,4 @@ const links = projectLinks({ caseStudy, repo, demo }, labels);
     )}
   </div>
 </GlassCard>
+{hasGallery && <ProjectGallery id={id} title={title} images={gallery} labels={galleryLabels} />}

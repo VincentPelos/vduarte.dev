@@ -78,6 +78,7 @@ const site = {
       repo: 'repo',
       demo: 'demo',
       caseStudy: 'ver caso',
+      gallery: { open: 'Ver', close: 'Cerrar', prev: 'Anterior', next: 'Siguiente', of: 'de' },
     },
     skills: {
       title: 'Skills',
