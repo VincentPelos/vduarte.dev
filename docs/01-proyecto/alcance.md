@@ -9,7 +9,7 @@ actualizado: 2026-10-11
 
 | Ruta | Contenido |
 |---|---|
-| `/` | Home: hero, bento "sobre mí", experiencia, proyectos, skills, educación, contacto |
+| `/` | Home: hero, bento "sobre mí", experiencia, proyectos, educación, skills, contacto |
 | `/proyectos/[slug]` | Caso de estudio. El primero: **colchagua** |
 | `/uso-de-ia` | Declaración de uso de IA (obligatoria por la rúbrica) |
 
@@ -17,7 +17,7 @@ actualizado: 2026-10-11
 
 - **Hero:** prompt `whoami`, nombre, rol, tagline, botones Correo · GitHub · LinkedIn · Descargar CV, agujero negro de puntos de fondo.
 - **Bento "sobre mí":** bio, hora local, disponibilidad, stack principal, *Sonando*, *Jugando*, links.
-- **Experiencia, proyectos (bento), skills, educación:** todo desde JSON.
+- **Experiencia, proyectos (bento), educación, skills:** todo desde JSON.
 - **Caso Colchagua:** problema, enfoque, datos, capturas del Power BI y gráficos HTML, hallazgos, conclusiones, descarga del `.pbix` y links a notebooks. El Power BI no se incrusta: el autor aceptó esta alternativa (2026-10-11).
 - **Contacto:** correo con `mailto:` y botón para copiarlo.
 - **Calidad:** ESLint, Prettier, Vitest, `astro check`, Lighthouse CI, commitlint.

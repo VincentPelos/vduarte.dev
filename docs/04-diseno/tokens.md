@@ -63,7 +63,11 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
 - Proyectos: los destacados son tarjetas en una fila (2 columnas desde 561px, 3 desde 861px) con imagen de 160 px, relleno compacto (12–13 px) y descripción a 3 líneas; en celular, un carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás van en una lista con miniatura 4:3 (96 px; 72 px en celular). Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
 - Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; 1 columna → 2 desde 901px.
-- Educación: línea de vida con estrellas (`--c2`, punteada) y los años de inicio grandes en contorno (`--muted`). Las carreras son estrellas grandes con la paleta; las capacitaciones, estrellas chicas (`--soft`).
+- Orden del home: hero, sobre mí, Experiencia, Proyectos, Educación, Skills, Contacto (#134).
+- Experiencia y Educación: **columna de años** (`ui/YearBlock.astro`, [decisión 020](../03-decisiones/020-columna-de-anios.md)). Desde 721px el año va en una columna de `10rem`, fijo (`sticky`, 96px) mientras pasan sus entradas; el más reciente con `text-grad` y los demás en contorno (`--muted`), `clamp(2.2rem, 6vw, 3.4rem)`. En celular el año va arriba de sus entradas. La línea queda 31px a la izquierda de las entradas.
+  - Experiencia: la línea es la constelación del cielo (decisión 009). De cada trabajo se ve periodo, rol (Martian Mono; `clamp(1.35rem, 3.2vw, 2rem)` si está vigente), empresa, `summary` y 6 tecnologías más "+n"; los logros van en un `<details>` ("ver logros").
+  - Educación: línea punteada propia (`--c2`). Las carreras son estrellas grandes con la paleta y el periodo en `text-grad`; las capacitaciones de un año van juntas en un bloque compacto con una estrella chica (`--soft`): día y mes, título y folio.
+- **Velo** (`veil`): degradado radial del fondo al 100 % detrás de cada entrada de Experiencia y Educación, para que las estrellas no compitan con el texto.
 - Nav: píldora fija arriba y centrada; resalta la sección que cruza el centro de la pantalla (`aria-current`, fondo `--glass-hi`).
 
 ## Movimiento
@@ -75,7 +79,8 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - **Flecha del hero:** `animate-bob`, 1,8 s, baja 5 px y vuelve (solo con `motion-safe`).
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).
-- **Reveals:** subir 38 px + fade, 800 ms, `cubic-bezier(.22,1,.36,1)`, stagger 70 ms entre los que entran juntos. Se marcan con `data-reveal` (títulos de sección, tarjetas de vidrio, trabajos y estudios) y los anima `layout/Reveal.astro`. Solo animan los que están bajo la pantalla al cargar; nunca los que contienen una constelación, porque las estrellas miden su posición.
+- **Entrada de las líneas de tiempo** (`layout/Trace.astro`, #134): en Experiencia y Educación la línea se dibuja de arriba abajo en 1100 ms y cada entrada aparece cuando le llega: su estrella crece hasta 1,8× y vuelve (520 ms) y el texto entra desde 10 px a la izquierda (640 ms, `cubic-bezier(.22,1,.36,1)`). Mismas reglas que los reveals.
+- **Reveals:** subir 38 px + fade, 800 ms, `cubic-bezier(.22,1,.36,1)`, stagger 70 ms entre los que entran juntos. Se marcan con `data-reveal` (títulos de sección y tarjetas de vidrio) y los anima `layout/Reveal.astro`. Solo animan los que están bajo la pantalla al cargar; nunca los que contienen una constelación, porque las estrellas miden su posición.
 - **Regla:** nada de contenido oculto esperando una animación; `prefers-reduced-motion` apaga todo.
 
 ## Accesibilidad
