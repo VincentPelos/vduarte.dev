@@ -28,7 +28,7 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/     capturas del Power BI del caso (galería de cases.json)
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, SmoothScroll, OffscreenPause
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
@@ -38,7 +38,7 @@ vduarte.dev/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseHeading, CaseDashboard, CaseBlock, BarChart
-│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon, LinkHint
+│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, YearBlock (columna de años), Icon, TechIcon, LinkHint
 │  ├─ content/                 datos del sitio (JSON), casos de estudio (cases.json) y uso de IA (ai-usage.json)
 │  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)

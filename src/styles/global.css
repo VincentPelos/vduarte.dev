@@ -272,6 +272,31 @@ html:has(dialog[open]) {
   overflow: hidden;
 }
 
+/*
+ * Velo (#134): oscurece el cielo de estrellas justo detrás de un bloque de texto, sin marco.
+ * Va al 100 %, elegido en el laboratorio. El canvas del cielo queda debajo del contenido
+ * (pages/index.astro), así que el velo solo tapa estrellas, nunca otro texto.
+ */
+@utility veil {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -14px -22px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 26px;
+    background: radial-gradient(
+      closest-side,
+      var(--color-bg),
+      color-mix(in srgb, var(--color-bg) 80%, transparent) 72%,
+      transparent
+    );
+  }
+}
+
 /* Texto con el degradado de la paleta */
 @utility text-grad {
   background: linear-gradient(90deg, var(--color-c1), var(--color-c2), var(--color-c3));

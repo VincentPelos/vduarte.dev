@@ -126,7 +126,13 @@ export const siteSchema = z.object({
   sections: z.object({
     /** Lo que se muestra en lugar del término de un periodo vigente. */
     current: z.string().min(1),
-    experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
+    experience: z.object({
+      title: z.string().min(1),
+      unit: plural,
+      since: z.string().min(1),
+      /** Botón que despliega los logros de un trabajo (#134). */
+      highlights: z.object({ show: z.string().min(1), hide: z.string().min(1) }),
+    }),
     education: z.object({
       title: z.string().min(1),
       degree: plural,
@@ -180,6 +186,8 @@ export const experienceSchema = z
     ...period,
     location: z.string().optional(),
     description: z.string().min(1),
+    /** Una línea de qué se hace, visible sin desplegar los logros (#134); si falta, `description`. */
+    summary: z.string().min(1).optional(),
     highlights: z.array(z.string().min(1)).optional(),
     stack: z.array(z.string().min(1)).optional(),
     url: z.url().optional(),

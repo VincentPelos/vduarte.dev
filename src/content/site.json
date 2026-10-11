@@ -35,8 +35,8 @@
       { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
       { "section": "experiencia", "label": "experiencia" },
       { "section": "proyectos", "label": "proyectos" },
-      { "section": "skills", "label": "skills" },
       { "section": "educacion", "label": "educación" },
+      { "section": "skills", "label": "skills" },
       { "section": "contacto", "label": "contacto" }
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
@@ -68,7 +68,8 @@
       "experience": {
         "title": "Experiencia",
         "unit": { "one": "rol", "other": "roles" },
-        "since": "desde"
+        "since": "desde",
+        "highlights": { "show": "ver logros", "hide": "ocultar logros" }
       },
       "education": {
         "title": "Educación",

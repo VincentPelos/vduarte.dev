@@ -59,3 +59,26 @@ export function sortByRecency<T extends Period>(items: readonly T[]): T[] {
     (a, b) => key(b).localeCompare(key(a)) || (b.start ?? '').localeCompare(a.start ?? ''),
   );
 }
+
+interface Dated {
+  start: string | null;
+  dateNote?: string;
+}
+
+/** Año de un periodo: el de su inicio o, si no se conoce, el primero que nombre `dateNote`. */
+export function yearOf(item: Dated): string {
+  return item.start?.slice(0, 4) ?? /\d{4}/.exec(item.dateNote ?? '')?.[0] ?? '';
+}
+
+/**
+ * Agrupa por año de inicio, del más reciente al más antiguo, para la columna de años de
+ * Experiencia y Educación (#134). Dentro de cada año se conserva el orden recibido.
+ */
+export function groupByYear<T extends Dated>(items: readonly T[]): [string, T[]][] {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const year = yearOf(item);
+    groups.set(year, [...(groups.get(year) ?? []), item]);
+  }
+  return [...groups].sort(([a], [b]) => b.localeCompare(a));
+}
