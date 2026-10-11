@@ -87,9 +87,10 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
                     <p class="font-mono text-[0.8rem] text-muted">{trainings[0]?.institution}</p>
                   )}
                 </div>
-                <ul class="grid border-t border-line">
+                {/* Celular (#146): tarjetas chicas de a 2; desde 561px, una fila por capacitación. */}
+                <ul class="grid grid-cols-2 gap-2 min-[561px]:grid-cols-1 min-[561px]:gap-0 min-[561px]:border-t min-[561px]:border-line">
                   {trainings.map((item) => (
-                    <li class="grid grid-cols-[4.2rem_minmax(0,1fr)] items-baseline gap-x-3 gap-y-0.5 border-b border-line py-2.5 text-[0.92rem] min-[561px]:grid-cols-[4.2rem_minmax(0,1fr)_auto]">
+                    <li class="flex min-w-0 flex-col gap-1 rounded-[14px] border border-line bg-glass p-3 text-[0.86rem] leading-snug min-[561px]:grid min-[561px]:grid-cols-[4.2rem_minmax(0,1fr)_auto] min-[561px]:items-baseline min-[561px]:gap-x-3 min-[561px]:rounded-none min-[561px]:border-0 min-[561px]:border-b min-[561px]:bg-transparent min-[561px]:p-0 min-[561px]:py-2.5 min-[561px]:text-[0.92rem]">
                       <span class="font-mono text-[0.74rem] text-muted tabular-nums">
                         {dayMonth(item.start)}
                       </span>
@@ -107,7 +108,7 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
                         )}
                       </span>
                       {item.folio && (
-                        <span class="col-start-2 font-mono text-[0.74rem] text-muted tabular-nums min-[561px]:col-start-auto">
+                        <span class="mt-auto font-mono text-[0.74rem] text-muted tabular-nums">
                           {texts.folio} {item.folio}
                         </span>
                       )}

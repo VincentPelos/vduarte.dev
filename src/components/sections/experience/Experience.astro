@@ -11,8 +11,9 @@ import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 import YearBlock from '../../ui/YearBlock.astro';
 
-/** Tecnologías que se ven sin desplegar; el resto se resume en "+n". */
+/** Tecnologías que se ven sin desplegar; el resto se resume en "+n". En celular, menos (#146). */
 const STACK_SHOWN = 6;
+const STACK_SHOWN_MOBILE = 4;
 
 const site = await getSite();
 
@@ -49,6 +50,7 @@ const years = groupByYear(jobs);
         {list.map((job) => {
           const stack = job.stack ?? [];
           const hidden = stack.length - STACK_SHOWN;
+          const hiddenMobile = stack.length - STACK_SHOWN_MOBILE;
           return (
             <article data-constellation-mark data-trace-item class="grid">
               <div data-trace-body class="veil grid gap-2.5">
@@ -87,10 +89,15 @@ const years = groupByYear(jobs);
                 </p>
                 {stack.length > 0 && (
                   <ul class="flex flex-wrap gap-1.5">
-                    {stack.slice(0, STACK_SHOWN).map((tech) => (
-                      <Chip>{tech}</Chip>
+                    {stack.slice(0, STACK_SHOWN).map((tech, i) => (
+                      <Chip class={i >= STACK_SHOWN_MOBILE ? 'max-[460px]:hidden' : undefined}>
+                        {tech}
+                      </Chip>
                     ))}
-                    {hidden > 0 && <Chip class="border-dashed">+{hidden}</Chip>}
+                    {hidden > 0 && <Chip class="border-dashed max-[460px]:hidden">+{hidden}</Chip>}
+                    {hiddenMobile > 0 && (
+                      <Chip class="hidden border-dashed max-[460px]:inline">+{hiddenMobile}</Chip>
+                    )}
                   </ul>
                 )}
                 {job.highlights && (

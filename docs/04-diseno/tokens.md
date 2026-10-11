@@ -59,14 +59,15 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 ## Layout
 
 - Contenedor máximo `1200px` con gutter `clamp(16px, 4vw, 40px)`.
+- Espacio vertical de cada sección: `clamp(48px, 12vw, 140px)` arriba y abajo (48px en celular, #146).
 - Bento "sobre mí": 4 columnas → 2 (≤900px) → en celular (≤460px), sobre mí, un carrusel con hora, estado, sonando, jugando y enlaces (`auto-cols-[42%]`, snap), stack y cielo.
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
 - Proyectos: los destacados son tarjetas en una fila (2 columnas desde 561px, 3 desde 861px) con imagen de 160 px, relleno compacto (12–13 px) y descripción a 3 líneas; en celular, un carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás van en una lista con miniatura 4:3 (96 px; 72 px en celular). Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
-- Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; 1 columna → 2 desde 901px.
+- Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; siempre 2 columnas. En celular (≤460px), más juntas y con chips de `0.74rem` e ícono de 20px (#146).
 - Orden del home: hero, sobre mí, Experiencia, Proyectos, Educación, Skills, Contacto (#134).
 - Experiencia y Educación: **columna de años** (`ui/YearBlock.astro`, [decisión 020](../03-decisiones/020-columna-de-anios.md)). Desde 721px el año va en una columna de `10rem`, fijo (`sticky`, 96px) mientras pasan sus entradas; el más reciente con `text-grad` y los demás en contorno (`--muted`), `clamp(2.2rem, 6vw, 3.4rem)`. En celular el año va arriba de sus entradas. La línea queda 31px a la izquierda de las entradas.
-  - Experiencia: la línea es la constelación del cielo (decisión 009). De cada trabajo se ve periodo, rol (Martian Mono; `clamp(1.35rem, 3.2vw, 2rem)` si está vigente), empresa, `summary` y 6 tecnologías más "+n"; los logros van en un `<details>` ("ver logros").
-  - Educación: línea punteada propia (`--c2`). Las carreras son estrellas grandes con la paleta y el periodo en `text-grad`; las capacitaciones de un año van juntas en un bloque compacto con una estrella chica (`--soft`): día y mes, título y folio.
+  - Experiencia: la línea es la constelación del cielo (decisión 009). De cada trabajo se ve periodo, rol (Martian Mono; `clamp(1.35rem, 3.2vw, 2rem)` si está vigente), empresa, `summary` y 6 tecnologías más "+n" (4 en celular, #146); los logros van en un `<details>` ("ver logros").
+  - Educación: línea punteada propia (`--c2`). Las carreras son estrellas grandes con la paleta y el periodo en `text-grad`; las capacitaciones de un año van juntas en un bloque compacto con una estrella chica (`--soft`): día y mes, título y folio. Hasta 560px son tarjetas chicas de vidrio de a 2 (#146).
 - **Velo** (`veil`): degradado radial del fondo al 100 % detrás de cada entrada de Experiencia y Educación, para que las estrellas no compitan con el texto.
 - Nav: píldora fija arriba y centrada; resalta la sección que cruza el centro de la pantalla (`aria-current`, fondo `--glass-hi`).
 
