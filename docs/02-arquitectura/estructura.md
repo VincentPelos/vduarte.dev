@@ -32,7 +32,7 @@ vduarte.dev/
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts
 │  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
 │  │  │  ├─ experience/
-│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista)
+│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectGallery (visor)
 │  │  │  ├─ skills/
 │  │  │  ├─ education/
 │  │  │  └─ contact/

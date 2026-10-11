@@ -1,0 +1,134 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  /** Id del proyecto: lo enlaza con su botón `[data-gallery-open]`. */
+  id: string;
+  title: string;
+  images: { image: ImageMetadata; alt: string }[];
+  labels: { close: string; prev: string; next: string; of: string };
+}
+
+// Visor de imágenes de un proyecto (#122): un <dialog> nativo, así el foco queda adentro y Esc
+// lo cierra. Las imágenes son lazy: no se descargan hasta abrirlo.
+const { id, title, images, labels } = Astro.props;
+const control =
+  'grid size-10 place-items-center rounded-full border border-line-hi bg-nav font-mono text-fg backdrop-blur-md transition-colors hover:bg-glass-hi';
+---
+
+<dialog
+  data-gallery={id}
+  aria-label={title}
+  data-lenis-prevent
+  class="m-auto w-[min(1100px,calc(100%-32px))] max-w-none bg-transparent p-0 text-fg backdrop:bg-black/85 backdrop:backdrop-blur-sm"
+>
+  <div class="grid gap-3">
+    <div class="flex items-center justify-between gap-4">
+      <p class="truncate font-mono text-[0.8rem] text-muted">
+        {title} · <span data-gallery-count>1</span>
+        {` ${labels.of} ${images.length}`}
+      </p>
+      <button type="button" data-gallery-close class={control} aria-label={labels.close}>
+        ✕
+      </button>
+    </div>
+    <div class="relative overflow-hidden rounded-card border border-line bg-white">
+      {images.map((shot, i) => (
+        <Image
+          src={shot.image}
+          alt={shot.alt}
+          data-gallery-slide={i}
+          hidden={i > 0}
+          widths={[640, 1100, 1600]}
+          sizes="(min-width: 1132px) 1100px, 100vw"
+          class="mx-auto max-h-[72vh] w-full object-contain"
+        />
+      ))}
+      <button
+        type="button"
+        data-gallery-prev
+        class:list={[control, 'absolute top-1/2 left-3 -translate-y-1/2']}
+        aria-label={labels.prev}
+      >
+        ←
+      </button>
+      <button
+        type="button"
+        data-gallery-next
+        class:list={[control, 'absolute top-1/2 right-3 -translate-y-1/2']}
+        aria-label={labels.next}
+      >
+        →
+      </button>
+    </div>
+    <div class="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
+      {images.map((shot, i) => (
+        <button
+          type="button"
+          data-gallery-thumb={i}
+          aria-label={`${i + 1} ${labels.of} ${images.length}`}
+          aria-current={i === 0 ? 'true' : undefined}
+          class="h-14 w-24 flex-none overflow-hidden rounded-[10px] border border-line bg-white opacity-50 transition-opacity hover:opacity-80 aria-[current=true]:border-fg aria-[current=true]:opacity-100"
+        >
+          <Image
+            src={shot.image}
+            alt=""
+            widths={[192]}
+            sizes="96px"
+            class="size-full object-cover"
+          />
+        </button>
+      ))}
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Un solo manejador para todos los visores de la página.
+  const show = (dialog: HTMLDialogElement, index: number) => {
+    const slides = dialog.querySelectorAll<HTMLElement>('[data-gallery-slide]');
+    const i = (index + slides.length) % slides.length;
+    slides.forEach((slide, n) => (slide.hidden = n !== i));
+    dialog.querySelectorAll('[data-gallery-thumb]').forEach((thumb, n) => {
+      if (n === i) thumb.setAttribute('aria-current', 'true');
+      else thumb.removeAttribute('aria-current');
+    });
+    const count = dialog.querySelector('[data-gallery-count]');
+    if (count) count.textContent = String(i + 1);
+    dialog.dataset.index = String(i);
+  };
+  const current = (dialog: HTMLDialogElement) => Number(dialog.dataset.index ?? 0);
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element;
+    const open = target.closest<HTMLElement>('[data-gallery-open]');
+    if (open) {
+      const dialog = document.querySelector<HTMLDialogElement>(
+        `dialog[data-gallery="${open.dataset.galleryOpen}"]`,
+      );
+      if (!dialog) return;
+      show(dialog, 0);
+      dialog.showModal();
+      return;
+    }
+    const dialog = target.closest<HTMLDialogElement>('dialog[data-gallery]');
+    if (!dialog) return;
+    // Clic en el fondo (fuera del contenido): cierra.
+    if (target === dialog) dialog.close();
+    else if (target.closest('[data-gallery-close]')) dialog.close();
+    else if (target.closest('[data-gallery-prev]')) show(dialog, current(dialog) - 1);
+    else if (target.closest('[data-gallery-next]')) show(dialog, current(dialog) + 1);
+    else {
+      const thumb = target.closest<HTMLElement>('[data-gallery-thumb]');
+      if (thumb) show(dialog, Number(thumb.dataset.galleryThumb));
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const dialog = document.querySelector<HTMLDialogElement>('dialog[data-gallery][open]');
+    if (!dialog) return;
+    if (event.key === 'ArrowLeft') show(dialog, current(dialog) - 1);
+    if (event.key === 'ArrowRight') show(dialog, current(dialog) + 1);
+  });
+</script>

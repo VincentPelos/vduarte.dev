@@ -137,6 +137,14 @@ export const siteSchema = z.object({
       repo: z.string().min(1),
       demo: z.string().min(1),
       caseStudy: z.string().min(1),
+      /** Textos del visor de imágenes de un proyecto. */
+      gallery: z.object({
+        open: z.string().min(1),
+        close: z.string().min(1),
+        prev: z.string().min(1),
+        next: z.string().min(1),
+        of: z.string().min(1),
+      }),
     }),
     skills: z.object({ title: z.string().min(1), groups: plural, items: plural }),
     contact: z.object({
@@ -223,6 +231,8 @@ export const projectSchema = <T extends z.ZodType>(image: () => T) =>
     year: z.number().int().min(2000).max(2100),
     featured: z.boolean().default(false),
     caseStudy: id.optional(),
+    /** Imágenes del visor que se abre al hacer clic en la tarjeta (con 2 o más). */
+    gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]),
   });
 
 const text = z.string().min(1);
