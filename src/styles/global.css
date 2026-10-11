@@ -60,14 +60,7 @@
     }
   }
 
-  --animate-eq: eq 0.9s ease-in-out infinite alternate;
   --animate-pulse-ok: pulse-ok 2s infinite;
-
-  @keyframes eq {
-    to {
-      height: 15%;
-    }
-  }
 
   @keyframes pulse-ok {
     0% {
