@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-10
+actualizado: 2026-10-11
 ---
 
 # Estructura de carpetas
@@ -29,7 +29,7 @@ vduarte.dev/
 │  ├─ components/
 │  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
-│  │  │  ├─ hero/              Hero.astro + black-hole.ts
+│  │  │  ├─ hero/              Hero.astro + black-hole.ts + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
 │  │  │  ├─ experience/
 │  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectGallery (visor)
@@ -66,6 +66,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
 | `target`/`rel` de un enlace | `linkAttrs()` de `src/lib/links.ts`, nunca a mano |
 | Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
+| Estado que comparten dos scripts en cada cuadro (agujero, caída, Lenis) | `src/lib/hole.ts`, `src/lib/fall.ts`, `src/lib/smooth.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
 | Un test | Al lado del archivo que prueba: `lib/dates.ts` → `lib/dates.test.ts` |

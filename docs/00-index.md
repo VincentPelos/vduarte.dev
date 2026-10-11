@@ -58,6 +58,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [014](03-decisiones/014-hero-diapositiva.md) | Hero como diapositiva que el portafolio tapa | Movimiento |
 | [016](03-decisiones/016-sharp-imagenes.md) | `sharp` para optimizar imágenes | Contenido |
 | [017](03-decisiones/017-graficos-html.md) | Gráficos del caso en HTML, sin Chart.js (reemplaza en parte a 006) | BI |
+| [018](03-decisiones/018-caida-al-agujero.md) | Caída al agujero negro al pasar al portafolio (reemplaza en parte a 014) | Movimiento |
 
 ### 04 · Diseño — cómo se ve
 
