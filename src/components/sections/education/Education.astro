@@ -1,13 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
-import { sortByRecency } from '../../../lib/dates';
+import { formatDate, groupByYear, sortByRecency } from '../../../lib/dates';
 import { linkAttrs } from '../../../lib/links';
-import LinkHint from '../../ui/LinkHint.astro';
 import { pluralize } from '../../../lib/text';
+import LinkHint from '../../ui/LinkHint.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
+import YearBlock from '../../ui/YearBlock.astro';
 
 const site = await getSite();
 
@@ -19,73 +20,107 @@ const meta = (['degree', 'cert', 'training'] as const)
   .filter((type) => count(type) > 0)
   .map((type) => pluralize(count(type), texts[type]))
   .join(' · ');
-
-// Agrupados por año de inicio, del más reciente al más antiguo; dentro, por recencia.
-const byYear = new Map<string, typeof items>();
-for (const item of items) {
-  const year = item.start?.slice(0, 4) ?? '';
-  byYear.set(year, [...(byYear.get(year) ?? []), item]);
-}
-const years = [...byYear].sort(([a], [b]) => b.localeCompare(a));
+const years = groupByYear(items);
+// Dentro de un año la columna ya dice el año: la capacitación muestra solo día y mes.
+const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{4}$/, '') : '');
 ---
 
 <Section id="educacion" constellation="education">
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
   <!--
-    Línea de vida (#99): una línea de estrellas con los años de inicio grandes. Las carreras son
-    estrellas grandes con la paleta y las capacitaciones, estrellas chicas.
+    Columna de años (#134): las carreras y certificaciones con peso, una estrella grande con la
+    paleta cada una; las capacitaciones de un año, juntas en un bloque compacto con una estrella
+    chica. Trace.astro dibuja la línea y enciende cada estrella al entrar.
   -->
-  <ol class="relative grid max-w-[760px] gap-[26px] pl-[34px] before:absolute before:top-2 before:bottom-2 before:left-[9px] before:w-0.5 before:bg-[radial-gradient(circle,var(--color-c2)_1px,transparent_1.4px)] before:bg-size-[2px_8px] before:content-['']">
-    {years.map(([year, list]) => (
-      <li class="grid gap-[22px]">
-        <h3 class="font-display text-[clamp(2rem,6vw,2.6rem)] leading-none font-bold tracking-[-0.05em] text-transparent [-webkit-text-stroke:1px_var(--color-muted)]">
-          {year}
-        </h3>
-        <ul class="grid gap-[22px]">
-          {list.map((item) => (
-            <li
-              data-reveal
-              class:list={[
-                'relative grid gap-1 before:absolute before:rounded-full before:content-[""]',
-                item.type === 'training'
-                  ? 'before:top-[0.45em] before:-left-[27px] before:size-1.5 before:bg-soft'
-                  : 'before:top-[0.2em] before:-left-[31px] before:size-3.5 before:bg-[conic-gradient(var(--color-c1),var(--color-c2),var(--color-c3),var(--color-c1))] before:shadow-[0_0_0_4px_var(--color-bg)]',
-              ]}
-            >
-              <p class="font-mono text-[0.8rem] leading-normal text-muted">
-                <Period
-                  start={item.start}
-                  end={item.end}
-                  dateNote={item.dateNote}
-                  ongoing={item.ongoing}
-                  currentLabel={current}
-                />
-              </p>
-              <p
-                class:list={[
-                  'leading-[1.3] font-semibold',
-                  item.type === 'training' ? 'text-[1rem]' : 'text-[clamp(1.1rem,2.4vw,1.3rem)]',
-                ]}
-              >
-                {item.url ? (
-                  <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
-                    {item.title}
-                    <LinkHint href={item.url} />
-                  </a>
-                ) : (
-                  item.title
-                )}
-              </p>
-              <p class="text-[0.92rem] text-muted">
-                {item.institution}
-                {item.folio && ` · ${texts.folio} ${item.folio}`}
-              </p>
-            </li>
+  <div data-trace class="grid gap-11">
+    {years.map(([year, list], index) => {
+      const studies = list.filter((item) => item.type !== 'training');
+      const trainings = list.filter((item) => item.type === 'training');
+      const shared = new Set(trainings.map((item) => item.institution)).size === 1;
+      return (
+        <YearBlock year={year} current={index === 0} line>
+          {studies.map((item) => (
+            <article data-trace-item class="relative grid">
+              <span
+                data-trace-star
+                aria-hidden="true"
+                class="absolute top-1.5 left-[-37px] size-3.5 rounded-full bg-[conic-gradient(var(--color-c1),var(--color-c2),var(--color-c3),var(--color-c1))] shadow-[0_0_0_4px_var(--color-bg)]"
+              />
+              <div data-trace-body class="veil grid gap-1.5">
+                <p class="font-display text-base tracking-[-0.04em] text-grad">
+                  <Period
+                    start={item.start}
+                    end={item.end}
+                    dateNote={item.dateNote}
+                    ongoing={item.ongoing}
+                    currentLabel={current}
+                  />
+                </p>
+                <h3 class="text-[clamp(1.25rem,2.8vw,1.7rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-balance">
+                  {item.url ? (
+                    <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
+                      {item.title}
+                      <LinkHint href={item.url} />
+                    </a>
+                  ) : (
+                    item.title
+                  )}
+                </h3>
+                <p class="font-mono text-[0.8rem] text-muted">
+                  {item.institution}
+                  {item.folio && ` · ${texts.folio} ${item.folio}`}
+                </p>
+              </div>
+            </article>
           ))}
-        </ul>
-      </li>
-    ))}
-  </ol>
+          {trainings.length > 0 && (
+            <article data-trace-item class="relative grid">
+              <span
+                data-trace-star
+                aria-hidden="true"
+                class="absolute top-[9px] left-[-33px] size-1.5 rounded-full bg-soft"
+              />
+              <div data-trace-body class="veil grid gap-2.5">
+                <div class="flex flex-wrap items-baseline justify-between gap-x-3.5 gap-y-1">
+                  <h3 class="font-semibold">{pluralize(trainings.length, texts.training)}</h3>
+                  {shared && (
+                    <p class="font-mono text-[0.8rem] text-muted">{trainings[0]?.institution}</p>
+                  )}
+                </div>
+                <ul class="grid border-t border-line">
+                  {trainings.map((item) => (
+                    <li class="grid grid-cols-[4.2rem_minmax(0,1fr)] items-baseline gap-x-3 gap-y-0.5 border-b border-line py-2.5 text-[0.92rem] min-[561px]:grid-cols-[4.2rem_minmax(0,1fr)_auto]">
+                      <span class="font-mono text-[0.74rem] text-muted tabular-nums">
+                        {dayMonth(item.start)}
+                      </span>
+                      <span>
+                        {item.url ? (
+                          <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
+                            {item.title}
+                            <LinkHint href={item.url} />
+                          </a>
+                        ) : (
+                          item.title
+                        )}
+                        {!shared && (
+                          <span class="block text-[0.85rem] text-muted">{item.institution}</span>
+                        )}
+                      </span>
+                      {item.folio && (
+                        <span class="col-start-2 font-mono text-[0.74rem] text-muted tabular-nums min-[561px]:col-start-auto">
+                          {texts.folio} {item.folio}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          )}
+        </YearBlock>
+      );
+    })}
+  </div>
   <!-- Cierre de la sección: aquí las estrellas forman su símbolo (decisión 009). -->
   <div data-constellation="education" aria-hidden="true" class="mt-7 h-[150px] sm:h-[170px]"></div>
 </Section>

@@ -10,6 +10,7 @@ import Reveal from '../components/layout/Reveal.astro';
 import Seo from '../components/layout/Seo.astro';
 import SmoothScroll from '../components/layout/SmoothScroll.astro';
 import StarSky from '../components/layout/StarSky.astro';
+import Trace from '../components/layout/Trace.astro';
 
 interface Props {
   title?: string;
@@ -53,6 +54,7 @@ const { title, description } = Astro.props;
     <Nav />
     <StarSky />
     <Reveal />
+    <Trace />
     <OffscreenPause />
     <SmoothScroll />
   </body>
