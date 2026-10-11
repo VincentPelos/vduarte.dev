@@ -33,6 +33,7 @@ const site = {
   nowGaming: { title: 'Juego' },
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
+  scrollCue: { label: 'portafolio', ariaLabel: 'Bajar al portafolio' },
   prompt: { user: 'vicente@vduarte', command: 'whoami' },
   labels: {
     email: 'Correo',

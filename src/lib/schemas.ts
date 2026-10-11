@@ -95,6 +95,8 @@ export const siteSchema = z.object({
   footerNote: z.string().min(1),
   /** Enlaces del pie de página a otras rutas del sitio (p. ej. `/uso-de-ia`). */
   footerLinks: z.array(z.object({ label: z.string().min(1), href: z.string().min(1) })).default([]),
+  /** Flecha del hero que lleva al portafolio (#131). */
+  scrollCue: z.object({ label: z.string().min(1), ariaLabel: z.string().min(1) }),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
   /** Etiquetas de las tarjetas del bento "Sobre mí". */

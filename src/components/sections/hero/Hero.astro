@@ -4,7 +4,7 @@ import Button from '../../ui/Button.astro';
 
 const site = await getSite();
 
-const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
+const { name, role, tagline, prompt, labels, github, linkedin, cvPath, scrollCue } = site;
 ---
 
 <section
@@ -36,7 +36,8 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
   ></div>
   <div data-hero-scene aria-hidden="true" class="pointer-events-none absolute inset-0 z-10"></div>
 
-  <div class="wrap grid gap-[26px] pt-[88px] pb-16">
+  <!-- Durante la caída al portafolio (decisión 018) el texto se apaga: --fall-text, de hero-fall.ts. -->
+  <div class="wrap grid gap-[26px] pt-[88px] pb-16" style="opacity: var(--fall-text, 1)">
     <p
       data-lens
       class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted group-[.is-lensing]/hero:text-transparent"
@@ -83,6 +84,20 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
       </Button>
     </div>
   </div>
+
+  <!-- Flecha al portafolio (#131): con la escena, dispara la caída; sin ella, es un ancla. -->
+  <a
+    href="#sobre-mi"
+    data-fall-cue
+    aria-label={scrollCue.ariaLabel}
+    class="absolute bottom-[calc(22px+env(safe-area-inset-bottom,0px))] left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-line-hi bg-nav px-4 py-2.5 font-mono text-[0.78rem] leading-none font-medium text-fg backdrop-blur-md transition-colors hover:bg-glass-hi"
+    style="opacity: var(--fall-cue, 1)"
+  >
+    {scrollCue.label}
+    <span aria-hidden="true" class="inline-block motion-safe:animate-bob">
+      ↓
+    </span>
+  </a>
 </section>
 
 <script>
@@ -99,6 +114,10 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
       import('./black-hole')
         .then(({ mount }) => mount(section, container, { reducedMotion }))
         .catch(() => {});
+    // Caída al agujero al pasar al portafolio (decisión 018). Sin escena no intercepta nada.
+    const end = document.querySelector<HTMLElement>('[data-hero-end]');
+    if (!reducedMotion && end)
+      import('./hero-fall').then(({ mountFall }) => mountFall(section, end));
 
     whenIdle(load);
   }
