@@ -1,46 +1,157 @@
 ---
 import { getCollection } from 'astro:content';
-import { getSite } from '../../../lib/content';
+import { Image } from 'astro:assets';
+import { getSite, getSkillIcons } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
 import { sortProjects } from '../../../lib/projects';
+import Icon from '../../ui/Icon.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
-import ProjectCard from './ProjectCard.astro';
-import ProjectRow from './ProjectRow.astro';
+import ProjectDetail from './ProjectDetail.astro';
 
 const site = await getSite();
 
 const texts = site.sections.projects;
+const icons = await getSkillIcons();
 const projects = sortProjects((await getCollection('projects')).map((entry) => entry.data));
 const featured = projects.filter((project) => project.featured);
-const rest = projects.filter((project) => !project.featured);
 const meta = [
   pluralize(projects.length, texts.unit),
   featured.length > 0 && pluralize(featured.length, texts.featured),
 ]
   .filter(Boolean)
   .join(' · ');
+
+const grid =
+  'linear-gradient(var(--color-glass-hi) 1px, transparent 1px) 0 0 / 12px 12px, linear-gradient(90deg, var(--color-glass-hi) 1px, transparent 1px) 0 0 / 12px 12px, var(--color-glass)';
 ---
 
 <Section id="proyectos" constellation="projects" class="relative isolate">
   <SectionHeader file="projects.json" title={texts.title} meta={meta} constellation="projects" />
   {/*
-    Destacados (#107): tarjetas en una fila (2 columnas desde 561px, 3 desde 861px). En celular, un
-    carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás, en una lista.
+    Lista y detalle (#162, decisión 023). Cada proyecto es un botón de la lista y su detalle. Desde
+    861px los botones van en la columna izquierda y los detalles comparten la derecha (solo se ve
+    el elegido); en celular, el detalle queda bajo su botón. El primero viene abierto: sin JS se lee
+    igual.
   */}
-  <div
-    data-rail
-    class="-mx-4 grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-3 overflow-x-auto scroll-px-4 px-4 [scrollbar-width:none] *:snap-start min-[561px]:mx-0 min-[561px]:grid-flow-row min-[561px]:grid-cols-2 min-[561px]:overflow-visible min-[561px]:px-0 min-[861px]:grid-cols-3"
+  <ul
+    data-projects
+    aria-label={texts.skills.list}
+    class="grid gap-x-3 min-[861px]:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] min-[861px]:grid-rows-[repeat(var(--n),auto)_1fr]"
+    style={`--n: ${projects.length}`}
   >
-    {featured.map((project) => (
-      <ProjectCard project={project} />
+    {projects.map((project, i) => (
+      <li class="contents">
+        <button
+          type="button"
+          data-project-select={project.id}
+          aria-expanded={i === 0 ? 'true' : 'false'}
+          aria-controls={`proyecto-${project.id}`}
+          data-reveal
+          class="project-item group relative grid grid-cols-[64px_minmax(0,1fr)_auto] items-center gap-x-3.5 gap-y-1 border-b border-line px-1.5 py-3.5 text-left first:border-t min-[861px]:col-start-1 min-[861px]:row-(--row)"
+          style={`--row: ${i + 1}; --vt-cover: project-cover-${project.id}; --vt-item: project-item-${project.id}`}
+        >
+          <span
+            aria-hidden="true"
+            class="project-active absolute inset-0 bg-glass-hi opacity-0 group-aria-expanded:opacity-100"
+          />
+          <span
+            aria-hidden="true"
+            class="project-thumb relative row-span-2 aspect-[4/3] overflow-hidden rounded-[9px] border border-line transition-[filter] duration-300 group-hover:brightness-115"
+            style={project.image ? undefined : `background: ${grid};`}
+          >
+            {project.image && (
+              <Image
+                src={project.image}
+                alt=""
+                widths={[64, 128]}
+                sizes="64px"
+                class="size-full object-cover object-top"
+              />
+            )}
+          </span>
+          <span class="relative font-display text-[1.02rem] leading-[1.2] font-bold tracking-[-0.03em] text-balance">
+            {project.title}
+          </span>
+          <span class="relative row-span-2 font-mono text-[0.74rem] text-muted tabular-nums group-aria-expanded:text-fg">
+            {project.year}
+          </span>
+          <span aria-hidden="true" class="relative flex flex-wrap gap-2 text-[0.9rem] text-muted">
+            {project.skills.map((skill) => {
+              const icon = skill.icon ?? icons.get(skill.name);
+              return icon && <Icon name={icon} />;
+            })}
+          </span>
+        </button>
+        <ProjectDetail
+          project={project}
+          hidden={i > 0}
+          class="mt-2.5 mb-3.5 min-[861px]:sticky min-[861px]:top-24 min-[861px]:col-start-2 min-[861px]:row-[1/-1] min-[861px]:my-0 min-[861px]:self-start"
+        />
+      </li>
     ))}
-  </div>
-  {rest.length > 0 && (
-    <ul class="mt-3 border-t border-line">
-      {rest.map((project) => (
-        <ProjectRow project={project} />
-      ))}
-    </ul>
-  )}
+  </ul>
 </Section>
+
+<style>
+  /*
+    Cambio de proyecto con View Transitions (decisión 023, variante "Transformar"): la miniatura
+    de un proyecto y la portada de su detalle comparten nombre, así la elegida crece hasta ser la
+    portada y la anterior vuelve a la lista. Solo la nombra la miniatura que no está elegida; los
+    detalles ocultos no cuentan.
+  */
+  .project-item {
+    view-transition-name: var(--vt-item);
+  }
+  .project-item[aria-expanded='false'] .project-thumb {
+    view-transition-name: var(--vt-cover);
+    view-transition-class: project-cover;
+  }
+  .project-item[aria-expanded='true'] .project-active {
+    view-transition-name: project-active;
+  }
+
+  :global(::view-transition-group(*)),
+  :global(::view-transition-old(*)),
+  :global(::view-transition-new(*)) {
+    animation-duration: 520ms;
+    animation-timing-function: var(--ease-out-expo);
+  }
+  :global(::view-transition-old(*.project-cover)),
+  :global(::view-transition-new(*.project-cover)) {
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  :global(::view-transition-group(*.project-cover)) {
+    overflow: clip;
+    border-radius: 12px;
+  }
+  /* El texto del detalle nuevo entra después de que la portada empezó a crecer. */
+  :global(::view-transition-old(project-main)),
+  :global(::view-transition-old(project-pipe)) {
+    animation-name: project-out;
+    animation-duration: 210ms;
+  }
+  :global(::view-transition-new(project-main)),
+  :global(::view-transition-new(project-pipe)) {
+    animation-name: project-in;
+    animation-delay: 130ms;
+    animation-fill-mode: backwards;
+  }
+  @keyframes project-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes project-in {
+    from {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+</style>
+
+<script>
+  import './projects';
+</script>

@@ -28,7 +28,6 @@
       { "section": "experiencia", "label": "experiencia" },
       { "section": "proyectos", "label": "proyectos" },
       { "section": "educacion", "label": "educación" },
-      { "section": "skills", "label": "skills" },
       { "section": "contacto", "label": "contacto" }
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
@@ -76,7 +75,6 @@
     "constellations": {
       "experience": ">_",
       "projects": "</>",
-      "skills": "#",
       "education": "π",
       "contact": "?"
     },
@@ -102,6 +100,12 @@
         "repo": "repo",
         "demo": "sitio institucional",
         "caseStudy": "ver caso",
+        "skills": {
+          "list": "Lista de proyectos",
+          "steps": { "one": "etapa", "other": "etapas" },
+          "pick": "elige una skill",
+          "usedIn": "dónde se usó"
+        },
         "gallery": {
           "open": "Ver las imágenes de",
           "close": "Cerrar",
@@ -109,11 +113,6 @@
           "next": "Imagen siguiente",
           "of": "de"
         }
-      },
-      "skills": {
-        "title": "Skills",
-        "groups": { "one": "grupo", "other": "grupos" },
-        "items": { "one": "herramienta", "other": "herramientas" }
       },
       "contact": {
         "kicker": "$ ./contacto.sh",

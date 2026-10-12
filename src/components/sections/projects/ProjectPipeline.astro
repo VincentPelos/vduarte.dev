@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getSite } from '../../../lib/content';
+import { fileName } from '../../../lib/projects';
+import { pluralize } from '../../../lib/text';
+import Link from '../../ui/Link.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>['data'];
+}
+
+const { project } = Astro.props;
+const { steps, skills } = project;
+const texts = (await getSite()).sections.projects.skills;
+---
+
+{/*
+  Pipeline (#162, decisión 023): las etapas del proyecto en una línea de puntos. Al elegir una
+  skill (projects.ts) se encienden las etapas donde se usó y se abre lo que se hizo en cada una.
+  Cada etapa trae el texto de todas sus skills, oculto; sin JS se ven solo las etapas.
+*/}
+<div class="project-pipe grid content-start gap-2.5 border-t border-dashed border-line p-4 min-[561px]:border-t-0 min-[561px]:border-l">
+  <p class="flex justify-between gap-2.5 font-mono text-[0.7rem] leading-none text-muted">
+    <span data-pipe-idle>{pluralize(steps.length, texts.steps)}</span>
+    <span data-pipe-idle>{texts.pick}</span>
+    <span data-pipe-active hidden>
+      {texts.usedIn} <b data-pipe-skill class="font-medium text-fg"></b>
+    </span>
+    <span data-pipe-active data-pipe-count hidden class="tabular-nums"></span>
+  </p>
+  <ol data-steps aria-live="polite" class="steps relative grid">
+    {steps.map((step) => {
+      const uses = skills.flatMap((skill) =>
+        skill.uses.filter((use) => use.step === step).map((use) => ({ skill: skill.name, ...use })),
+      );
+      return (
+        <li
+          data-step
+          data-skills={JSON.stringify(uses.map((use) => use.skill))}
+          class="step grid grid-cols-[7px_minmax(0,1fr)] items-baseline gap-x-3 py-px"
+        >
+          <span aria-hidden="true" data-dot class="dot relative -top-px size-[7px] rounded-full" />
+          <span class="step-label font-mono text-[0.72rem] text-muted">{step}</span>
+          {uses.map(
+            (use) =>
+              use.text && (
+                <div data-use={use.skill} hidden class="use col-start-2 grid">
+                  <div class="overflow-hidden">
+                    <p class="pt-0.5 pb-1.5 text-[0.86rem] text-soft">
+                      {use.text}
+                      {use.href && (
+                        <>
+                          <br />
+                          <Link
+                            href={use.href}
+                            class="border-b border-line-hi font-mono text-[0.72rem] break-all text-muted transition-colors hover:text-fg"
+                          >
+                            {fileName(use.href)} ↗
+                          </Link>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              ),
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</div>
+
+<style>
+  .project-pipe {
+    view-transition-name: project-pipe;
+  }
+  /* La línea de puntos une los centros de la primera y la última etapa. */
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    bottom: 9px;
+    left: 3px;
+    border-left: 1px dotted var(--color-line-hi);
+  }
+  .dot {
+    background: var(--color-line-hi);
+    transition:
+      background-color 420ms var(--ease-out-expo),
+      scale 420ms var(--ease-out-expo);
+  }
+  .step-label {
+    transition: color 420ms var(--ease-out-expo);
+  }
+  /* Con una skill elegida, las etapas que no la usan se apagan y las que sí se encienden con la paleta. */
+  .steps[data-skill] .step:not([data-on]) .step-label {
+    color: color-mix(in srgb, var(--color-muted) 55%, transparent);
+  }
+  .step[data-on] .step-label {
+    color: var(--color-fg);
+  }
+  .step[data-on] .dot {
+    background: var(--color-c1);
+    scale: 1.45;
+  }
+  .step[data-on]:nth-child(3n + 2) .dot {
+    background: var(--color-c2);
+  }
+  .step[data-on]:nth-child(3n + 3) .dot {
+    background: var(--color-c3);
+  }
+  /* El texto de cada etapa se abre de alto 0 a su alto real. */
+  .use {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 420ms var(--ease-out-expo);
+  }
+  .use[data-open] {
+    grid-template-rows: 1fr;
+  }
+</style>
