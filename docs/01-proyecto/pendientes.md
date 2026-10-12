@@ -42,5 +42,5 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 | Repo público | Cambiar la visibilidad en GitHub |
 | README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | Nada |
 | Lighthouse antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)) | Nada |
-| Pasada en celular real (rúbrica: responsivo) | Revisar en su celular |
+| Pasada en celular real (rúbrica: responsivo) | Revisar en su celular Android. **Sin iPhone:** iOS/Safari (WebKit) queda sin verificar: caída con el rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte (hay respaldo) y rendimiento del WebGL |
 | Preparar la defensa: explicar código y decisiones | Leer las decisiones y la bitácora |
