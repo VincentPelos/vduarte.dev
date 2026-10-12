@@ -10,7 +10,7 @@
  * - Sin caída (sin WebGL, movimiento reducido, o se llega por la nav) el bento ya está armado.
  */
 
-import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
+import { CELL, cssPalette, cssToken, fitCanvas, frameLoop, hash } from '../../../lib/scene';
 
 const DURATION_MS = 1500;
 /** Fracción de los puntos posibles que viajan (20 % en el laboratorio). */
@@ -35,11 +35,6 @@ interface Particle {
   size: number;
 }
 
-const hash = (x: number, y: number) => {
-  let h = (x * 374761393 + y * 668265263) | 0;
-  h = (h ^ (h >>> 13)) * 1274126177;
-  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-};
 const easeOutExpo = (t: number) => 1 - Math.pow(2, -10 * t);
 
 export function mountAssemble(section: HTMLElement): () => void {
@@ -48,20 +43,19 @@ export function mountAssemble(section: HTMLElement): () => void {
   const cards = [...section.querySelectorAll<HTMLElement>('[data-bento-card]')];
   if (!canvas || !ctx || !cards.length) return () => {};
 
-  const style = getComputedStyle(document.documentElement);
-  const fg = style.getPropertyValue('--color-fg').trim();
-  const bg = style.getPropertyValue('--color-bg').trim();
-  const palette = readPalette().map(([r, g, b]) => `rgb(${r} ${g} ${b})`);
+  const fg = cssToken('--color-fg');
+  const bg = cssToken('--color-bg');
+  const palette = cssPalette();
 
   let done = false;
   let waiting = false;
-  let frame = 0;
+  let step: ReturnType<typeof frameLoop> | undefined;
   const timers: number[] = [];
 
   const reset = () => {
     for (const id of timers) clearTimeout(id);
     timers.length = 0;
-    cancelAnimationFrame(frame);
+    step?.stop();
     for (const card of cards) card.style.opacity = '';
     canvas.classList.add('hidden');
     waiting = false;
@@ -81,10 +75,8 @@ export function mountAssemble(section: HTMLElement): () => void {
     timers.length = 0;
     const box = section.getBoundingClientRect();
     const boxTop = box.top + scrollY - top;
-    const dpr = canvasDpr();
     canvas.classList.remove('hidden');
-    canvas.width = Math.round(box.width * dpr);
-    canvas.height = Math.round(box.height * dpr);
+    fitCanvas(canvas, ctx, box.width, box.height);
     // El agujero queda arriba al centro de la pantalla, donde terminó la caída.
     const hole = { x: innerWidth / 2 - box.left, y: -boxTop + 18 };
     const density = COUNT * (innerWidth <= 460 ? MOBILE_FACTOR : 1);
@@ -125,7 +117,7 @@ export function mountAssemble(section: HTMLElement): () => void {
             ty,
             delay: cardDelay + hash(i + 3, ci) * 260 * (0.3 + CHAOS),
             travel: DURATION_MS * (0.55 + 0.35 * hash(ci + 5, i)),
-            color: pick < 0.3 ? (palette[Math.floor(hash(ci, i + 1) * 3)] ?? fg) : fg,
+            color: pick < 0.3 ? palette[Math.floor(hash(ci, i + 1) * 3)] : fg,
             size: pick < 0.08 ? 1.6 : 1.05,
           });
         });
@@ -150,9 +142,8 @@ export function mountAssemble(section: HTMLElement): () => void {
     timers.push(window.setTimeout(reset, total + 100));
 
     const start = performance.now();
-    const step = (now: number) => {
+    step = frameLoop((now) => {
       const t = now - start;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, box.width, box.height);
       // El agujero: una sombra con un anillo de puntos de la paleta que se cierra.
       const k = Math.max(0, 1 - t / 900);
@@ -164,7 +155,7 @@ export function mountAssemble(section: HTMLElement): () => void {
         ctx.fill();
         for (let i = 0; i < 48; i++) {
           const a = (i / 48) * Math.PI * 2 + t / 300;
-          ctx.fillStyle = palette[i % 3] ?? fg;
+          ctx.fillStyle = palette[i % 3];
           ctx.beginPath();
           ctx.arc(
             hole.x + Math.cos(a) * (30 * k + 6),
@@ -195,9 +186,9 @@ export function mountAssemble(section: HTMLElement): () => void {
         ctx.fill();
       }
       ctx.globalAlpha = 1;
-      if (t < total) frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
+      return t < total;
+    });
+    step.start();
   };
 
   // La caída terminó y el portafolio sube: se arma una sola vez por visita.

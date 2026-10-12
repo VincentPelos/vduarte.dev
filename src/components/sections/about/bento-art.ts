@@ -5,7 +5,7 @@
  * Con movimiento reducido se dibuja una vez, quieto.
  */
 
-import { CELL, canvasDpr, readPalette } from '../../../lib/scene';
+import { CELL, cssPalette, cssToken, fitCanvas, frameLoop, hash } from '../../../lib/scene';
 
 type Kind = 'dev' | 'datos' | 'infra' | 'agentes';
 type Cell = [number, number];
@@ -37,19 +37,11 @@ const SPRITE = ['..x..', '.xxx.', 'xexex', '.xxx.', '.x.x.'];
 /** Ciclo de una tarea de los agentes (ms): baja, trabaja, sube el resultado. */
 const TASK_MS = 2600;
 
-const hash = (x: number, y: number) => {
-  let h = (x * 374761393 + y * 668265263) | 0;
-  h = (h ^ (h >>> 13)) * 1274126177;
-  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
-};
-
 export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotion: boolean }) {
-  const style = getComputedStyle(document.documentElement);
-  const token = (name: string) => style.getPropertyValue(name).trim();
-  const fg = token('--color-fg');
-  const soft = token('--color-soft');
-  const muted = token('--color-muted');
-  const palette = readPalette().map(([r, g, b]) => `rgb(${r} ${g} ${b})`);
+  const fg = cssToken('--color-fg');
+  const soft = cssToken('--color-soft');
+  const muted = cssToken('--color-muted');
+  const palette = cssPalette();
   const canvases = [...section.querySelectorAll<HTMLCanvasElement>('[data-bento-art]')];
   let arts: Art[] = [];
 
@@ -57,10 +49,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
     const { width, height } = canvas.getBoundingClientRect();
-    const dpr = canvasDpr();
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fitCanvas(canvas, ctx, width, height);
     const cols = Math.floor(width / CELL);
     const rows = Math.floor(height / CELL);
     const kind = canvas.dataset.bentoArt as Kind;
@@ -110,7 +99,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
         for (let y = 0; y < h; y++)
           for (let k = 0; k < barWidth; k++) {
             const color = i === 0 ? palette[Math.min(2, Math.floor((y / h) * 3))] : fg;
-            put(x0 + k, base - y, color ?? fg, i === 0 ? 1.4 : 1, i === 0 ? 0.95 : 0.4, {
+            put(x0 + k, base - y, color, i === 0 ? 1.4 : 1, i === 0 ? 0.95 : 0.4, {
               rise: y / h,
             });
           }
@@ -142,7 +131,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
       }
       for (let dy = -2; dy <= 2; dy++)
         for (let dx = -2; dx <= 2; dx++)
-          put(cx + dx, cy + dy, Math.abs(dy) === 2 ? (palette[2] ?? fg) : fg, 1.3, 0.95);
+          put(cx + dx, cy + dy, Math.abs(dy) === 2 ? palette[2] : fg, 1.3, 0.95);
     } else {
       // Monitos: un orquestador arriba reparte tareas a tres agentes y recibe sus resultados.
       const workers = [0.2, 0.5, 0.8].map((f): Cell => [Math.round(cols * f) - 2, rows - 6]);
@@ -190,7 +179,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
       ctx.globalAlpha = 0.22;
       ctx.fillStyle = muted;
       for (let s = 0; s <= n; s += 2) circle(ctx, ...at(s), 0.8);
-      const color = palette[i % 3] ?? fg;
+      const color = palette[i % 3];
       let hop = 0;
       let eyes = color;
       const packet = (k: number, c: string) => {
@@ -212,7 +201,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
       }
       sprite(ctx, [wx, wy + hop], soft, eyes, false);
     });
-    sprite(ctx, orch, fg, palette[1] ?? fg, orchBlink);
+    sprite(ctx, orch, fg, palette[1], orchBlink);
   };
 
   const draw = (t: number) => {
@@ -234,7 +223,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
           const cell = path[k];
           if (!cell) return;
           ctx.globalAlpha = 1;
-          ctx.fillStyle = palette[i % 3] ?? fg;
+          ctx.fillStyle = palette[i % 3];
           circle(ctx, cell[0], cell[1], 1.8);
         });
       drawAgents(art, t);
@@ -247,15 +236,10 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
     draw(performance.now());
   };
 
-  let visible = false;
-  let frame = 0;
-  const loop = (now: number) => {
-    draw(now);
-    frame = visible ? requestAnimationFrame(loop) : 0;
-  };
+  const loop = frameLoop((now) => draw(now));
   const observer = new IntersectionObserver(([entry]) => {
-    visible = !!entry?.isIntersecting && !reducedMotion;
-    if (visible && !frame) frame = requestAnimationFrame(loop);
+    if (entry?.isIntersecting && !reducedMotion) loop.start();
+    else loop.stop();
   });
 
   let width = innerWidth;
@@ -269,7 +253,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
   observer.observe(section);
   addEventListener('resize', onResize);
   return () => {
-    cancelAnimationFrame(frame);
+    loop.stop();
     observer.disconnect();
     removeEventListener('resize', onResize);
   };
