@@ -23,6 +23,7 @@ import {
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
 import { CELL, fitCanvas, frameLoop, readPalette, SCENE_FPS } from '../../lib/scene';
+import { createMatter } from './sky-matter';
 
 interface Options {
   reducedMotion: boolean;
@@ -158,6 +159,7 @@ export function mount(
   }
 
   const colors = readPalette();
+  const matter = createMatter(colors, reducedMotion);
   let width = 0,
     height = 0,
     // Alto del cielo: no sigue al de la ventana cuando en móvil aparece o se esconde la barra
@@ -174,7 +176,8 @@ export function mount(
 
   const makeStars = () => {
     const density = Math.min(1.4, (width * height) / (1280 * 800));
-    const n = Math.round(1100 * density * (skyHeight / height));
+    // 700 y no 1100 desde #172: con el gas y los asteroides, el cielo pedía menos estrellas.
+    const n = Math.round(700 * density * (skyHeight / height));
     stars = Array.from({ length: n }, (_, i) => {
       const h = rand(i, 1);
       const tint =
@@ -296,6 +299,14 @@ export function mount(
       b = names[to];
     const { heroBottom } = layout;
 
+    // El gas va detrás de las estrellas y nunca sobre el hero.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, Math.max(0, heroBottom), width, height);
+    ctx.clip();
+    matter.drawGas(ctx, time, width, skyHeight, heroBottom);
+    ctx.restore();
+
     for (const s of stars) {
       const home: Target = { x: s.x * width, y: s.y * skyHeight, hue: 0 };
       const tb = target(b, s, layout);
@@ -360,6 +371,7 @@ export function mount(
       dot(x, y, Math.max(0, Math.min(2, level + twinkle(s.i))), color, alpha);
     }
     ctx.globalAlpha = 1;
+    matter.drawRocks(ctx, time, width, height, heroBottom);
     // Desde el hero, las estrellas orbitan el disco del agujero negro aunque no haya scroll.
     return from === 0 && hole.ready;
   };
@@ -374,6 +386,7 @@ export function mount(
       skyHeight = Math.max(height, widthChanged ? screen.height || height : height);
       makeStars();
       buildShapes();
+      matter.build(width);
     }
     draw();
   };
