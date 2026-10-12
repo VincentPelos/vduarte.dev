@@ -22,7 +22,7 @@ import {
   type Rgb,
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
-import { CELL, canvasDpr, readPalette } from '../../lib/scene';
+import { CELL, fitCanvas, frameLoop, readPalette } from '../../lib/scene';
 
 interface Options {
   reducedMotion: boolean;
@@ -358,13 +358,10 @@ export function mount(
   };
 
   const resize = () => {
-    const dpr = canvasDpr();
     const widthChanged = innerWidth !== width;
     width = innerWidth;
     height = innerHeight;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fitCanvas(canvas, ctx, width, height);
     // Solo un cambio de ancho (o una ventana más alta que el cielo) rehace las estrellas.
     if (widthChanged || height > skyHeight) {
       skyHeight = Math.max(height, widthChanged ? screen.height || height : height);
@@ -374,31 +371,27 @@ export function mount(
     draw();
   };
 
-  let frame = 0,
-    last = performance.now(),
-    lastDraw = -Infinity,
+  let lastDraw = -Infinity,
     lastScroll = Number.NaN,
     animating = true;
-  const loop = (now: number) => {
-    time += Math.min(0.05, (now - last) / 1000);
-    last = now;
+  const loop = frameLoop((now, dt) => {
+    time += dt;
     if (animating || scrollY !== lastScroll || now - lastDraw >= IDLE_FRAME_MS) {
       animating = draw();
       lastDraw = now;
       lastScroll = scrollY;
     }
-    frame = requestAnimationFrame(loop);
-  };
+  });
   const onScroll = () => draw();
 
   addEventListener('resize', resize);
   document.fonts?.addEventListener('loadingdone', buildShapes);
   resize();
   if (reducedMotion) addEventListener('scroll', onScroll, { passive: true });
-  else frame = requestAnimationFrame(loop);
+  else loop.start();
 
   return () => {
-    cancelAnimationFrame(frame);
+    loop.stop();
     removeEventListener('resize', resize);
     removeEventListener('scroll', onScroll);
     document.fonts?.removeEventListener('loadingdone', buildShapes);

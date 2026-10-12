@@ -18,6 +18,7 @@
 
 import { clamp01, fall, FALL_MS, textOpacity } from '../../../lib/fall';
 import { hole } from '../../../lib/hole';
+import { frameLoop } from '../../../lib/scene';
 import { smooth } from '../../../lib/smooth';
 
 /** Píxeles de tolerancia para considerar que la página está arriba de todo. */
@@ -33,7 +34,7 @@ const LAND_TIMEOUT_MS = 1200;
 
 export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   let auto = 0; // avance de la caída automática
-  let frame = 0;
+  let tween = frameLoop(() => false);
   let falling = false; // solo durante el segundo de la caída
   let landTimer = 0;
 
@@ -47,18 +48,19 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   };
 
   const animate = (to: number, ms: number, done?: () => void) => {
-    cancelAnimationFrame(frame);
+    tween.stop();
     const from = auto;
     const start = performance.now();
     const duration = ms * Math.abs(to - from);
-    const step = (now: number) => {
+    tween = frameLoop((now) => {
       const x = duration ? clamp01((now - start) / duration) : 1;
       auto = from + (to - from) * x;
       apply();
-      if (x < 1) frame = requestAnimationFrame(step);
-      else done?.();
-    };
-    frame = requestAnimationFrame(step);
+      if (x < 1) return true;
+      done?.();
+      return false;
+    });
+    tween.start();
   };
 
   const atTop = () => scrollY <= TOP;
@@ -160,7 +162,7 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   let lastY = scrollY;
   const onScroll = () => {
     if (!falling && auto > 0 && scrollY < lastY) {
-      cancelAnimationFrame(frame);
+      tween.stop();
       auto = 0;
     }
     lastY = scrollY;
@@ -176,7 +178,7 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   apply();
 
   return () => {
-    cancelAnimationFrame(frame);
+    tween.stop();
     clearTimeout(landTimer);
     removeEventListener('wheel', onWheel, { capture: true });
     removeEventListener('touchstart', onTouchStart);

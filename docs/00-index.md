@@ -12,7 +12,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito en curso:** v0.6.0 Contacto y extras. Hechos: `/uso-de-ia`, footer sólido, entrada sin pausa, caída al agujero con flecha (PR #138), CV en LaTeX (`pnpm cv`), Experiencia y Educación en columna de años (decisión 020), bento de áreas con agentes que se arma desde el agujero (decisión 021), celular más corto, limpieza de contenido y skills, y orden de componentes (#154). Formulario n8n y analytics descartados. Ver bitácoras [2026-10-11](06-bitacora/2026-10-11.md) y [2026-10-12](06-bitacora/2026-10-12.md).
+- **Hito en curso:** v0.6.0 Contacto y extras. Hechos: `/uso-de-ia`, footer sólido, entrada sin pausa, caída al agujero con flecha (PR #138), CV en LaTeX (`pnpm cv`), Experiencia y Educación en columna de años (decisión 020), bento de áreas con agentes que se arma desde el agujero (decisión 021), celular más corto, limpieza de contenido y skills, orden de componentes (#154) y escenas simplificadas con twgl.js (#156, decisión 022). Formulario n8n y analytics descartados. Ver bitácoras [2026-10-11](06-bitacora/2026-10-11.md) y [2026-10-12](06-bitacora/2026-10-12.md).
 - **Siguiente:** la sección de detalles que pida el autor y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
@@ -65,6 +65,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [019](03-decisiones/019-cv-latex.md) | CV en LaTeX compilado con Tectonic | Contenido |
 | [020](03-decisiones/020-columna-de-anios.md) | Experiencia y Educación con columna de años | Diseño |
 | [021](03-decisiones/021-bento-agentes-armado.md) | Bento de áreas que se arma con los puntos del agujero (reemplaza en parte a 009) | Movimiento |
+| [022](03-decisiones/022-twgl-escenas.md) | twgl.js para el agujero negro y helpers compartidos para los canvas | Arquitectura |
 
 ### 04 · Diseño — cómo se ve
 
@@ -84,7 +85,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
-- [2026-10-12](06-bitacora/2026-10-12.md): orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas).
+- [2026-10-12](06-bitacora/2026-10-12.md): orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) y escenas animadas con twgl.js y helpers compartidos.
 - [2026-10-11](06-bitacora/2026-10-11.md): bento de áreas, Experiencia y Educación en columna de años, CV en LaTeX y limpieza de contenido.
 - [2026-10-10](06-bitacora/2026-10-10.md): hito Movimiento, laboratorios de UI y Proyectos, hero descartado, Lighthouse y release v0.4.0.
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.
