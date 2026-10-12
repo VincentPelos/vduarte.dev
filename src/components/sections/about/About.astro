@@ -39,11 +39,12 @@ const surface = chart?.type === 'pairs' ? chart.items.map((item) => item.after) 
     <!--
       Bento (#133): la frase y el estado; las cuatro áreas, cada una con su dibujo en puntos y un
       enlace a su prueba; el stack en logos y los enlaces. Dos columnas hasta 900px (en celular,
-      de a dos por fila para acortar el scroll) y cuatro desde 901px.
+      de a dos por fila para acortar el scroll) y cuatro desde 901px. Las tarjetas llevan el vidrio
+      a la mitad (elegido en el laboratorio): se ven más los brillos de atrás.
     -->
     <div
       data-bento-grid
-      class="grid grid-cols-2 gap-3 [grid-template-areas:'bio_bio'_'dev_datos'_'infra_agentes'_'status_links'_'stack_stack'] max-[460px]:gap-2.5 min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_bio_status'_'dev_datos_infra_agentes'_'stack_stack_stack_links']"
+      class="grid grid-cols-2 gap-3 *:backdrop-blur-[10px] *:backdrop-saturate-[135%] *:[background:linear-gradient(color-mix(in_srgb,var(--color-glass)_50%,transparent),color-mix(in_srgb,var(--color-glass)_50%,transparent)),color-mix(in_srgb,var(--color-bg)_15%,transparent)] [grid-template-areas:'bio_bio'_'dev_datos'_'infra_agentes'_'status_links'_'stack_stack'] max-[460px]:gap-2.5 min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_bio_status'_'dev_datos_infra_agentes'_'stack_stack_stack_links']"
     >
       <BioCard
         label={bento.about}

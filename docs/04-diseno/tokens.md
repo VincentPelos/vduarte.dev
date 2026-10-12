@@ -41,7 +41,7 @@ Reemplaza a la paleta Sangre (`#ff0040`, `#9b00ff`, `#ff8a00`) desde la decisió
 
 | Token | Valor |
 |---|---|
-| `--blur` | `20px` (backdrop-filter de las tarjetas, con `saturate(170%)`) |
+| `--blur` | `20px` (backdrop-filter de las tarjetas, con `saturate(170%)`). El bento usa el vidrio al 50 %: `--glass` a la mitad sobre un velo de `--bg` al 15 %, blur `10px` y `saturate(135%)` |
 | `--glow` | `0.2` (multiplica la opacidad de los brillos difuminados) |
 | Radio de tarjeta | `18px` |
 | Radio de botones, chips, nav | `999px` (píldora) |
@@ -77,7 +77,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - **Hero como diapositiva:** pantalla completa y pegado arriba; el portafolio sube encima como una hoja (borde redondeado de 28 px, línea `--line-hi`) y el hero se oscurece hasta 25 % ([decisión 014](../03-decisiones/014-hero-diapositiva.md)).
 - **Entrada del agujero negro:** al terminar el precálculo, la sombra crece hasta cubrir el hero (520 ms, `ease-in` cúbico), se mantiene 140 ms y se contrae de vuelta al agujero (900 ms, `ease-out` exponencial), con un borde de puntos de la paleta y 40 % de desorden de celdas. El texto queda encima ([decisión 012](../03-decisiones/012-entrada-colapso.md)).
 - **Cinemática de constelaciones:** cielo fijo de puntos detrás de la página; en cada sección las estrellas forman su símbolo y viajan en arco al siguiente con el scroll ([decisión 009](../03-decisiones/009-cinematica-constelaciones.md)).
-- **Armado del bento** (`about/bento-assemble.ts`): al aterrizar la caída, los puntos salen del agujero arriba al centro y viajan en curva (`ease-out` exponencial) a los bordes y al relleno de cada tarjeta, que aparece cuando le llegan. Duración 1500 ms, 20 % de los puntos (la mitad en celular), desorden 100 %. Una vez por visita.
+- **Armado del bento** (`about/bento-assemble.ts`): al aterrizar la caída, los puntos salen del agujero arriba al centro y viajan en curva (`ease-out` exponencial) a los bordes y al relleno de cada tarjeta, que aparece cuando le llegan. Empieza cuando termina la caída, mientras el portafolio sube (`hero:land`). Duración 1500 ms, 20 % de los puntos (la mitad en celular), desorden 100 %. Una vez por visita.
 - **Flecha del hero:** `animate-bob`, 1,8 s, baja 5 px y vuelve (solo con `motion-safe`).
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).
