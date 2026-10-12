@@ -20,6 +20,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Sin GPU, sin WebGL:** si WebGL va por software (SwiftShader, llvmpipe, Microsoft Basic Render Driver), el agujero negro no se monta y queda el respaldo (grilla de puntos y texto normal). En la CPU, solo compilar los shaders tardaba ~3 s y cada cuadro trababa la página; en Lighthouse (sin GPU) el bloqueo total llegaba a ~80 s (#109).
 - **Animaciones CSS en pausa fuera de pantalla:** `layout/OffscreenPause.astro` marca con `data-offscreen` las secciones que no se ven y sus animaciones decorativas (brillos, ecualizador, pulso) se pausan. Aunque no se vean, piden cuadros todo el tiempo (#109).
 - **Velos con `backdrop-filter`** (#167): las entradas de Experiencia y Educación difuminan lo que tienen detrás (6px, máscara radial). Son zonas chicas, pero se recalculan cuando el cielo redibuja: si una medición muestra costo, volver a un degradado tenue.
+- **Gas pintado una vez** (#172): cada capa de gas se pinta en un canvas aparte al montar o al cambiar el ancho; en cada cuadro solo se copia, movida de a una celda. Los asteroides se recalculan en cada cuadro (unas 600 celdas en total), sin leer el DOM salvo el alto de la página, una vez por segundo.
 - **Brillos sin `filter: blur` animado:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil.
 - **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
 - **Peso:** el HTML no repite SVG (íconos como sprite, [010](../03-decisiones/010-iconos-sprite.md)) y el sprite va solo en el home, la única página con íconos. Los comentarios de las plantillas van como `{/* */}`: los `<!-- -->` llegan al HTML. Martian Mono solo se importa en latín; Geist conserva sus subsets porque las flechas (→ ↗) están en `symbols2`, y el navegador solo baja los que usa.
@@ -56,6 +57,20 @@ Edge headless con WebGL por software, hilo principal en ms de trabajo por segund
 | Scroll continuo | 185 | 34–54 | 415 | 285–322 |
 
 El mayor costo estaba en la línea de tiempo de Experiencia: `getBoundingClientRect` por estrella y por trabajo, en cada cuadro. El resto del trabajo total es pintura y rasterizado (WebGL, vidrio); hay que medirlo en un dispositivo real con GPU.
+
+### Cielo con gas y asteroides (#172)
+
+`develop` contra la rama, compilados y servidos igual. Edge headless con GPU (pantalla de 144 Hz), 5 corridas intercaladas por versión, mediana de ms de trabajo del hilo principal por segundo en fases de 4 s ([decisión 024](../03-decisiones/024-gas-asteroides.md)).
+
+| Fase | Escritorio 1440 px, antes → después | Celular 390 px con CPU 4×, antes → después |
+|---|---|---|
+| Hero quieto | 94 → 91 | 398 → 405 |
+| Sobre mí quieto | 211 → **182** | 699 → 675 |
+| Experiencia quieta | 158 → **132** | 454 → 426 |
+| Proyectos quieto | 72 → 64 | 275 → 306 |
+| Scroll continuo | 258 → **218** | 651 → 629 |
+
+En escritorio el script baja de 89 a 65 ms/s en Experiencia y de 144 a 113 en el scroll: dibujar 400 estrellas menos ahorra más de lo que cuestan el gas (una copia de imagen por capa) y los asteroides (~600 puntos). En celular todo queda dentro del ruido (±10 %). Los cuadros por segundo no cambian (144). No se midió la GPU: el gas son 6 copias de imagen grandes por cuadro, que van a la GPU.
 
 ### Escenas con GPU real (#158)
 

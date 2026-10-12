@@ -28,7 +28,7 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/     capturas del Power BI del caso (galería de cases.json)
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts + sky-matter.ts (gas y asteroides), Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts (orquesta las pasadas con twgl) + shaders/ (GLSL) + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
