@@ -55,21 +55,24 @@ const base = Astro.url.pathname === '/' ? '' : '/';
       const left = link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2;
       nav.scrollTo({ left, behavior: 'smooth' });
     };
-    // El hero queda pegado arriba (decisión 014) y siempre cruza el centro: por él se mira el
-    // borde de la hoja que lo tapa. Mientras ese borde esté bajo el centro, el activo es el hero.
+    // El hero queda pegado arriba (decisión 014) y siempre cruza el centro: por eso se mira la
+    // hoja del portafolio que lo tapa (el padre de [data-hero-end]). Mientras la hoja no llegue
+    // al centro, el activo es el hero, cuya ancla `#inicio` va al principio de la página. Se mira
+    // la hoja entera y no su borde de 1px: en un salto rápido (`~/`, #166) el borde cruzaba el
+    // centro entre dos cuadros y el observador no se enteraba.
     const [hero] = sections;
-    const end = document.querySelector<HTMLElement>('[data-hero-end]');
+    const sheet = document.querySelector<HTMLElement>('[data-hero-end]')?.parentElement;
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.target === end) {
-            if (!entry.isIntersecting && entry.boundingClientRect.top > 0) activate(hero.id);
+          if (entry.target === sheet) {
+            if (!entry.isIntersecting) activate(hero.id);
           } else if (entry.isIntersecting) activate(entry.target.id);
         }
       },
       { rootMargin: '-50% 0px -50% 0px' },
     );
-    sections.forEach((section) => (section !== hero || !end) && io.observe(section));
-    if (end) io.observe(end);
+    sections.forEach((section) => (section !== hero || !sheet) && io.observe(section));
+    if (sheet) io.observe(sheet);
   }
 </script>
