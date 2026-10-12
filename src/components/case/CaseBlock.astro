@@ -2,7 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import GlassCard from '../ui/GlassCard.astro';
 import BarChart from './BarChart.astro';
-import CaseHeading from './CaseHeading.astro';
+import FileHeading from '../ui/FileHeading.astro';
 
 interface Props {
   block: CollectionEntry<'cases'>['data']['blocks'][number];
@@ -13,7 +13,7 @@ const { block } = Astro.props;
 ---
 
 <section id={block.id} class="mt-[clamp(56px,8vw,90px)] scroll-mt-24">
-  <CaseHeading file={block.file} title={block.title} />
+  <FileHeading file={block.file} title={block.title} />
   <p class="mt-2 mb-[22px] max-w-[70ch] text-soft">{block.take}</p>
   <div class:list={['grid gap-3', block.panels.length > 1 && 'min-[861px]:grid-cols-2']}>
     {block.panels.map((panel) => (
