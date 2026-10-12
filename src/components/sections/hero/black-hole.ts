@@ -11,6 +11,8 @@
  * - Pasada 2 (pantalla): dibuja cada celda como un punto y encima el texto del hero, que
  *   resiste la gravedad: solo se comba y se separa en colores (aberración cromática).
  *
+ * Los shaders viven en `shaders/`; aquí solo se orquestan las pasadas con twgl.js (decisión 022).
+ *
  * Al pasar al portafolio, la cámara se acerca al agujero hasta que la sombra llena la pantalla
  * (decisión 018): `fall.progress` lo escribe hero-fall.ts.
  *
@@ -20,15 +22,34 @@
  * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
  */
 
+import {
+  bindFramebufferInfo,
+  createBufferInfoFromArrays,
+  createFramebufferInfo,
+  createProgramInfo,
+  createTexture,
+  drawBufferInfo,
+  resizeFramebufferInfo,
+  setBuffersAndAttributes,
+  setTextureFromElement,
+  setUniforms,
+  type ProgramInfo,
+} from 'twgl.js';
 import { coverZoom, fall, fallZoom, SHADOW_RS, textOpacity } from '../../../lib/fall';
 import { hole as shared } from '../../../lib/hole';
 import {
   CELL,
   canvasDpr,
+  frameLoop,
   isSoftwareRenderer,
   readPalette,
   webglRenderer,
 } from '../../../lib/scene';
+import bakeFrag from './shaders/bake.frag?raw';
+import common from './shaders/common.glsl?raw';
+import drawFrag from './shaders/draw.frag?raw';
+import quadVert from './shaders/quad.vert?raw';
+import traceFrag from './shaders/trace.frag?raw';
 
 interface Options {
   /** Con `prefers-reduced-motion` se dibuja un solo cuadro, sin animar ni deformar el texto. */
@@ -63,252 +84,6 @@ const COLLAPSE_SHRINK_MS = 900;
 const COLLAPSE_EDGE = 0.4;
 /** Fracción final de la contracción en que el borde se deshace punto a punto. */
 const COLLAPSE_DISSOLVE = 0.45;
-
-const VERTEX = `
-  attribute vec2 aPos;
-  void main() { gl_Position = vec4(aPos, 0., 1.); }
-`;
-
-const COMMON = `
-  precision highp float;
-  uniform vec3 uC1, uC2, uC3;
-  const float RIN = 3.;   // órbita estable más interna (ISCO)
-  const float ROUT = 13.;
-  const float ROLL = -.12;
-  const float BMAX = 20.; // radio (en Rs) dentro del cual la luz se desvía; afuera, cielo recto
-  const float LP = 400.;  // desvío máximo guardado del cielo (±, en Rs)
-  const float GMAX = 2.;  // rango del factor Doppler guardado
-  float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-  vec3 pal(float k) { k = clamp(k, 0., 1.); return k < .5 ? mix(uC1, uC2, k * 2.) : mix(uC2, uC3, k * 2. - 1.); }
-`;
-
-/** Precálculo: un rayo por texel de la tabla. `uOut` elige qué datos escribe esta pasada. */
-const BAKE = `
-  ${COMMON}
-  uniform float uSize, uOut, uDoppler;
-  const float D = 32.;    // distancia del observador
-  const float TILT = .1;
-
-  // [0, 1] → dos bytes (16 bits) en dos canales.
-  vec2 pack16(float v) {
-    float x = floor(clamp(v, 0., 1.) * 65535. + .5);
-    float hi = floor(x / 256.);
-    return vec2(hi, x - hi * 256.) / 255.;
-  }
-
-  void main() {
-    vec2 rel = (gl_FragCoord.xy / uSize - .5) * 2. * BMAX;
-    float b = length(rel);
-    if (b > BMAX + .5) { gl_FragColor = vec4(0.); return; }
-    float cr = cos(ROLL), sr = sin(ROLL);
-    mat2 inv = mat2(cr, sr, -sr, cr);
-
-    vec3 pos = vec3(0., 0., -D), vel = normalize(vec3(rel / D, 1.));
-    vec3 hv = cross(pos, vel); float h2 = dot(hv, hv);
-    vec3 N = vec3(0., cos(TILT), -sin(TILT));        // normal del disco, casi de canto
-    vec3 ex = vec3(1., 0., 0.), ez = normalize(cross(ex, N));
-    vec2 q0 = vec2(0.), q1 = vec2(0.), q2 = vec2(0.);
-    float g0 = 0., g1 = 0., g2 = 0., n = 0.;
-    bool captured = false;
-    for (int i = 0; i < 220; i++) {
-      float r2 = dot(pos, pos), r = sqrt(r2);
-      float dt = clamp(.07 * r, .03, 1.1);
-      vec3 prev = pos;
-      vel += -1.5 * h2 * pos / (r2 * r2 * r) * dt;
-      pos += vel * dt;
-      float s0 = dot(prev, N), s1 = dot(pos, N);
-      if (s0 * s1 < 0.) {
-        vec3 hit = mix(prev, pos, s0 / (s0 - s1));
-        float rh = length(hit);
-        if (rh > RIN && rh < ROUT) {
-          vec2 q = vec2(dot(hit, ex), dot(hit, ez));
-          // Doppler + corrimiento gravitatorio: el lado que se acerca brilla mucho más
-          float beta = sqrt(.5 / (rh - 1.)) * uDoppler;
-          vec3 k = -normalize(vel);
-          float g = mix(1., sqrt(1. - 1. / rh), uDoppler) / ((1. / sqrt(1. - beta * beta)) * (1. - beta * dot(normalize(cross(N, hit)), k)));
-          if (n < .5) { q0 = q; g0 = g; } else if (n < 1.5) { q1 = q; g1 = g; } else if (n < 2.5) { q2 = q; g2 = g; }
-          n += 1.;
-        }
-      }
-      if (r2 < 1.) { captured = true; break; }
-      if (r > D + 4. && dot(pos, vel) > 0.) break;
-    }
-
-    // Cuánto se desvía la mirada respecto del cielo recto (en Rs, ya mezclado hacia el borde).
-    // Se guarda el desvío y no la posición: lejos del agujero es chico y suave, y la tabla no
-    // cambia qué estrella se ve. Raíz cuadrada: más precisión en los desvíos chicos.
-    vec2 dv = vec2(0.);
-    if (!captured) {
-      vec3 d = normalize(vel);
-      vec2 look = d.z > .05 ? d.xy / d.z * D : rel * 1e3;
-      vec2 defl = inv * (mix(rel, look, 1. - smoothstep(11., 19.5, b)) - rel);
-      dv = sign(defl) * sqrt(min(abs(defl) / LP, 1.));
-    }
-
-    vec2 qs = vec2(.5 / ROUT);
-    if (uOut < .5) gl_FragColor = vec4(pack16(dv.x * .5 + .5), pack16(dv.y * .5 + .5));
-    else if (uOut < 1.5) gl_FragColor = vec4(pack16(q0.x * qs.x + .5), pack16(q0.y * qs.y + .5));
-    else if (uOut < 2.5) gl_FragColor = vec4(pack16(q1.x * qs.x + .5), pack16(q1.y * qs.y + .5));
-    else if (uOut < 3.5) gl_FragColor = vec4(pack16(q2.x * qs.x + .5), pack16(q2.y * qs.y + .5));
-    else if (uOut < 4.5) gl_FragColor = vec4(pack16(g0 / GMAX), pack16(g1 / GMAX));
-    else gl_FragColor = vec4(pack16(g2 / GMAX), min(n, 3.) / 255., captured ? 1. : 0.);
-  }
-`;
-
-const TRACE = `
-  ${COMMON}
-  uniform vec2 uHole;
-  uniform float uPx, uTime, uInt, uCell, uZoom;
-  uniform sampler2D uLut0, uLut1, uLut2, uLut3, uLut4, uLut5;
-
-  float noise(vec2 p) {
-    vec2 i = floor(p), f = fract(p), w = f * f * (3. - 2. * f);
-    return mix(mix(hash(i), hash(i + vec2(1, 0)), w.x), mix(hash(i + vec2(0, 1)), hash(i + 1.), w.x), w.y);
-  }
-
-  float unpack16(vec2 v) { return (floor(v.x * 255. + .5) * 256. + floor(v.y * 255. + .5)) / 65535.; }
-
-  // Cielo de terminal: cada celda tiene un nivel 0..3 (como · • ●). Devuelve color y tamaño.
-  vec4 sky(vec2 look) {
-    vec2 id = floor(look / uCell); float h = hash(id);
-    float lv = h > .996 ? 3. : h > .987 ? 2. : h > .965 ? 1. : 0.;
-    // Con zoom, una celda del cielo abarca varias de la pantalla: la estrella va solo en la de su
-    // centro, así sigue siendo un punto que se aleja y no un bloque.
-    vec2 off = abs(look - (id + .5) * uCell) * uZoom;
-    if (max(off.x, off.y) > uCell * .5) lv = 0.;
-    if (lv > 0. && hash(id + floor(uTime * 1.2 + h * 9.)) > .86) lv -= 1.;   // titileo por escalones
-    float size = lv > 2.5 ? .36 : lv > 1.5 ? .26 : lv > .5 ? .17 : .09;
-    vec3 c = lv > .5 ? mix(vec3(1.), pal(hash(id + 9.)), .45) * (lv > 2.5 ? 1. : lv > 1.5 ? .75 : .45) : vec3(.1);
-    return vec4(c, size);
-  }
-
-  void main() {
-    // centro de la celda, en px CSS, visto por la cámara (zoom alrededor del agujero)
-    vec2 cc = uHole + (gl_FragCoord.xy * uCell - uHole) / uZoom;
-    float cr = cos(ROLL), sr = sin(ROLL);
-    mat2 rot = mat2(cr, -sr, sr, cr);
-    vec2 rel = rot * (cc - uHole) / uPx;
-    if (length(rel) > BMAX) { gl_FragColor = sky(cc); return; }
-
-    vec2 uv = rel / (2. * BMAX) + .5;
-    vec4 t4 = texture2D(uLut4, uv), t5 = texture2D(uLut5, uv);
-    float n = floor(t5.b * 255. + .5);
-    vec3 emit = vec3(0.); float trans = 1.;
-    for (int i = 0; i < 3; i++) {
-      if (float(i) >= n) break;
-      vec4 tq = i == 0 ? texture2D(uLut1, uv) : i == 1 ? texture2D(uLut2, uv) : texture2D(uLut3, uv);
-      float g = (i == 0 ? unpack16(t4.rg) : i == 1 ? unpack16(t4.ba) : unpack16(t5.rg)) * GMAX;
-      vec2 q = (vec2(unpack16(tq.rg), unpack16(tq.ba)) - .5) * 2. * ROUT;
-      float rh = length(q);
-      float om = pow(rh, -1.5) * 1.8 * uTime;    // giro kepleriano: más rápido adentro
-      q = mat2(cos(om), -sin(om), sin(om), cos(om)) * q;
-      float gas = .55 * noise(q * 1.3) + .45 * noise(vec2(rh * 3.2, 0.) + q * .4);
-      // temperatura del disco delgado (Novikov-Thorne simplificado), máximo ~1
-      float T = pow(RIN / rh, .75) * pow(max(1. - sqrt(RIN / rh), 0.), .25) / .488;
-      float I = pow(T, 4.) * pow(g, 4.) * (.35 + 1.1 * gas);
-      vec3 c = mix(pal(clamp(T * g * .9, 0., 1.)), vec3(1.), smoothstep(1.1, 1.8, T * g) * .6);
-      float a = clamp(.35 + .8 * gas, 0., 1.) * smoothstep(RIN, RIN + .7, rh) * smoothstep(ROUT, ROUT - 5., rh);
-      emit += trans * a * c * I * 2.2;
-      trans *= 1. - a * .8;
-    }
-
-    // la sombra es negra sólida (celda completa), para que nada de la página se vea a través
-    vec4 s = vec4(0., 0., 0., 1.);
-    if (t5.a < .5) {
-      vec4 tl = texture2D(uLut0, uv);
-      vec2 dv = vec2(unpack16(tl.rg), unpack16(tl.ba)) * 2. - 1.;
-      s = sky(cc + sign(dv) * dv * dv * LP * uPx);
-      s.rgb *= trans;
-    }
-    // disco en la grilla: el punto crece por escalones con el brillo
-    vec3 e = 1. - exp(-emit * uInt);
-    float lum = dot(e, vec3(.3, .59, .11));
-    float lvl = floor(clamp(lum * 1.5, 0., 1.) * 4. + .3) / 4.;
-    vec3 hue = e / max(max(e.r, max(e.g, e.b)), 1e-3);
-    vec4 disk = lvl > .01 ? vec4(hue * min(1., .4 + lum * 1.5), .14 + .3 * lvl) : vec4(0.);
-    gl_FragColor = disk.a * dot(disk.rgb, vec3(1.)) > s.a * dot(s.rgb, vec3(1.)) ? disk : s;
-  }
-`;
-
-const DRAW = `
-  ${COMMON}
-  uniform sampler2D uCells, uText;
-  uniform vec2 uGrid, uRes, uHole;
-  uniform float uCell, uDpr, uPx, uLens, uTextFade;
-  // Colapso de entrada: radio de la sombra que cubre (px, < 0 = apagado), si fuera de ella
-  // todavía no se ve la escena (1 mientras crece) y qué fracción del borde de puntos queda.
-  uniform float uCover, uCoverOnly, uEdge, uEdgeKeep;
-
-  vec4 textAt(vec2 px) {
-    vec2 uv = px / uRes;
-    return (uv.x < 0. || uv.y < 0. || uv.x > 1. || uv.y > 1.) ? vec4(0.) : texture2D(uText, uv);
-  }
-
-  void main() {
-    vec2 px = gl_FragCoord.xy / uDpr;
-    vec2 cell = floor(px / uCell);
-    vec4 c = texture2D(uCells, (cell + .5) / uGrid);
-    if (uCover >= 0.) {
-      // Celda entera o nada, con un borde de puntos de la paleta: sin fundidos grises.
-      vec2 to = (cell + .5) * uCell - uHole;
-      float d = length(to) + (hash(cell) - .5) * uCell * 5. * uEdge;
-      if (d < uCover - uCell * 1.2) c = vec4(0., 0., 0., 1.);
-      else if (d < uCover && hash(cell + 3.7) < uEdgeKeep) c = vec4(pal(atan(to.y, to.x) / 6.2832 + .5), .3);
-      else if (uCoverOnly > .5) c = vec4(0.);
-    }
-    float r = uCell * c.a;
-    // Solo se pintan los puntos y las letras: el resto queda transparente y deja ver la página.
-    vec3 col = c.rgb;
-    float dotAlpha = smoothstep(r, r - .8, length(px - (cell + .5) * uCell)) * step(.001, c.a);
-    if (uLens < .5) { gl_FragColor = vec4(col, dotAlpha); return; }
-
-    // las letras resisten: cerca del agujero se comban y cada canal se dobla distinto
-    vec2 rel = (px - uHole) / uPx;
-    float r2 = dot(rel, rel);
-    vec3 ks = vec3(.8, 1., 1.22) * 6.5 * (1. - smoothstep(4., 10., sqrt(r2)));
-    float textAlpha = 0.;
-    for (int i = 0; i < 3; i++) {
-      vec4 t = textAt(uHole + rel * (1. - ks[i] / (r2 + 5.)) * uPx);
-      t.a *= uTextFade;
-      col[i] = mix(dotAlpha > 0. ? col[i] : t[i], t[i], t.a);
-      textAlpha = max(textAlpha, t.a);
-    }
-    gl_FragColor = vec4(col, max(dotAlpha, textAlpha));
-  }
-`;
-
-function compile(gl: WebGLRenderingContext, fragment: string): WebGLProgram {
-  const program = gl.createProgram()!;
-  const parts: [number, string][] = [
-    [gl.VERTEX_SHADER, VERTEX],
-    [gl.FRAGMENT_SHADER, fragment],
-  ];
-  for (const [type, source] of parts) {
-    const shader = gl.createShader(type)!;
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw new Error(gl.getShaderInfoLog(shader) ?? 'shader');
-    }
-    gl.attachShader(program, shader);
-  }
-  gl.bindAttribLocation(program, 0, 'aPos');
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    throw new Error(gl.getProgramInfoLog(program) ?? 'program');
-  }
-  return program;
-}
-
-function texture(gl: WebGLRenderingContext, filter: number = gl.LINEAR): WebGLTexture {
-  const tex = gl.createTexture()!;
-  gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
-  return tex;
-}
 
 /** Dibuja en un canvas 2D cada palabra de los elementos `[data-lens]`, en su posición real. */
 function drawText(section: HTMLElement, target: HTMLCanvasElement, dpr: number) {
@@ -370,15 +145,13 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   }
   const { reducedMotion } = options;
 
-  let bake: WebGLProgram, trace: WebGLProgram, draw: WebGLProgram;
-  try {
-    bake = compile(gl, BAKE);
-    trace = compile(gl, TRACE);
-    draw = compile(gl, DRAW);
-  } catch {
-    // Sin WebGL utilizable queda la grilla de puntos en CSS y el texto normal.
-    return () => {};
-  }
+  // Si un shader no compila, queda la grilla de puntos en CSS y el texto normal.
+  const program = (fragment: string) =>
+    createProgramInfo(gl, [quadVert, common + fragment], { errorCallback: () => {} });
+  const bake = program(bakeFrag);
+  const trace = program(traceFrag);
+  const draw = program(drawFrag);
+  if (!bake || !trace || !draw) return () => {};
 
   // La escena aparece cuando termina el precálculo (sin fundido: entra por colapso); mientras,
   // la carga del hero.
@@ -387,30 +160,32 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   // Sin animación, la escena va detrás del texto real: el contenido no depende de WebGL.
   if (reducedMotion) container.style.zIndex = '-1';
 
-  const buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(0);
-  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  // Un triángulo que cubre la pantalla: las tres pasadas son shaders de fragmentos.
+  const quad = createBufferInfoFromArrays(gl, {
+    aPos: { numComponents: 2, data: [-1, -1, 3, -1, -1, 3] },
+  });
+  const pass = (info: ProgramInfo, uniforms: Record<string, unknown>) => {
+    gl.useProgram(info.program);
+    setBuffersAndAttributes(gl, info, quad);
+    setUniforms(info, uniforms);
+    drawBufferInfo(gl, quad);
+  };
 
-  const cellsTex = texture(gl, gl.NEAREST);
-  const framebuffer = gl.createFramebuffer();
-  const textTex = texture(gl);
+  // Tablas y celdas sin interpolar: cada texel es un dato, no un color. `auto: false`: twgl no
+  // genera mipmaps (las texturas no son potencia de 2).
+  const exact = { min: gl.NEAREST, mag: gl.NEAREST, wrap: gl.CLAMP_TO_EDGE, auto: false };
+  const cells = createFramebufferInfo(gl, [exact], 1, 1);
+  const textTex = createTexture(gl, {
+    min: gl.LINEAR,
+    mag: gl.LINEAR,
+    wrap: gl.CLAMP_TO_EDGE,
+    auto: false,
+    color: [0, 0, 0, 0],
+  });
   const textCanvas = document.createElement('canvas');
 
-  const palette = readPalette().map((rgb) => rgb.map((v) => v / 255));
-  // Las ubicaciones de los uniforms no cambian: se buscan una vez y no en cada cuadro.
-  const locations = new Map<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
-  const loc = (program: WebGLProgram, name: string) => {
-    let byName = locations.get(program);
-    if (!byName) locations.set(program, (byName = new Map()));
-    if (!byName.has(name)) byName.set(name, gl.getUniformLocation(program, name));
-    return byName.get(name) ?? null;
-  };
-  for (const program of [trace, draw]) {
-    gl.useProgram(program);
-    palette.forEach((rgb, i) => gl.uniform3fv(loc(program, `uC${i + 1}`), rgb));
-  }
+  const [uC1, uC2, uC3] = readPalette().map((rgb) => rgb.map((v) => v / 255));
+  const palette = { uC1, uC2, uC3 };
 
   // Tabla de trayectorias: unos 2 texels por celda de la pantalla, entre 128 y 512 por lado.
   // Está en radios de Schwarzschild, así que sirve para cualquier tamaño de pantalla.
@@ -421,30 +196,20 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
       Math.round((80 * pxPerRsFor(container.clientWidth, container.clientHeight)) / CELL),
     ),
   );
-  const lut = Array.from({ length: LUT_TEXTURES }, () => {
-    const tex = texture(gl, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, lutSize, lutSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    const fb = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-    return { tex, fb };
-  });
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  gl.useProgram(trace);
-  lut.forEach((_, i) => gl.uniform1i(loc(trace, `uLut${i}`), 2 + i));
+  const lut = Array.from({ length: LUT_TEXTURES }, () =>
+    createFramebufferInfo(gl, [exact], lutSize, lutSize),
+  );
+  const lutUniforms = Object.fromEntries(lut.map((fb, i) => [`uLut${i}`, fb.attachments[0]]));
+  bindFramebufferInfo(gl, null);
 
   let width = 1,
     height = 1,
-    cols = 1,
-    rows = 1,
     dpr = 1,
     pxPerRs = 1;
 
   const uploadText = () => {
     drawText(section, textCanvas, dpr);
-    gl.bindTexture(gl.TEXTURE_2D, textTex);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+    setTextureFromElement(gl, textTex, textCanvas, { flipY: 1, auto: false });
   };
 
   const resize = () => {
@@ -454,28 +219,23 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     dpr = canvasDpr();
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
-    cols = Math.ceil(width / CELL);
-    rows = Math.ceil(height / CELL);
     pxPerRs = pxPerRsFor(width, height);
     section.style.setProperty('--hole-px', String(pxPerRs));
-    gl.bindTexture(gl.TEXTURE_2D, cellsTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cols, rows, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, cellsTex, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    resizeFramebufferInfo(gl, cells, [exact], Math.ceil(width / CELL), Math.ceil(height / CELL));
+    bindFramebufferInfo(gl, null);
     ready = true;
     if (!baked) return;
     // El texto se redibuja en el mismo instante del cambio de tamaño, para que la textura
     // calce siempre con el texto real. Nada se dibuja antes de tenerlo: el nombre nunca desaparece.
     if (!reducedMotion) uploadText();
-    if (reducedMotion || !running) render();
+    if (reducedMotion || !loop.running) render();
     play();
   };
   // Al terminar de cargar una fuente cambian las letras aunque no cambie el tamaño.
   const onFonts = () => {
     if (!ready || !baked || reducedMotion) return;
     uploadText();
-    if (reducedMotion || !running) render();
+    if (!loop.running) render();
   };
   document.fonts?.addEventListener('loadingdone', onFonts);
 
@@ -500,45 +260,37 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     shared.time = time;
     shared.ready = true;
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.viewport(0, 0, cols, rows);
-    gl.useProgram(trace);
-    lut.forEach(({ tex }, i) => {
-      gl.activeTexture(gl.TEXTURE2 + i);
-      gl.bindTexture(gl.TEXTURE_2D, tex);
+    bindFramebufferInfo(gl, cells);
+    pass(trace, {
+      ...palette,
+      ...lutUniforms,
+      uHole: hole,
+      uPx: pxPerRs,
+      uTime: time,
+      uInt: INTENSITY,
+      uCell: CELL,
+      uZoom: zoom,
     });
-    gl.uniform2fv(loc(trace, 'uHole'), hole);
-    gl.uniform1f(loc(trace, 'uPx'), pxPerRs);
-    gl.uniform1f(loc(trace, 'uTime'), time);
-    gl.uniform1f(loc(trace, 'uInt'), INTENSITY);
-    gl.uniform1f(loc(trace, 'uCell'), CELL);
-    gl.uniform1f(loc(trace, 'uZoom'), zoom);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.useProgram(draw);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, cellsTex);
-    gl.uniform1i(loc(draw, 'uCells'), 0);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, textTex);
-    gl.uniform1i(loc(draw, 'uText'), 1);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.uniform2f(loc(draw, 'uGrid'), cols, rows);
-    gl.uniform2f(loc(draw, 'uRes'), width, height);
-    gl.uniform2fv(loc(draw, 'uHole'), hole);
-    gl.uniform1f(loc(draw, 'uCell'), CELL);
-    gl.uniform1f(loc(draw, 'uDpr'), dpr);
-    gl.uniform1f(loc(draw, 'uPx'), pxPerRs);
-    gl.uniform1f(loc(draw, 'uLens'), reducedMotion ? 0 : 1);
-    gl.uniform1f(loc(draw, 'uTextFade'), textOpacity(fall.progress));
     const [cover, coverOnly, edgeKeep] = collapse(hole);
-    gl.uniform1f(loc(draw, 'uCover'), cover);
-    gl.uniform1f(loc(draw, 'uCoverOnly'), coverOnly);
-    gl.uniform1f(loc(draw, 'uEdgeKeep'), edgeKeep);
-    gl.uniform1f(loc(draw, 'uEdge'), COLLAPSE_EDGE);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    bindFramebufferInfo(gl, null);
+    pass(draw, {
+      ...palette,
+      uCells: cells.attachments[0],
+      uText: textTex,
+      uGrid: [cells.width, cells.height],
+      uRes: [width, height],
+      uHole: hole,
+      uCell: CELL,
+      uDpr: dpr,
+      uPx: pxPerRs,
+      uLens: reducedMotion ? 0 : 1,
+      uTextFade: textOpacity(fall.progress),
+      uCover: cover,
+      uCoverOnly: coverOnly,
+      uEdgeKeep: edgeKeep,
+      uEdge: COLLAPSE_EDGE,
+    });
   };
 
   // Colapso de entrada: devuelve el radio de la sombra que cubre (px, -1 = terminado), si fuera
@@ -569,27 +321,16 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     return [far + (shadow - far) * (1 - (1 - s) ** 3), 0, keep];
   };
 
-  let frame = 0,
-    last = 0,
-    visible = true,
-    running = false,
+  let visible = true,
     ready = false,
     baked = false;
-  const loop = (now: number) => {
-    time += Math.min(0.05, (now - last) / 1000) * SPEED;
-    last = now;
+  const loop = frameLoop((_, dt) => {
+    time += dt * SPEED;
     render();
-    frame = requestAnimationFrame(loop);
-  };
+  });
   const play = () => {
-    if (running || reducedMotion || !visible || !ready || !baked) return;
-    running = true;
-    last = performance.now();
-    frame = requestAnimationFrame(loop);
-  };
-  const pause = () => {
-    cancelAnimationFrame(frame);
-    running = false;
+    if (reducedMotion || !visible || !ready || !baked) return;
+    loop.start();
   };
 
   // Precálculo repartido entre cuadros: cada trabajo es una franja de una textura de la tabla.
@@ -599,12 +340,8 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     out: Math.floor(i / LUT_STRIPS),
     y: (i % LUT_STRIPS) * strip,
   }));
-  let done = 0,
-    bakeFrame = 0;
+  let done = 0;
   const bakeStart = performance.now();
-  gl.useProgram(bake);
-  gl.uniform1f(loc(bake, 'uSize'), lutSize);
-  gl.uniform1f(loc(bake, 'uDoppler'), DOPPLER);
   section.classList.add('is-loading');
   section.style.setProperty(
     '--hole-px',
@@ -613,8 +350,8 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
 
   const reveal = () => {
     performance.measure('black-hole:bake', { start: bakeStart });
-    gl.deleteProgram(bake);
-    lut.forEach(({ fb }) => gl.deleteFramebuffer(fb));
+    gl.deleteProgram(bake.program);
+    lut.forEach(({ framebuffer }) => gl.deleteFramebuffer(framebuffer));
     baked = true;
     if (reducedMotion) {
       // Cuadro quieto detrás del texto real, sin colapso.
@@ -630,28 +367,26 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     canvas.style.opacity = '1';
   };
 
-  const bakeStep = () => {
+  const baking = frameLoop(() => {
     const start = performance.now();
-    gl.useProgram(bake);
-    gl.viewport(0, 0, lutSize, lutSize);
     gl.enable(gl.SCISSOR_TEST);
     const limit = Math.min(jobs.length, done + BAKE_MAX_JOBS);
     do {
       const { out, y } = jobs[done++];
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lut[out].fb);
+      bindFramebufferInfo(gl, lut[out]);
       gl.scissor(0, y, lutSize, strip);
-      gl.uniform1f(loc(bake, 'uOut'), out);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      pass(bake, { uSize: lutSize, uDoppler: DOPPLER, uOut: out });
       // Espera a la GPU para medir de verdad cuánto costó y no pasarse del presupuesto.
       gl.finish();
     } while (done < limit && performance.now() - start < BAKE_BUDGET_MS);
     gl.disable(gl.SCISSOR_TEST);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    bindFramebufferInfo(gl, null);
     section.style.setProperty('--hole-progress', String(done / jobs.length));
-    if (done < jobs.length) bakeFrame = requestAnimationFrame(bakeStep);
-    else reveal();
-  };
-  bakeFrame = requestAnimationFrame(bakeStep);
+    if (done < jobs.length) return true;
+    reveal();
+    return false;
+  });
+  baking.start();
 
   // El hero queda pegado arriba mientras la hoja del portafolio lo tapa (decisión 014): se ve
   // mientras el borde de la hoja ([data-hero-end]) no haya pasado arriba de la pantalla.
@@ -659,15 +394,15 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   const io = new IntersectionObserver(([entry]) => {
     visible = end ? entry.isIntersecting || entry.boundingClientRect.top > 0 : entry.isIntersecting;
     if (visible) play();
-    else pause();
+    else loop.stop();
   });
   const ro = new ResizeObserver(resize);
   io.observe(end ?? section);
   ro.observe(container);
 
   return () => {
-    pause();
-    cancelAnimationFrame(bakeFrame);
+    loop.stop();
+    baking.stop();
     io.disconnect();
     ro.disconnect();
     document.fonts?.removeEventListener('loadingdone', onFonts);
