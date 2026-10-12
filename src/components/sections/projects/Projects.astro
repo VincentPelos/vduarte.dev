@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import { getSite, getSkillIcons } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
 import { sortProjects } from '../../../lib/projects';
+import Glows from '../../ui/Glows.astro';
 import Icon from '../../ui/Icon.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
@@ -27,6 +28,8 @@ const grid =
 ---
 
 <Section id="proyectos" constellation="projects" class="relative isolate">
+  {/* Brillos (#167): luz detrás de la lista y el detalle, para que no quede sobre negro plano. */}
+  <Glows strength={0.45} class="top-[18%] bottom-auto h-[900px]" />
   <SectionHeader file="projects.json" title={texts.title} meta={meta} constellation="projects" />
   {/*
     Lista y detalle (#162, decisión 023). Cada proyecto es un botón de la lista y su detalle. Desde

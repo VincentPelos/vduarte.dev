@@ -6,6 +6,7 @@ import { pluralize } from '../../../lib/text';
 import Link from '../../ui/Link.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
+import Glows from '../../ui/Glows.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 import YearBlock from '../../ui/YearBlock.astro';
 
@@ -24,7 +25,9 @@ const years = groupByYear(items);
 const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{4}$/, '') : '');
 ---
 
-<Section id="educacion" constellation="education">
+<Section id="educacion" constellation="education" class="relative">
+  {/* Brillos (#167): luz detrás de las carreras, para que no quede sobre negro plano. */}
+  <Glows strength={0.45} class="top-[10%] bottom-auto h-[900px] -scale-x-100" />
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
   {/*
     Columna de años (#134): las carreras y certificaciones con peso, una estrella grande con la
