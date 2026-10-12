@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -12,7 +12,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 ## Estado actual
 
 - **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito en curso:** v0.6.0 Contacto y extras. Hechos: `/uso-de-ia`, footer sólido, entrada sin pausa, caída al agujero con flecha (PR #138). Ver [bitácora 2026-10-11](06-bitacora/2026-10-11.md).
+- **Hito en curso:** v0.6.0 Contacto y extras. Hechos: `/uso-de-ia`, footer sólido, entrada sin pausa, caída al agujero con flecha (PR #138), CV en LaTeX (`pnpm cv`), Experiencia y Educación en columna de años (decisión 020), bento de áreas con agentes que se arma desde el agujero (decisión 021), celular más corto y limpieza de contenido y skills. Formulario n8n y analytics descartados. Ver [bitácora 2026-10-11](06-bitacora/2026-10-11.md).
+- **Siguiente:** la sección de detalles que pida el autor y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
