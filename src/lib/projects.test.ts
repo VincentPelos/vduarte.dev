@@ -64,3 +64,12 @@ describe('signalTime', () => {
     expect(signalTime(0.1)).toBeGreaterThan(0.1);
   });
 });
+
+describe('projectLinks con demoLabel', () => {
+  it('usa el texto propio del proyecto para la demo', () => {
+    const labels = { caseStudy: 'ver caso', repo: 'repo', demo: 'sitio institucional' };
+    expect(projectLinks({ demo: 'https://ejemplo.dev', demoLabel: 'sitio' }, labels)).toEqual([
+      { href: 'https://ejemplo.dev', text: 'sitio ↗' },
+    ]);
+  });
+});
