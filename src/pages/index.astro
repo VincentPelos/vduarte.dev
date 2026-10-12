@@ -3,6 +3,7 @@ import About from '../components/sections/about/About.astro';
 import Contact from '../components/sections/contact/Contact.astro';
 import Education from '../components/sections/education/Education.astro';
 import Experience from '../components/sections/experience/Experience.astro';
+import IconSprite from '../components/layout/IconSprite.astro';
 import Hero from '../components/sections/hero/Hero.astro';
 import Projects from '../components/sections/projects/Projects.astro';
 import Skills from '../components/sections/skills/Skills.astro';
@@ -10,12 +11,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
+  {/* Solo el home usa íconos: las demás páginas no cargan el sprite (#158). */}
+  <IconSprite />
   <Hero />
-  <!--
+  {/*
     Hoja del portafolio (decisión 014): sube sobre el hero quieto. Capas: hero (z-1) < fondo de la
     hoja (z-2) < cielo de estrellas (z-3, StarSky) < contenido (z-4). [data-hero-end] marca el borde
     de la hoja: cuando pasa arriba de la pantalla, el hero quedó tapado.
-  -->
+  */}
   <div class="relative">
     <div data-hero-end aria-hidden="true" class="absolute top-0 h-px w-full"></div>
     <div
@@ -26,8 +29,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <About />
       <Experience />
       <Projects />
-      <Skills />
       <Education />
+      <Skills />
       <Contact />
     </div>
   </div>

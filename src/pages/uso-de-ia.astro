@@ -1,0 +1,66 @@
+---
+import FileHeading from '../components/ui/FileHeading.astro';
+import GlassCard from '../components/ui/GlassCard.astro';
+import MarkList from '../components/ui/MarkList.astro';
+import PillLink from '../components/ui/PillLink.astro';
+import PageLayout from '../layouts/PageLayout.astro';
+import { getAiUsage } from '../lib/content';
+
+// Declaración de uso de IA (rúbrica: admisibilidad 6). Todo el texto sale de ai-usage.json.
+const { title, subtitle, intro, tools, projects, checks, links, labels } = await getAiUsage();
+---
+
+<PageLayout
+  title={title}
+  subtitle={subtitle}
+  lead={intro}
+  description={subtitle}
+  file="src/content/ai-usage.json"
+  back={{ href: '/', label: labels.back }}
+>
+  <ul class="mt-[34px] grid gap-3 min-[861px]:grid-cols-3">
+    {tools.map((tool) => (
+      <GlassCard as="li" class="grid content-start gap-2 p-[18px]">
+        <span class="font-display text-[clamp(1.15rem,2.5vw,1.5rem)] leading-none font-bold tracking-display">
+          {tool.name}
+        </span>
+        <span class="font-mono text-[0.74rem] leading-[1.3] text-muted">{tool.maker}</span>
+        <span class="text-[0.92rem] text-soft">{tool.use}</span>
+      </GlassCard>
+    ))}
+  </ul>
+
+  {projects.map((project) => (
+    <section id={project.id} class="mt-[clamp(56px,8vw,90px)]">
+      <FileHeading file={project.file} title={project.title} />
+      <ul class="mt-[22px] grid gap-2.5">
+        {project.rows.map((row) => (
+          <GlassCard
+            as="li"
+            class="grid gap-x-6 gap-y-2.5 p-[18px] min-[861px]:grid-cols-[150px_1fr_1fr]"
+          >
+            <span class="font-mono text-[0.82rem] font-medium">{row.task}</span>
+            <p class="text-[0.92rem] text-soft">
+              <span class="block font-mono text-[0.7rem] text-c1">{labels.ai}</span>
+              {row.ai}
+            </p>
+            <p class="text-[0.92rem]">
+              <span class="block font-mono text-[0.7rem] text-c3">{project.decidedBy}</span>
+              {row.author}
+            </p>
+          </GlassCard>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <section id="verificacion" class="mt-[clamp(56px,8vw,90px)]">
+    <FileHeading file="verificacion.md" title={checks.title} />
+    <MarkList items={checks.items} mark="✓" markClass="text-ok" />
+    <nav aria-label={labels.links} class="mt-5 flex flex-wrap gap-1.5">
+      {links.map((link) => (
+        <PillLink href={link.href}>{link.label}</PillLink>
+      ))}
+    </nav>
+  </section>
+</PageLayout>

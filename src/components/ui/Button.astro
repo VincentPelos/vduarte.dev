@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { linkAttrs } from '../../lib/links';
-import LinkHint from './LinkHint.astro';
+import Link from './Link.astro';
 
 interface Props extends HTMLAttributes<'a'> {
   href?: string;
@@ -30,9 +29,8 @@ const classes = [
 ---
 
 {href ? (
-  <a href={href} {...linkAttrs(href)} class:list={classes} {...attrs}>
+  <Link href={href} class:list={classes} {...attrs}>
     <slot />
-    <LinkHint href={href} />
     {arrow && (
       <span
         aria-hidden="true"
@@ -41,7 +39,7 @@ const classes = [
         {arrows[arrow]}
       </span>
     )}
-  </a>
+  </Link>
 ) : (
   <span role="link" aria-disabled="true" tabindex="0" title={pendingLabel} class:list={classes}>
     <slot />

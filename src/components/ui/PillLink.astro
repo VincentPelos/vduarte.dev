@@ -1,0 +1,17 @@
+---
+import Link from './Link.astro';
+
+interface Props {
+  href: string;
+}
+
+// Enlace con forma de chip y ↗ (notebooks, repositorio, enlaces de las páginas internas).
+const { href } = Astro.props;
+---
+
+<Link
+  href={href}
+  class="rounded-full border border-line px-[11px] py-[7px] font-mono text-[0.74rem] leading-none transition-colors hover:border-line-hi"
+>
+  <slot /> ↗
+</Link>

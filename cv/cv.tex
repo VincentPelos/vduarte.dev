@@ -1,0 +1,116 @@
+% CV de Vicente Contreras Duarte. Compilar con `pnpm cv` (Tectonic) → public/cv.pdf.
+% Pensado para filtros ATS: una columna, sin tablas, íconos ni gráficos,
+% títulos estándar y URLs escritas como texto.
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{texgyreheros}[
+  Extension=.otf,
+  UprightFont=*-regular,
+  BoldFont=*-bold,
+  ItalicFont=*-italic,
+  BoldItalicFont=*-bolditalic
+]
+\usepackage[spanish]{babel}
+\usepackage[margin=1.5cm,top=1.1cm,bottom=1.1cm]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  pdftitle={CV - Vicente Contreras Duarte},
+  pdfauthor={Vicente Contreras Duarte},
+  pdfsubject={Desarrollador de Software | Soporte e Infraestructura TI},
+  pdfkeywords={Desarrollo de software, Soporte TI, Infraestructura, Microsoft 365, TypeScript, React, Node.js, Python, SQL, Power BI, ETL}
+}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.02}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\titleformat{\section}{\large\bfseries}{}{0pt}{}[\vspace{2pt}\hrule]
+\titlespacing*{\section}{0pt}{8pt}{5pt}
+
+\setlist[itemize]{leftmargin=1.1em, itemsep=1pt, topsep=2pt, parsep=0pt, label=\textbullet}
+
+% \entry{Cargo o título}{Fechas}{Organización · lugar}
+\newcommand{\entry}[3]{%
+  \textbf{#1}\hfill #2\par
+  #3\par
+}
+
+\begin{document}
+\raggedright
+
+{\LARGE\bfseries Vicente Contreras Duarte}\par
+\vspace{3pt}
+{\large Desarrollador de Software | Soporte e Infraestructura TI}\par
+\vspace{4pt}
+Chile \textbar{}
+\href{mailto:vicente.contreras.dev@gmail.com}{vicente.contreras.dev@gmail.com} \textbar{}
+\href{https://vduarte.dev}{vduarte.dev}\par
+\href{https://www.linkedin.com/in/vicente-contreras-duarte-ab7b72343/}{linkedin.com/in/vicente-contreras-duarte-ab7b72343} \textbar{}
+\href{https://github.com/VincentPelos}{github.com/VincentPelos}\par
+
+\section{Perfil}
+Desarrollador de software y técnico de soporte e infraestructura TI, estudiante de Ingeniería en Informática.
+En la Municipalidad de Placilla doy soporte TI, administro Microsoft 365 y desarrollo plataformas internas
+y el nuevo sitio web institucional. Tengo experiencia en análisis de datos y Business Intelligence con Python
+y Power BI. Abierto a proyectos freelance remotos.
+
+\section{Experiencia}
+\entry{Soporte TI}{Mar 2026 -- Actualidad}{Municipalidad de Placilla · Placilla, Chile (presencial)}
+\begin{itemize}
+  \item Diagnostico y resuelvo incidencias de hardware, software, conectividad, equipos e impresoras.
+  \item Configuro redes LAN y Wi-Fi, routers, servidores y servicios institucionales.
+  \item Administro y doy soporte a Microsoft 365, SharePoint y Exchange Online.
+  \item Participo en la reconstrucción del sitio web institucional y desarrollo herramientas internas de monitoreo y mesa de ayuda.
+  \item Automatizo procesos administrativos y técnicos con PowerShell y Node.js.
+\end{itemize}
+\vspace{4pt}
+\entry{Practicante de Soporte TI}{2025}{AIEP · Chile}
+\begin{itemize}
+  \item Atendí y resolví incidencias de usuarios.
+  \item Diagnostiqué y mantuve equipos computacionales; instalé sistemas operativos y software.
+  \item Resolví problemas de hardware y conectividad y apoyé tareas de soporte institucional.
+\end{itemize}
+
+\section{Proyectos}
+\entry{Resiliencia agrícola de Colchagua · Business Intelligence}{2026}{github.com/VincentPelos/colchagua-etl}
+\begin{itemize}
+  \item ETL en Python (pandas) con datos oficiales (ODEPA, DGA, CR2MET, Banco Central) y Datamart en esquema estrella.
+  \item Machine learning y proyecciones validadas fuera de muestra con scikit-learn y statsmodels en Jupyter.
+  \item Dashboard en Power BI con DAX: dependencia de la cereza, amenazas climáticas y vulnerabilidad por comuna.
+\end{itemize}
+\vspace{4pt}
+\entry{Sitio web Municipalidad de Placilla · en desarrollo}{2026}{muniplacilla.cl}
+\begin{itemize}
+  \item Portal institucional responsivo con React, TypeScript, Vite y Tailwind CSS; noticias y documentos en JSON.
+  \item Despliegue automatizado con GitHub Actions a cPanel; accesibilidad y normativa del sector público.
+\end{itemize}
+\vspace{4pt}
+\entry{Portafolio vduarte.dev}{2026}{vduarte.dev}
+\begin{itemize}
+  \item Sitio en Astro y TypeScript con contenido en JSON validado con Zod, animaciones WebGL y Lighthouse 99--100.
+  \item CI con GitHub Actions (ESLint, Vitest, build y Docker) y despliegue continuo con Coolify en un VPS propio.
+\end{itemize}
+
+\section{Habilidades}
+\textbf{Lenguajes:} TypeScript, JavaScript, Python, SQL, PowerShell, HTML, CSS\par
+\textbf{Desarrollo web:} React, Node.js, Vite, Tailwind CSS, Astro, APIs REST, SPFx, MySQL\par
+\textbf{Datos y BI:} Power BI, DAX, Power Query, pandas, NumPy, scikit-learn, Jupyter, ETL, modelado dimensional\par
+\textbf{Infraestructura:} Linux, Windows Server, SSH, RDP, virtualización\par
+\textbf{Microsoft 365:} SharePoint, Exchange Online, Microsoft Entra ID, Microsoft Graph, MSAL\par
+\textbf{Herramientas:} Git, GitHub, GitHub Actions, Docker, VS Code, WSL2, cPanel\par
+
+\section{Educación y capacitaciones}
+\textbf{Ingeniería en Informática, mención Desarrollo de Sistemas} · AIEP\hfill 2025 -- Actualidad\par
+\textbf{Programación} (etapa formativa completada) · AIEP\hfill 2023 -- 2025\par
+
+\textbf{Capacitaciones} · Secretaría de Gobierno Digital, Gobierno de Chile (2026): DocDigital (introducción, uso de la plataforma
+y gestión avanzada para administradores) y talleres de la plataforma SIMPLE.\par
+
+\end{document}

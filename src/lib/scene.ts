@@ -44,3 +44,71 @@ export function webglRenderer(gl: WebGLRenderingContext): string {
   const info = gl.getExtension('WEBGL_debug_renderer_info');
   return String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? '');
 }
+
+/** Paleta "Nebulosa" como colores de CSS, para los canvas 2D. */
+export function cssPalette(): [string, string, string] {
+  return readPalette().map(([r, g, b]) => `rgb(${r} ${g} ${b})`) as [string, string, string];
+}
+
+/** Valor de un token de color de `global.css` (`--color-fg`). */
+export function cssToken(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/** Número pseudoaleatorio estable en [0, 1) para un par de enteros (una celda, un índice). */
+export function hash(x: number, y: number): number {
+  let h = (x * 374761393 + y * 668265263) | 0;
+  h = (h ^ (h >>> 13)) * 1274126177;
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+
+/** Ajusta un canvas 2D a `width` × `height` px CSS con la densidad de píxeles acotada. */
+export function fitCanvas(
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+): void {
+  const dpr = canvasDpr();
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+/** Cuadros por segundo de las escenas que se animan solas: en pantallas de 120 Hz no se nota más. */
+export const SCENE_FPS = 60;
+
+/**
+ * Bucle de cuadros. `tick` recibe el instante del cuadro y los segundos desde el anterior, con
+ * tope de 0,05 s para que una pestaña dormida no haga saltar la escena. Si devuelve `false`, el
+ * bucle se detiene. Con `maxFps`, se salta cuadros en pantallas más rápidas (el margen de 20 %
+ * evita saltarse cuadros de 60 Hz que llegan un poco antes).
+ */
+export function frameLoop(tick: (now: number, dt: number) => boolean | void, maxFps = Infinity) {
+  const minMs = (1000 / maxFps) * 0.8;
+  let frame = 0;
+  let last = 0;
+  const step = (now: number) => {
+    if (minMs > 0 && now - last < minMs) {
+      frame = requestAnimationFrame(step);
+      return;
+    }
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    frame = tick(now, dt) === false ? 0 : requestAnimationFrame(step);
+  };
+  return {
+    get running() {
+      return frame !== 0;
+    },
+    start() {
+      if (frame) return;
+      last = performance.now();
+      frame = requestAnimationFrame(step);
+    },
+    stop() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    },
+  };
+}

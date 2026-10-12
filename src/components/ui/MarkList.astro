@@ -1,0 +1,23 @@
+---
+interface Props {
+  items: string[];
+  /** Carácter de cada ítem (`→`, `✓`). */
+  mark: string;
+  /** Color de la marca (`text-c1`, `text-ok`). */
+  markClass: string;
+}
+
+// Lista en dos columnas desde 861px: cada ítem en un recuadro con su marca a la izquierda.
+const { items, mark, markClass } = Astro.props;
+---
+
+<ul class="mt-4 grid gap-2.5 min-[861px]:grid-cols-2">
+  {items.map((item) => (
+    <li class="relative rounded-[14px] border border-line py-3.5 pr-4 pl-10 text-soft">
+      <span aria-hidden="true" class:list={['absolute top-3.5 left-4 font-mono', markClass]}>
+        {mark}
+      </span>
+      {item}
+    </li>
+  ))}
+</ul>

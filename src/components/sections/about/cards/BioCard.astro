@@ -1,18 +1,23 @@
 ---
-import BentoCard from '../BentoCard.astro';
+import { getSite } from '../../../../lib/content';
+import Button from '../../../ui/Button.astro';
+import BentoCard from './BentoCard.astro';
 
-interface Props {
-  label: string;
-  title: string;
-  bio: string;
-}
-
-const { label, title, bio } = Astro.props;
+const { bento, bioTitle, bio, github, cvPath, labels } = await getSite();
 ---
 
-<BentoCard label={label} class="justify-between min-[461px]:[grid-area:bio]">
-  <h2 class="max-w-[22ch] text-[clamp(1.4rem,3vw,2rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-balance">
-    {title}
+{/* En pocas frases lo que es, y los dos atajos: el código y el CV (#133). */}
+<BentoCard label={bento.about} class="justify-between gap-4 [grid-area:bio]">
+  <h2 class="max-w-[20ch] text-[clamp(1.5rem,3.2vw,2.3rem)] leading-[1.15] font-semibold tracking-[-0.025em] text-balance">
+    {bioTitle}
   </h2>
-  <p class="max-w-[52ch] text-muted">{bio}</p>
+  <p class="max-w-[56ch] text-[1.02rem] text-soft">{bio}</p>
+  <div class="flex flex-wrap gap-2">
+    <Button href={github} variant="primary" arrow="external">
+      {labels.github}
+    </Button>
+    <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
+      {labels.cv}
+    </Button>
+  </div>
 </BentoCard>

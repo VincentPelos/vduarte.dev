@@ -1,6 +1,7 @@
 import { z } from 'astro/zod';
 import { describe, expect, it } from 'vitest';
 import {
+  aiUsageSchema,
   caseSchema,
   educationSchema,
   experienceSchema,
@@ -28,10 +29,9 @@ const site = {
   linkedin: 'https://www.linkedin.com/in/ejemplo',
   cvPath: '/cv.pdf',
   highlightStack: ['TypeScript', 'Python'],
-  nowPlaying: { song: 'Canción', artist: 'Banda' },
-  nowGaming: { title: 'Juego' },
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
+  scrollCue: { label: 'portafolio', ariaLabel: 'Bajar al portafolio' },
   prompt: { user: 'vicente@vduarte', command: 'whoami' },
   labels: {
     email: 'Correo',
@@ -43,18 +43,20 @@ const site = {
   },
   bento: {
     about: 'Sobre mí',
-    clock: 'Hora local',
     status: 'Estado',
     available: 'Disponible',
     unavailable: 'No disponible',
     stack: 'Stack principal',
-    playing: 'Sonando',
-    gaming: 'Jugando',
     links: 'Encuéntrame',
-    constellation: '~/constelacion',
+    areas: (['dev', 'datos', 'infra', 'agentes'] as const).map((art) => ({
+      art,
+      title: 'Área',
+      proof: 'Prueba',
+      cta: 'ver',
+      href: '#proyectos',
+    })),
   },
   constellations: {
-    about: '@',
     experience: '>_',
     projects: '</>',
     skills: '#',
@@ -63,7 +65,12 @@ const site = {
   },
   sections: {
     current: 'actual',
-    experience: { title: 'Experiencia', unit: { one: 'rol', other: 'roles' }, since: 'desde' },
+    experience: {
+      title: 'Experiencia',
+      unit: { one: 'rol', other: 'roles' },
+      since: 'desde',
+      highlights: { show: 'ver logros', hide: 'ocultar logros' },
+    },
     education: {
       title: 'Educación',
       degree: { one: 'título', other: 'títulos' },
@@ -134,13 +141,6 @@ describe('siteSchema', () => {
       cvPath: 'cv.pdf',
     });
     expect(errorPaths(result).sort()).toEqual(['cvPath', 'github', 'timezone']);
-  });
-
-  it('usa 90 como pity máximo y no deja superarlo', () => {
-    const gacha = (g: object) =>
-      siteSchema.safeParse({ ...site, nowGaming: { title: 'Juego', gacha: g } });
-    expect(gacha({ game: 'Genshin', pity: 74 }).data?.nowGaming.gacha?.pityMax).toBe(90);
-    expect(errorPaths(gacha({ game: 'Genshin', pity: 95 }))).toEqual(['nowGaming.gacha.pity']);
   });
 
   it('exige al menos un enlace en la nav con id de sección válido', () => {
@@ -312,5 +312,33 @@ describe('caseSchema', () => {
         schema.safeParse({ ...base, resources: { ...base.resources, report: 'informe.pdf' } }),
       ),
     ).toEqual(['resources.report']);
+  });
+});
+
+describe('aiUsageSchema', () => {
+  const row = { task: 'Código', ai: 'Escribió.', author: 'Revisé.' };
+  const base = {
+    id: 'main',
+    title: 'Uso de IA',
+    subtitle: 'Subtítulo',
+    intro: 'Intro.',
+    tools: [{ name: 'Claude Code', maker: 'Anthropic', use: 'Código.' }],
+    projects: [
+      { id: 'sitio', file: 'vduarte.dev', title: 'Este sitio', decidedBy: 'Yo', rows: [row] },
+    ],
+    checks: { title: 'Cómo se verificó', items: ['Tests.'] },
+    links: [{ label: 'Bitácoras', href: 'https://github.com/usuario/repo' }],
+    labels: { back: 'volver', ai: 'La IA', links: 'Registro' },
+  };
+
+  it('acepta una declaración completa', () => {
+    expect(aiUsageSchema.safeParse(base).success).toBe(true);
+  });
+
+  it('exige decir qué decidió una persona en cada tarea', () => {
+    const projects = [{ ...base.projects[0], rows: [{ ...row, author: '' }] }];
+    expect(errorPaths(aiUsageSchema.safeParse({ ...base, projects }))).toEqual([
+      'projects.0.rows.0.author',
+    ]);
   });
 });

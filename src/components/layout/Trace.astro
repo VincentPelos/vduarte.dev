@@ -1,0 +1,92 @@
+<script>
+  // Entrada de las líneas de tiempo (#134): en cada `[data-trace]`, la línea (`[data-trace-line]`)
+  // se dibuja de arriba abajo y cada entrada (`[data-trace-item]`) aparece cuando la línea le
+  // llega: su estrella (`[data-trace-star]`) se enciende y el texto (`[data-trace-body]`) entra.
+  // Como Reveal: sin JS, con movimiento reducido o ya visible al cargar, no se toca; lo que se
+  // salta con un ancla queda terminado; al imprimir, todo se termina.
+  const TOTAL = 1100; // ms que tarda la línea en recorrer el bloque (duración 100 % en el lab)
+  const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const pending = new Map<Element, Animation[]>();
+
+    const prepare = (root: HTMLElement): Animation[] => {
+      const box = root.getBoundingClientRect();
+      const span = Math.max(1, box.height);
+      const at = (el: Element) => ((el.getBoundingClientRect().top - box.top) / span) * TOTAL;
+      const options = (duration: number, delay: number): KeyframeAnimationOptions => ({
+        duration,
+        delay,
+        easing: EASE,
+        fill: 'backwards',
+      });
+      const animations: Animation[] = [];
+      for (const line of root.querySelectorAll('[data-trace-line]')) {
+        const height = line.getBoundingClientRect().height;
+        animations.push(
+          line.animate(
+            [{ transform: 'scaleY(0)' }, { transform: 'none' }],
+            options(Math.max(200, (height / span) * TOTAL), at(line)),
+          ),
+        );
+      }
+      for (const item of root.querySelectorAll('[data-trace-item]')) {
+        const delay = at(item) + 120;
+        const star = item.querySelector('[data-trace-star]');
+        const body = item.querySelector('[data-trace-body]');
+        if (star)
+          animations.push(
+            star.animate(
+              [
+                { transform: 'scale(0)', opacity: 0 },
+                { transform: 'scale(1.8)', opacity: 1, offset: 0.6 },
+                { transform: 'none', opacity: 1 },
+              ],
+              options(520, delay),
+            ),
+          );
+        if (body)
+          animations.push(
+            body.animate(
+              [
+                { opacity: 0, transform: 'translateX(-10px)' },
+                { opacity: 1, transform: 'none' },
+              ],
+              options(640, delay + 160),
+            ),
+          );
+      }
+      for (const animation of animations) animation.pause();
+      return animations;
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const animations = pending.get(entry.target);
+          if (!animations) continue;
+          if (entry.isIntersecting) for (const animation of animations) animation.play();
+          else if (entry.boundingClientRect.top < 0)
+            for (const animation of animations) animation.finish();
+          else continue;
+          pending.delete(entry.target);
+          io.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -15% 0px' },
+    );
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-trace]')) {
+      if (root.getBoundingClientRect().top < innerHeight) continue;
+      pending.set(root, prepare(root));
+      io.observe(root);
+    }
+
+    addEventListener('beforeprint', () => {
+      for (const animations of pending.values())
+        for (const animation of animations) animation.finish();
+      pending.clear();
+      io.disconnect();
+    });
+  }
+</script>

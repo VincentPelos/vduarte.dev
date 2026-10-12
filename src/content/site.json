@@ -4,13 +4,15 @@
     "role": "Desarrollador de Software | Soporte e Infraestructura TI",
     "tagline": "Desarrollo software, automatizo procesos y construyo soluciones tecnológicas para resolver problemas reales.",
     "bioTitle": "Software útil e infraestructura que funciona.",
-    "bio": "Estudio Ingeniería en Informática, mención Desarrollo de Sistemas, y tengo formación previa en Programación. Trabajo en soporte TI en la Municipalidad de Placilla, donde desarrollo plataformas, administro servicios Microsoft 365 y resuelvo problemas tecnológicos. También exploro aplicaciones CLI, automatización, inteligencia artificial y sistemas distribuidos. Me interesa crear software eficiente, mantenible y sencillo.",
+    "bio": "Desarrollo plataformas web, analizo datos y mantengo infraestructura TI, hoy en la Municipalidad de Placilla. Y experimento con agentes de IA.",
     "available": true,
     "availabilityNote": "Abierto a proyectos freelance, preferentemente remotos",
     "location": "Chile",
     "timezone": "America/Santiago",
     "email": "vicente.contreras.dev@gmail.com",
     "github": "https://github.com/VincentPelos",
+    "linkedin": "https://www.linkedin.com/in/vicente-contreras-duarte-ab7b72343/",
+    "cvPath": "/cv.pdf",
     "highlightStack": [
       "TypeScript",
       "JavaScript",
@@ -21,38 +23,57 @@
       "Linux",
       "Microsoft 365"
     ],
-    "nowPlaying": {
-      "song": "Hail to the King",
-      "artist": "Avenged Sevenfold"
-    },
-    "nowGaming": {
-      "title": "Total War: WARHAMMER III",
-      "note": "También juego The Battle Cats y Wuthering Waves"
-    },
     "nav": [
       { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
       { "section": "experiencia", "label": "experiencia" },
       { "section": "proyectos", "label": "proyectos" },
-      { "section": "skills", "label": "skills" },
       { "section": "educacion", "label": "educación" },
+      { "section": "skills", "label": "skills" },
       { "section": "contacto", "label": "contacto" }
     ],
     "footerNote": "Hecho con Astro · vduarte.dev",
+    "footerLinks": [{ "label": "Uso de IA", "href": "/uso-de-ia" }],
+    "scrollCue": { "label": "portafolio", "ariaLabel": "Bajar al portafolio" },
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
     "bento": {
       "about": "Sobre mí",
-      "clock": "Hora local",
       "status": "Estado",
       "available": "Disponible",
       "unavailable": "No disponible",
       "stack": "Stack principal",
-      "playing": "Sonando",
-      "gaming": "Jugando",
       "links": "Encuéntrame",
-      "constellation": "~/constelacion"
+      "areas": [
+        {
+          "art": "dev",
+          "title": "Plataformas web y herramientas internas",
+          "proof": "muniplacilla.cl · React + TypeScript",
+          "cta": "proyectos",
+          "href": "#proyectos"
+        },
+        {
+          "art": "datos",
+          "title": "Datos y Business Intelligence",
+          "proof": "caso Colchagua · Python + Power BI",
+          "cta": "ver caso",
+          "href": "/proyectos/colchagua"
+        },
+        {
+          "art": "infra",
+          "title": "Soporte e infraestructura TI",
+          "proof": "Municipalidad de Placilla · M365 y redes",
+          "cta": "experiencia",
+          "href": "#experiencia"
+        },
+        {
+          "art": "agentes",
+          "title": "Agentes de IA",
+          "proof": "Claude Code · orquestación multiagente",
+          "cta": "uso de IA",
+          "href": "/uso-de-ia"
+        }
+      ]
     },
     "constellations": {
-      "about": "@",
       "experience": ">_",
       "projects": "</>",
       "skills": "#",
@@ -64,7 +85,8 @@
       "experience": {
         "title": "Experiencia",
         "unit": { "one": "rol", "other": "roles" },
-        "since": "desde"
+        "since": "desde",
+        "highlights": { "show": "ver logros", "hide": "ocultar logros" }
       },
       "education": {
         "title": "Educación",

@@ -1,23 +1,17 @@
 ---
-import BentoCard from '../BentoCard.astro';
+import { getSite } from '../../../../lib/content';
+import BentoCard from './BentoCard.astro';
 
-interface Props {
-  label: string;
-  text: string;
-  available: boolean;
-  note?: string;
-}
-
-const { label, text, available, note } = Astro.props;
+const { bento, available, availabilityNote } = await getSite();
 ---
 
-<BentoCard label={label} class="justify-between min-[461px]:[grid-area:status]">
+<BentoCard label={bento.status} class="justify-between [grid-area:status]">
   <p class="flex items-center gap-2.5 text-xl leading-[1.25] font-semibold">
     <span
       aria-hidden="true"
       class:list={['size-2.5 rounded-full', available ? 'animate-pulse-ok bg-ok' : 'bg-muted']}
     ></span>
-    {text}
+    {available ? bento.available : bento.unavailable}
   </p>
-  {note && <p class="text-[0.9rem] text-muted">{note}</p>}
+  {availabilityNote && <p class="text-[0.9rem] text-muted">{availabilityNote}</p>}
 </BentoCard>

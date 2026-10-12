@@ -51,14 +51,16 @@
     }
   }
 
-  --animate-eq: eq 0.9s ease-in-out infinite alternate;
-  --animate-pulse-ok: pulse-ok 2s infinite;
+  /* Flecha del hero que invita a bajar (#131) */
+  --animate-bob: bob 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 
-  @keyframes eq {
-    to {
-      height: 15%;
+  @keyframes bob {
+    50% {
+      translate: 0 5px;
     }
   }
+
+  --animate-pulse-ok: pulse-ok 2s infinite;
 
   @keyframes pulse-ok {
     0% {
@@ -261,6 +263,31 @@
 /* Con un visor de imágenes abierto (ProjectGallery), la página de atrás no se mueve. */
 html:has(dialog[open]) {
   overflow: hidden;
+}
+
+/*
+ * Velo (#134): oscurece el cielo de estrellas justo detrás de un bloque de texto, sin marco.
+ * Va al 100 %, elegido en el laboratorio. El canvas del cielo queda debajo del contenido
+ * (pages/index.astro), así que el velo solo tapa estrellas, nunca otro texto.
+ */
+@utility veil {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -14px -22px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 26px;
+    background: radial-gradient(
+      closest-side,
+      var(--color-bg),
+      color-mix(in srgb, var(--color-bg) 80%, transparent) 72%,
+      transparent
+    );
+  }
 }
 
 /* Texto con el degradado de la paleta */

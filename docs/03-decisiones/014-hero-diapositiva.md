@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Aceptada
+estado: Reemplazada en parte por 018 (caída al agujero)
 fecha: 2026-10-10
 ---
 

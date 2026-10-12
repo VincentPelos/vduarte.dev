@@ -1,51 +1,46 @@
 ---
-import { linkAttrs } from '../../../../lib/links';
-import LinkHint from '../../../ui/LinkHint.astro';
-import BentoCard from '../BentoCard.astro';
+import { getSite } from '../../../../lib/content';
+import Link from '../../../ui/Link.astro';
+import BentoCard from './BentoCard.astro';
 
-interface Props {
-  label: string;
-  pendingLabel: string;
-  links: { href?: string; text: string }[];
-}
-
-const { label, pendingLabel, links } = Astro.props;
+const { bento, github, linkedin, cvPath, labels } = await getSite();
+// `download`: el enlace baja un archivo (el CV) y lleva ↓ en vez de ↗. Sin `href`, queda pendiente.
+const links = [
+  { href: github, text: labels.github },
+  { href: linkedin, text: labels.linkedin },
+  { href: cvPath, text: labels.cv, download: true },
+];
+const row = 'flex items-center justify-between border-t border-line py-2 font-medium';
 ---
 
-<BentoCard label={label} class="justify-between min-[461px]:[grid-area:links]">
+<BentoCard label={bento.links} class="justify-between [grid-area:links]">
   <div>
-    {links.map(({ href, text }) =>
-      href ? (
-        <a
-          href={href}
-          {...linkAttrs(href)}
-          class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
-        >
-          <span>
-            {text}
-            <LinkHint href={href} />
-          </span>
-          <span aria-hidden="true" class="font-mono text-muted">
-            ↗
-          </span>
-        </a>
+    {links.map(({ href, text, download }) => {
+      const arrow = (
+        <span aria-hidden="true" class="font-mono text-muted">
+          {download ? '↓' : '↗'}
+        </span>
+      );
+      return href ? (
+        <Link href={href} download={download} class={`${row} transition-colors hover:text-white`}>
+          <span>{text}</span>
+          {arrow}
+        </Link>
       ) : (
         <span
           role="link"
           aria-disabled="true"
           tabindex="0"
-          title={pendingLabel}
-          class="flex items-center justify-between border-t border-line py-2 font-medium text-muted"
+          title={labels.pending}
+          class={`${row} text-muted`}
         >
           <span>
             {text}
-            <span class="sr-only"> ({pendingLabel})</span>
+            <span class="sr-only"> ({labels.pending})</span>
           </span>
-          <span aria-hidden="true" class="font-mono">
-            ↗
-          </span>
+          {arrow}
         </span>
-      ),
-    )}
+      );
+    })}
   </div>
 </BentoCard>

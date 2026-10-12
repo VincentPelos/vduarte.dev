@@ -22,7 +22,7 @@ import {
   type Rgb,
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
-import { CELL, canvasDpr, readPalette } from '../../lib/scene';
+import { CELL, fitCanvas, frameLoop, readPalette, SCENE_FPS } from '../../lib/scene';
 
 interface Options {
   reducedMotion: boolean;
@@ -66,6 +66,11 @@ interface Layout {
 
 /** Quieto, el cielo solo cambia por los destellos: basta con ~10 cuadros por segundo. */
 const IDLE_FRAME_MS = 100;
+/**
+ * Orbitando el agujero, a SCENE_FPS (con margen para no saltarse cuadros de 60 Hz). Con scroll se
+ * dibuja en cada cuadro: las constelaciones siguen a las secciones.
+ */
+const ORBIT_FRAME_MS = (1000 / SCENE_FPS) * 0.8;
 const RADII = [0.9, 1.5, 2.2];
 const TIMELINE_GLYPH = 80;
 
@@ -163,8 +168,6 @@ export function mount(
   const sizeOf = (name: string, r: DOMRect) => {
     if (modes.get(name) === 'timeline') return TIMELINE_GLYPH;
     if (modes.get(name) === 'replace') return r.height * 1.6;
-    // la @ de Sobre mí es un detalle: no crece aunque la tarjeta crezca
-    if (name === 'about') return Math.min(Math.min(r.width, r.height) * 1.25, 130);
     return Math.min(r.width, r.height) * 1.15;
   };
 
@@ -360,13 +363,10 @@ export function mount(
   };
 
   const resize = () => {
-    const dpr = canvasDpr();
     const widthChanged = innerWidth !== width;
     width = innerWidth;
     height = innerHeight;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fitCanvas(canvas, ctx, width, height);
     // Solo un cambio de ancho (o una ventana más alta que el cielo) rehace las estrellas.
     if (widthChanged || height > skyHeight) {
       skyHeight = Math.max(height, widthChanged ? screen.height || height : height);
@@ -376,31 +376,28 @@ export function mount(
     draw();
   };
 
-  let frame = 0,
-    last = performance.now(),
-    lastDraw = -Infinity,
+  let lastDraw = -Infinity,
     lastScroll = Number.NaN,
     animating = true;
-  const loop = (now: number) => {
-    time += Math.min(0.05, (now - last) / 1000);
-    last = now;
-    if (animating || scrollY !== lastScroll || now - lastDraw >= IDLE_FRAME_MS) {
+  const loop = frameLoop((now, dt) => {
+    time += dt;
+    const wait = animating ? ORBIT_FRAME_MS : IDLE_FRAME_MS;
+    if (scrollY !== lastScroll || now - lastDraw >= wait) {
       animating = draw();
       lastDraw = now;
       lastScroll = scrollY;
     }
-    frame = requestAnimationFrame(loop);
-  };
+  });
   const onScroll = () => draw();
 
   addEventListener('resize', resize);
   document.fonts?.addEventListener('loadingdone', buildShapes);
   resize();
   if (reducedMotion) addEventListener('scroll', onScroll, { passive: true });
-  else frame = requestAnimationFrame(loop);
+  else loop.start();
 
   return () => {
-    cancelAnimationFrame(frame);
+    loop.stop();
     removeEventListener('resize', resize);
     removeEventListener('scroll', onScroll);
     document.fonts?.removeEventListener('loadingdone', buildShapes);

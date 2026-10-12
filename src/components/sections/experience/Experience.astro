@@ -1,18 +1,22 @@
 ---
 import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
-import { sortByRecency } from '../../../lib/dates';
-import { linkAttrs } from '../../../lib/links';
-import LinkHint from '../../ui/LinkHint.astro';
+import { groupByYear, sortByRecency } from '../../../lib/dates';
 import { pluralize } from '../../../lib/text';
 import Chip from '../../ui/Chip.astro';
+import Link from '../../ui/Link.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
+import YearBlock from '../../ui/YearBlock.astro';
+
+/** Tecnologías que se ven sin desplegar; el resto se resume en "+n". En celular, menos (#146). */
+const STACK_SHOWN = 6;
+const STACK_SHOWN_MOBILE = 4;
 
 const site = await getSite();
 
-const { current, experience: texts } = site.sections;
+const texts = site.sections.experience;
 const jobs = sortByRecency((await getCollection('experience')).map((entry) => entry.data));
 const since = jobs
   .map((job) => job.start)
@@ -22,64 +26,105 @@ const since = jobs
 const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${since}`]
   .filter(Boolean)
   .join(' · ');
+const years = groupByYear(jobs);
 ---
 
 <Section id="experiencia" constellation="experience">
   <SectionHeader file="experience.json" title={texts.title} meta={meta} />
-  <!-- El margen izquierdo es la línea de tiempo de estrellas (decisión 009). -->
-  <ol data-constellation="experience" data-constellation-mode="timeline" class="pl-[76px]">
-    {jobs.map((job) => (
-      <li
-        data-constellation-mark
-        class="grid gap-x-10 gap-y-3 border-t border-line py-[30px] last:border-b min-[721px]:grid-cols-[13rem_minmax(0,1fr)]"
-      >
-        <p data-reveal class="font-mono text-[0.82rem] leading-normal text-muted">
-          <Period
-            start={job.start}
-            end={job.end}
-            dateNote={job.dateNote}
-            ongoing={job.ongoing}
-            currentLabel={current}
-          />
-          {job.location && <span class="block">{job.location}</span>}
-        </p>
-        <div data-reveal>
-          <h3 class="mb-1 text-[clamp(1.15rem,2.4vw,1.4rem)] leading-[1.25] font-semibold">
-            {job.role}{' '}
-            <span class="font-normal text-muted">
-              ·{' '}
-              {job.url ? (
-                <a href={job.url} {...linkAttrs(job.url)} class="hover:text-fg">
-                  {job.company}
-                  <LinkHint href={job.url} />
-                </a>
-              ) : (
-                job.company
-              )}
-            </span>
-          </h3>
-          <p class="mt-2 max-w-[62ch] text-soft">{job.description}</p>
-          {job.highlights && (
-            <ul class="mt-3.5 grid max-w-[62ch] gap-1.5">
-              {job.highlights.map((highlight) => (
-                <li class="relative pl-5 text-soft">
-                  <span aria-hidden="true" class="absolute left-0 font-mono text-muted">
-                    →
-                  </span>
-                  {highlight}
-                </li>
-              ))}
-            </ul>
-          )}
-          {job.stack && (
-            <ul class="mt-4 flex flex-wrap gap-1.5">
-              {job.stack.map((tech) => (
-                <Chip>{tech}</Chip>
-              ))}
-            </ul>
-          )}
-        </div>
-      </li>
+  {/*
+    Columna de años (#134): de cada trabajo se ve rol, empresa, periodo, una línea y el stack; los
+    logros se despliegan. La línea de estrellas la dibuja el cielo (decisión 009) en el ancla, entre
+    los años y los trabajos; arriba deja 104px para el símbolo >_. Cada trabajo es una marca: su
+    estrella es más grande. Trace.astro hace aparecer cada trabajo al entrar.
+  */}
+  <div data-trace class="relative grid gap-11 pt-[104px]">
+    <div
+      data-constellation="experience"
+      data-constellation-mode="timeline"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-y-0 left-[-21px] min-[721px]:left-[calc(10rem+15px)]"
+    ></div>
+    {years.map(([year, list], index) => (
+      <YearBlock year={year} current={index === 0}>
+        {list.map((job) => {
+          const stack = job.stack ?? [];
+          const hidden = stack.length - STACK_SHOWN;
+          const hiddenMobile = stack.length - STACK_SHOWN_MOBILE;
+          return (
+            <article data-constellation-mark data-trace-item class="grid">
+              <div data-trace-body class="veil grid gap-2.5">
+                <p class="flex flex-wrap gap-x-2 font-mono text-[0.8rem] leading-normal text-muted">
+                  <Period
+                    start={job.start}
+                    end={job.end}
+                    dateNote={job.dateNote}
+                    ongoing={job.ongoing}
+                  />
+                  {job.location && <span>· {job.location}</span>}
+                </p>
+                <h3
+                  class:list={[
+                    'font-display leading-[1.1] font-bold tracking-display',
+                    job.ongoing
+                      ? 'text-[clamp(1.35rem,3.2vw,2rem)]'
+                      : 'text-[clamp(1.1rem,2.4vw,1.35rem)]',
+                  ]}
+                >
+                  {job.role}
+                </h3>
+                <p class="text-[1.05rem] text-soft">
+                  {job.url ? (
+                    <Link href={job.url} class="hover:text-fg">
+                      {job.company}
+                    </Link>
+                  ) : (
+                    job.company
+                  )}
+                </p>
+                <p class="max-w-[54ch] text-[1.05rem] leading-normal">
+                  {job.summary ?? job.description}
+                </p>
+                {stack.length > 0 && (
+                  <ul class="flex flex-wrap gap-1.5">
+                    {stack.slice(0, STACK_SHOWN).map((tech, i) => (
+                      <Chip class={i >= STACK_SHOWN_MOBILE ? 'max-[460px]:hidden' : undefined}>
+                        {tech}
+                      </Chip>
+                    ))}
+                    {hidden > 0 && <Chip class="border-dashed max-[460px]:hidden">+{hidden}</Chip>}
+                    {hiddenMobile > 0 && (
+                      <Chip class="hidden border-dashed max-[460px]:inline">+{hiddenMobile}</Chip>
+                    )}
+                  </ul>
+                )}
+                {job.highlights && (
+                  <details class="group">
+                    <summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-line px-3 py-1.5 font-mono text-[0.76rem] text-soft transition-colors hover:border-line-hi hover:text-fg [&::-webkit-details-marker]:hidden">
+                      <span aria-hidden="true" class="transition-transform group-open:rotate-90">
+                        ›
+                      </span>
+                      <span class="group-open:hidden">
+                        {texts.highlights.show} ({job.highlights.length})
+                      </span>
+                      <span class="hidden group-open:inline">{texts.highlights.hide}</span>
+                    </summary>
+                    <ul class="mt-3 grid max-w-[62ch] gap-1.5">
+                      {job.highlights.map((highlight) => (
+                        <li class="relative pl-5 text-soft">
+                          <span aria-hidden="true" class="absolute left-0 font-mono text-muted">
+                            →
+                          </span>
+                          {highlight}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </YearBlock>
     ))}
-  </ol>
+  </div>
 </Section>

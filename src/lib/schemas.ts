@@ -67,51 +67,43 @@ export const siteSchema = z.object({
     .startsWith('/', 'Ruta dentro de public/, empezando con "/" (ej. "/cv.pdf")')
     .optional(),
   highlightStack: z.array(z.string().min(1)).min(1),
-  nowPlaying: z.object({
-    song: z.string().min(1),
-    artist: z.string().min(1),
-    album: z.string().optional(),
-  }),
-  nowGaming: z.object({
-    title: z.string().min(1),
-    hours: z.number().int().nonnegative().optional(),
-    note: z.string().optional(),
-    gacha: z
-      .object({
-        game: z.string().min(1),
-        pity: z.number().int().nonnegative(),
-        pityMax: z.number().int().positive().default(90),
-      })
-      .refine((g) => g.pity <= g.pityMax, {
-        message: '"pity" no puede superar "pityMax"',
-        path: ['pity'],
-      })
-      .optional(),
-  }),
   /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
   nav: z
     .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))
     .min(1),
   footerNote: z.string().min(1),
+  /** Enlaces del pie de página a otras rutas del sitio (p. ej. `/uso-de-ia`). */
+  footerLinks: z.array(z.object({ label: z.string().min(1), href: z.string().min(1) })).default([]),
+  /** Flecha del hero que lleva al portafolio (#131). */
+  scrollCue: z.object({ label: z.string().min(1), ariaLabel: z.string().min(1) }),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
-  /** Etiquetas de las tarjetas del bento "Sobre mí". */
+  /** Etiquetas y áreas del bento "Sobre mí" (#133). */
   bento: z.object({
     about: z.string().min(1),
-    clock: z.string().min(1),
     status: z.string().min(1),
     available: z.string().min(1),
     unavailable: z.string().min(1),
     stack: z.string().min(1),
-    playing: z.string().min(1),
-    gaming: z.string().min(1),
     links: z.string().min(1),
-    /** Título de la ventana chica donde se forma la constelación de Sobre mí. */
-    constellation: z.string().min(1),
+    /**
+     * Las cuatro áreas, cada una con su dibujo en puntos (`art`) y un enlace a la prueba: un
+     * proyecto, el caso, la experiencia o el uso de IA.
+     */
+    areas: z
+      .array(
+        z.object({
+          art: z.enum(['dev', 'datos', 'infra', 'agentes']),
+          title: z.string().min(1),
+          proof: z.string().min(1),
+          cta: z.string().min(1),
+          href: z.string().min(1),
+        }),
+      )
+      .length(4),
   }),
   /** Símbolo que forman las estrellas en cada sección (decisión 009). */
   constellations: z.object({
-    about: z.string().min(1).max(3),
     experience: z.string().min(1).max(3),
     projects: z.string().min(1).max(3),
     skills: z.string().min(1).max(3),
@@ -122,7 +114,13 @@ export const siteSchema = z.object({
   sections: z.object({
     /** Lo que se muestra en lugar del término de un periodo vigente. */
     current: z.string().min(1),
-    experience: z.object({ title: z.string().min(1), unit: plural, since: z.string().min(1) }),
+    experience: z.object({
+      title: z.string().min(1),
+      unit: plural,
+      since: z.string().min(1),
+      /** Botón que despliega los logros de un trabajo (#134). */
+      highlights: z.object({ show: z.string().min(1), hide: z.string().min(1) }),
+    }),
     education: z.object({
       title: z.string().min(1),
       degree: plural,
@@ -176,6 +174,8 @@ export const experienceSchema = z
     ...period,
     location: z.string().optional(),
     description: z.string().min(1),
+    /** Una línea de qué se hace, visible sin desplegar los logros (#134); si falta, `description`. */
+    summary: z.string().min(1).optional(),
     highlights: z.array(z.string().min(1)).optional(),
     stack: z.array(z.string().min(1)).optional(),
     url: z.url().optional(),
@@ -307,3 +307,31 @@ export const caseSchema = <T extends z.ZodType>(image: () => T) =>
     }),
     labels: z.object({ back: text, download: text, report: text, repo: text, notebooks: text }),
   });
+
+/**
+ * Declaración de uso de IA (`ai-usage.json`, ruta `/uso-de-ia`): herramientas, qué hizo la IA y
+ * qué decidió una persona en cada proyecto (rúbrica: admisibilidad 6).
+ */
+export const aiUsageSchema = z.object({
+  id,
+  title: text,
+  subtitle: text,
+  intro: text,
+  tools: z.array(z.object({ name: text, maker: text, use: text })).min(1),
+  projects: z
+    .array(
+      z.object({
+        id,
+        /** Repo que se muestra como `$ cat …` sobre el título. */
+        file: text,
+        title: text,
+        /** Quién decidió en ese proyecto: encabeza la segunda columna. */
+        decidedBy: text,
+        rows: z.array(z.object({ task: text, ai: text, author: text })).min(1),
+      }),
+    )
+    .min(1),
+  checks: z.object({ title: text, items: z.array(text).min(1) }),
+  links: z.array(z.object({ label: text, href: z.url() })).min(1),
+  labels: z.object({ back: text, ai: text, links: text }),
+});

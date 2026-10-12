@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { hexToRgb, isSoftwareRenderer } from './scene';
+import { describe, expect, it, vi } from 'vitest';
+import { frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
 
 describe('hexToRgb', () => {
   it('convierte un hex de 6 dígitos', () => {
@@ -29,5 +29,44 @@ describe('isSoftwareRenderer', () => {
     ).toBe(false);
     expect(isSoftwareRenderer('Apple M2')).toBe(false);
     expect(isSoftwareRenderer('Adreno (TM) 650')).toBe(false);
+  });
+});
+
+describe('hash', () => {
+  it('da siempre el mismo valor para la misma celda', () => {
+    expect(hash(3, 7)).toBe(hash(3, 7));
+    expect(hash(3, 7)).not.toBe(hash(7, 3));
+  });
+
+  it('queda en [0, 1) y se reparte parejo', () => {
+    const values = Array.from({ length: 2000 }, (_, i) => hash(i, i * 3 + 1));
+    expect(values.every((v) => v >= 0 && v < 1)).toBe(true);
+    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+    expect(mean).toBeGreaterThan(0.45);
+    expect(mean).toBeLessThan(0.55);
+  });
+});
+
+describe('frameLoop', () => {
+  // Cuadros de una pantalla de 120 Hz (cada 8,33 ms), entregados a mano.
+  const run = (maxFps?: number) => {
+    let callback: FrameRequestCallback | undefined;
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => ((callback = cb), 1));
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+    vi.spyOn(performance, 'now').mockReturnValue(0);
+    const ticks: number[] = [];
+    frameLoop((now) => void ticks.push(now), maxFps).start();
+    for (let i = 1; i <= 12; i++) callback?.((i * 1000) / 120);
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    return ticks.length;
+  };
+
+  it('sin tope, corre en cada cuadro', () => {
+    expect(run()).toBe(12);
+  });
+
+  it('con tope de 60 fps, en 120 Hz dibuja uno de cada dos', () => {
+    expect(run(60)).toBe(6);
   });
 });

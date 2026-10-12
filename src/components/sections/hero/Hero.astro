@@ -1,10 +1,11 @@
 ---
 import { getSite } from '../../../lib/content';
 import Button from '../../ui/Button.astro';
+import ProfileButtons from '../../ui/ProfileButtons.astro';
 
 const site = await getSite();
 
-const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
+const { name, role, tagline, prompt, labels, scrollCue } = site;
 ---
 
 <section
@@ -13,7 +14,7 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
   data-constellation-section="hero"
   class="group/hero sticky top-0 isolate z-[1] flex min-h-svh items-center overflow-hidden"
 >
-  <!--
+  {/*
     Respaldo sin WebGL: una grilla de puntos tenue en CSS (6px = CELL de lib/scene.ts), que se
     oculta con `.has-scene`. Con WebGL, el agujero negro (black-hole.ts) se monta en
     [data-hero-scene] por encima del texto y lo redibuja deformado (`.is-lensing`); el texto real
@@ -21,22 +22,23 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
     va detrás y el texto real queda visible.
     Es una diapositiva de pantalla completa que queda quieta mientras el portafolio la tapa
     (decisión 014): así la escena nunca se corta a media pantalla.
-  -->
+  */}
   <div
     aria-hidden="true"
     class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle,var(--color-line)_1px,transparent_1.5px)] bg-size-[6px_6px] group-[.has-scene]/hero:hidden"
   ></div>
-  <!--
+  {/*
     Carga del agujero negro (decisión 011): mientras se precalculan los rayos, un anillo de
     puntos se completa donde va a aparecer. Solo se ve con `.is-loading`, que pone black-hole.ts.
-  -->
+  */}
   <div
     aria-hidden="true"
     class="hole-loader pointer-events-none absolute top-1/4 left-1/2 -z-[5] min-[760px]:left-[60%]"
   ></div>
   <div data-hero-scene aria-hidden="true" class="pointer-events-none absolute inset-0 z-10"></div>
 
-  <div class="wrap grid gap-[26px] pt-[88px] pb-16">
+  {/* Durante la caída al portafolio (decisión 018) el texto se apaga: --fall-text, de hero-fall.ts. */}
+  <div class="wrap grid gap-[26px] pt-[88px] pb-16" style="opacity: var(--fall-text, 1)">
     <p
       data-lens
       class="font-mono text-[clamp(0.78rem,2.4vw,0.92rem)] leading-[1.4] text-muted group-[.is-lensing]/hero:text-transparent"
@@ -68,21 +70,26 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
     >
       {tagline}
     </p>
-    <div class="relative z-20 flex flex-wrap gap-2.5">
+    <ProfileButtons class="relative z-20">
       <Button href="#contacto" variant="primary" arrow="down">
         {labels.email}
       </Button>
-      <Button href={github} arrow="external">
-        {labels.github}
-      </Button>
-      <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
-        {labels.linkedin}
-      </Button>
-      <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
-        {labels.cv}
-      </Button>
-    </div>
+    </ProfileButtons>
   </div>
+
+  {/* Flecha al portafolio (#131): con la escena, dispara la caída; sin ella, es un ancla. */}
+  <a
+    href="#sobre-mi"
+    data-fall-cue
+    aria-label={scrollCue.ariaLabel}
+    class="absolute bottom-[calc(22px+env(safe-area-inset-bottom,0px))] left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-line-hi bg-nav px-4 py-2.5 font-mono text-[0.78rem] leading-none font-medium text-fg backdrop-blur-md transition-colors hover:bg-glass-hi"
+    style="opacity: var(--fall-cue, 1)"
+  >
+    {scrollCue.label}
+    <span aria-hidden="true" class="inline-block motion-safe:animate-bob">
+      ↓
+    </span>
+  </a>
 </section>
 
 <script>
@@ -99,6 +106,10 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath } = site;
       import('./black-hole')
         .then(({ mount }) => mount(section, container, { reducedMotion }))
         .catch(() => {});
+    // Caída al agujero al pasar al portafolio (decisión 018). Sin escena no intercepta nada.
+    const end = document.querySelector<HTMLElement>('[data-hero-end]');
+    if (!reducedMotion && end)
+      import('./hero-fall').then(({ mountFall }) => mountFall(section, end));
 
     whenIdle(load);
   }

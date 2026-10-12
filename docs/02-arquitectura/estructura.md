@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-10
+actualizado: 2026-10-12
 ---
 
 # Estructura de carpetas
@@ -18,6 +18,7 @@ vduarte.dev/
 │  └─ lighthouserc.json        umbrales de Lighthouse CI
 ├─ .claude/skills/             skills de proyecto para agentes (prototipo-artifact)
 ├─ .husky/                     hooks de git (commit-msg)
+├─ cv/                         cv.tex: fuente LaTeX del CV (`pnpm cv` → public/cv.pdf)
 ├─ docs/                       esta bóveda
 ├─ .dockerignore                exclusiones del contexto de build de Docker
 ├─ Dockerfile                   build de Astro y servidor Nginx para Coolify
@@ -27,19 +28,19 @@ vduarte.dev/
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/     capturas del Power BI del caso (galería de cases.json)
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, SmoothScroll, OffscreenPause
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
-│  │  │  ├─ hero/              Hero.astro + black-hole.ts
-│  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/
+│  │  │  ├─ hero/              Hero.astro + black-hole.ts (orquesta las pasadas con twgl) + shaders/ (GLSL) + hero-fall.ts (caída al portafolio)
+│  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
 │  │  │  ├─ experience/
-│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectGallery (visor)
+│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
 │  │  │  ├─ skills/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
-│  │  ├─ case/                 piezas de los casos de estudio: CaseHeading, CaseDashboard, CaseBlock, BarChart
-│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, Icon, TechIcon, LinkHint
-│  ├─ content/                 datos del sitio (JSON) y casos de estudio (cases.json)
-│  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
+│  │  ├─ case/                 piezas de los casos de estudio: CaseDashboard, CaseBlock, BarChart
+│  │  └─ ui/                   piezas reutilizables: Link (todo enlace), PillLink, Button, ProfileButtons (GitHub/LinkedIn/CV), GlassCard, Chip, MarkList, Section, SectionHeader, FileHeading (`$ cat …`), Period, YearBlock (columna de años), Glows, Icon, LinkHint
+│  ├─ content/                 datos del sitio (JSON), casos de estudio (cases.json) y uso de IA (ai-usage.json)
+│  ├─ layouts/                 BaseLayout.astro (todas las páginas), PageLayout.astro (páginas internas: caso y uso de IA)
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)
 │  ├─ pages/                   rutas: index.astro, proyectos/[slug].astro, uso-de-ia.astro
 │  ├─ styles/                  global.css (tokens + @theme)
@@ -64,10 +65,15 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
 | Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
-| `target`/`rel` de un enlace | `linkAttrs()` de `src/lib/links.ts`, nunca a mano |
-| Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
+| Un enlace | `ui/Link.astro` (pone `target`/`rel` con `linkAttrs()` y avisa la pestaña nueva), nunca un `<a>` externo a mano |
+| Una página fuera del home | `layouts/PageLayout.astro` (volver, título, bajada y frase) |
+| Texto de `site.json` que usa un solo componente | Lo lee el componente con `getSite()`; no se pasa por props desde el padre |
+| Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida, bucle de cuadros) | `src/lib/scene.ts` |
+| Un shader | `.vert`/`.frag` (o `.glsl` si se comparte) en `shaders/` junto a su escena, importado con `?raw` |
+| Estado que comparten dos scripts en cada cuadro (agujero, caída, Lenis) | `src/lib/hole.ts`, `src/lib/fall.ts`, `src/lib/smooth.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
+| El CV | Fuente en `cv/cv.tex`; el PDF generado con `pnpm cv` va a `public/cv.pdf` y se commitea ([decisión 019](../03-decisiones/019-cv-latex.md)) |
 | Un test | Al lado del archivo que prueba: `lib/dates.ts` → `lib/dates.test.ts` |
 | Un proceso que repiten los agentes | `.claude/skills/<nombre>/SKILL.md` |
 
@@ -78,3 +84,4 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 - Carpetas, scripts `.ts`, JSON y notas: `kebab-case` (`smooth-scroll.ts`, `experience.json`).
 - Rutas públicas en español: `/proyectos/colchagua`, `/uso-de-ia`.
 - Notas de decisión: `NNN-titulo.md`; bitácora: `AAAA-MM-DD.md`.
+- Comentarios en plantillas `.astro`: `{/* … */}`, no `<!-- … -->`, que llega al HTML publicado (#158).

@@ -28,6 +28,13 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # Text compression: the home goes from ~380 KB to ~180 KB transferred
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml text/plain application/xml;
+
     location / {
         try_files $uri $uri/ $uri.html =404;
     }

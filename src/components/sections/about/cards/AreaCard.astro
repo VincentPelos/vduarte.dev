@@ -1,0 +1,66 @@
+---
+import { getCase } from '../../../../lib/content';
+import { linkAttrs } from '../../../../lib/links';
+import GlassCard from '../../../ui/GlassCard.astro';
+import LinkHint from '../../../ui/LinkHint.astro';
+
+interface Props {
+  art: 'dev' | 'datos' | 'infra' | 'agentes';
+  title: string;
+  proof: string;
+  cta: string;
+  href: string;
+}
+
+const { art, title, proof, cta, href } = Astro.props;
+
+// El dibujo de ~/datos son las barras reales del caso: la superficie frutal de Colchagua.
+const surface = async () => {
+  const chart = (await getCase('colchagua')).blocks
+    .flatMap((block) => block.panels)
+    .find((panel) => panel.chart.type === 'pairs')?.chart;
+  return chart?.type === 'pairs' ? chart.items.map((item) => item.after) : undefined;
+};
+const values = art === 'datos' ? await surface() : undefined;
+// Clases completas (Tailwind no ve las armadas con plantilla): color de la etiqueta y área.
+const classes = {
+  dev: ['text-c1', '[grid-area:dev]'],
+  datos: ['text-c2', '[grid-area:datos]'],
+  infra: ['text-c3', '[grid-area:infra]'],
+  agentes: ['text-fg', '[grid-area:agentes]'],
+}[art];
+---
+
+{/*
+  Un área del perfil (#133): su dibujo en puntos (bento-art.ts) y un enlace a la prueba. En
+  celular van de a dos por fila: el dibujo se achica y la prueba se esconde.
+*/}
+<GlassCard
+  as="a"
+  href={href}
+  {...linkAttrs(href)}
+  reveal={false}
+  data-bento-card
+  class:list={[
+    'group flex min-w-0 flex-col gap-2.5 p-[22px] max-[460px]:gap-2 max-[460px]:p-4',
+    classes[1],
+  ]}
+>
+  <div class="flex items-baseline justify-between gap-2 font-mono text-[0.72rem]">
+    <span class={classes[0]}>~/{art}</span>
+    <span class="text-muted transition group-hover:translate-x-0.5 group-hover:text-fg max-[460px]:hidden">
+      {cta} <span aria-hidden="true">→</span>
+    </span>
+  </div>
+  <canvas
+    data-bento-art={art}
+    data-values={values ? JSON.stringify(values) : undefined}
+    aria-hidden="true"
+    class="block h-[150px] w-full max-[900px]:h-[120px] max-[460px]:h-[84px]"
+  ></canvas>
+  <h3 class="text-base leading-[1.3] font-semibold max-[460px]:text-[0.92rem]">
+    {title}
+    <LinkHint href={href} />
+  </h3>
+  <p class="font-mono text-[0.72rem] text-muted max-[460px]:hidden">{proof}</p>
+</GlassCard>

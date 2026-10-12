@@ -1,6 +1,6 @@
 ---
 tags: [indice]
-actualizado: 2026-10-10
+actualizado: 2026-10-12
 ---
 
 # vduarte.dev — Índice de la bóveda
@@ -11,8 +11,10 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 ## Estado actual
 
-- **Última versión:** v0.5.0 (2026-10-10) Caso Colchagua: página `/proyectos/colchagua` con capturas del Power BI, gráficos HTML y descargas; competencias de BI; Proyectos con imágenes y mini galería. Lighthouse: performance 99, el resto 100. Ver [bitácora 2026-10-10](06-bitacora/2026-10-10.md).
-- **Hito siguiente:** v0.6.0 Contacto y extras (incluye mejorar las animaciones, #124) — ver [alcance](01-proyecto/alcance.md#hitos).
+- **Última versión:** v0.6.0 (2026-10-12) Contacto y extras: `/uso-de-ia`, caída al agujero con flecha, bento de áreas, columna de años, CV en LaTeX, componentes reutilizables, escenas con twgl.js y rendimiento (con GPU real, home móvil de 86 a 96). Lighthouse CI: performance 99 en el home y 100 en las páginas internas, el resto 100. Ver [bitácora 2026-10-12](06-bitacora/2026-10-12.md).
+- **Hito en curso:** v1.0.0 Entrega. Suma lo que quedó de v0.6.0: animaciones de entrada (#124) y SEO/Open Graph.
+- **Siguiente:** la sección de detalles que pida el autor y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
+- **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
 
@@ -25,6 +27,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 | [Visión](01-proyecto/vision.md) | Objetivo, audiencia, principios | Decides tono, contenido o prioridades |
 | [Alcance](01-proyecto/alcance.md) | Rutas, qué entra y qué no, hitos | Empiezas un hito o dudas si algo corresponde |
 | [Rúbrica ISI802](01-proyecto/rubrica.md) | Criterios de evaluación y su estado | El cambio impacta la nota (label `rúbrica`) |
+| [Pendientes](01-proyecto/pendientes.md) | Qué falta por hito y qué necesita del autor | Empiezas una sesión o cierras un pendiente |
 
 ### 02 · Arquitectura — cómo está construido
 
@@ -50,7 +53,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [006](03-decisiones/006-power-bi-descarga.md) | Power BI: descarga + dashboard web | BI |
 | [007](03-decisiones/007-iconos.md) | Íconos de Iconify como SVG en el build | UI |
 | [008](03-decisiones/008-agujero-negro-puntos.md) | Hero: agujero negro con puntos de terminal | Movimiento |
-| [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección | Movimiento |
+| [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección (reemplazada en parte por 021) | Movimiento |
 | [010](03-decisiones/010-iconos-sprite.md) | Íconos en un sprite SVG (reemplaza en parte a 007) | UI |
 | [011](03-decisiones/011-agujero-precalculado.md) | Agujero negro con trayectorias precalculadas (reemplaza en parte a 008) | Movimiento |
 | [012](03-decisiones/012-entrada-colapso.md) | Entrada del agujero negro por colapso (reemplaza en parte a 011) | Movimiento |
@@ -58,6 +61,11 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [014](03-decisiones/014-hero-diapositiva.md) | Hero como diapositiva que el portafolio tapa | Movimiento |
 | [016](03-decisiones/016-sharp-imagenes.md) | `sharp` para optimizar imágenes | Contenido |
 | [017](03-decisiones/017-graficos-html.md) | Gráficos del caso en HTML, sin Chart.js (reemplaza en parte a 006) | BI |
+| [018](03-decisiones/018-caida-al-agujero.md) | Caída al agujero negro al pasar al portafolio (reemplaza en parte a 014) | Movimiento |
+| [019](03-decisiones/019-cv-latex.md) | CV en LaTeX compilado con Tectonic | Contenido |
+| [020](03-decisiones/020-columna-de-anios.md) | Experiencia y Educación con columna de años | Diseño |
+| [021](03-decisiones/021-bento-agentes-armado.md) | Bento de áreas que se arma con los puntos del agujero (reemplaza en parte a 009) | Movimiento |
+| [022](03-decisiones/022-twgl-escenas.md) | twgl.js para el agujero negro y helpers compartidos para los canvas | Arquitectura |
 
 ### 04 · Diseño — cómo se ve
 
@@ -77,6 +85,8 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
+- [2026-10-12](06-bitacora/2026-10-12.md): orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) escenas animadas con twgl.js y helpers compartidos, y análisis y arreglos de rendimiento.
+- [2026-10-11](06-bitacora/2026-10-11.md): bento de áreas, Experiencia y Educación en columna de años, CV en LaTeX y limpieza de contenido.
 - [2026-10-10](06-bitacora/2026-10-10.md): hito Movimiento, laboratorios de UI y Proyectos, hero descartado, Lighthouse y release v0.4.0.
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.
 - [2026-10-08](06-bitacora/2026-10-08.md): laboratorio de animaciones, release v0.3.0 y contenido personal.
