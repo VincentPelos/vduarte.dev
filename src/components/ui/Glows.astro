@@ -8,12 +8,12 @@ interface Props {
 const { strength = 0.55, class: className } = Astro.props;
 ---
 
-<!--
+{/*
   Brillos difuminados detrás del vidrio. El padre necesita `relative`; con `isolate` quedan
   dentro de la sección, sin él pasan por detrás de las secciones vecinas.
   Cada brillo es un degradado (`glow-orb`), no un `filter: blur`: con blur, el navegador
   vuelve a difuminar en cada cuadro de la animación (docs/02-arquitectura/rendimiento.md).
--->
+*/}
 <div
   aria-hidden="true"
   class:list={[

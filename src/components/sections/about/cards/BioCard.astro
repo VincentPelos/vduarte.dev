@@ -6,7 +6,7 @@ import BentoCard from './BentoCard.astro';
 const { bento, bioTitle, bio, github, cvPath, labels } = await getSite();
 ---
 
-<!-- En pocas frases lo que es, y los dos atajos: el código y el CV (#133). -->
+{/* En pocas frases lo que es, y los dos atajos: el código y el CV (#133). */}
 <BentoCard label={bento.about} class="justify-between gap-4 [grid-area:bio]">
   <h2 class="max-w-[20ch] text-[clamp(1.5rem,3.2vw,2.3rem)] leading-[1.15] font-semibold tracking-[-0.025em] text-balance">
     {bioTitle}
