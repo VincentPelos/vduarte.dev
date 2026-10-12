@@ -6,19 +6,21 @@ import BentoCard from '../BentoCard.astro';
 interface Props {
   label: string;
   pendingLabel: string;
-  links: { href?: string; text: string }[];
+  /** `download`: el enlace baja un archivo (el CV) y lleva ↓ en vez de ↗. */
+  links: { href?: string; text: string; download?: boolean }[];
 }
 
 const { label, pendingLabel, links } = Astro.props;
 ---
 
-<BentoCard label={label} class="justify-between min-[461px]:[grid-area:links]">
+<BentoCard label={label} class="justify-between [grid-area:links]">
   <div>
-    {links.map(({ href, text }) =>
+    {links.map(({ href, text, download }) =>
       href ? (
         <a
           href={href}
           {...linkAttrs(href)}
+          download={download}
           class="flex items-center justify-between border-t border-line py-2 font-medium transition-colors hover:text-white"
         >
           <span>
@@ -26,7 +28,7 @@ const { label, pendingLabel, links } = Astro.props;
             <LinkHint href={href} />
           </span>
           <span aria-hidden="true" class="font-mono text-muted">
-            ↗
+            {download ? '↓' : '↗'}
           </span>
         </a>
       ) : (
@@ -42,7 +44,7 @@ const { label, pendingLabel, links } = Astro.props;
             <span class="sr-only"> ({pendingLabel})</span>
           </span>
           <span aria-hidden="true" class="font-mono">
-            ↗
+            {download ? '↓' : '↗'}
           </span>
         </span>
       ),

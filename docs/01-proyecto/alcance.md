@@ -16,7 +16,7 @@ actualizado: 2026-10-11
 ## Dentro del alcance
 
 - **Hero:** prompt `whoami`, nombre, rol, tagline, botones Correo · GitHub · LinkedIn · Descargar CV, agujero negro de puntos de fondo.
-- **Bento "sobre mí":** bio, hora local, disponibilidad, stack principal, *Sonando*, *Jugando*, links.
+- **Bento "sobre mí":** frase, disponibilidad, cuatro áreas (desarrollo, datos, infraestructura y agentes de IA) que llevan a su prueba, stack en logos y enlaces.
 - **Experiencia, proyectos (bento), educación, skills:** todo desde JSON.
 - **Caso Colchagua:** problema, enfoque, datos, capturas del Power BI y gráficos HTML, hallazgos, conclusiones, descarga del `.pbix` y links a notebooks. El Power BI no se incrusta: el autor aceptó esta alternativa (2026-10-11).
 - **Contacto:** correo con `mailto:` y botón para copiarlo.

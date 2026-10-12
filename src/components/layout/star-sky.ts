@@ -163,8 +163,6 @@ export function mount(
   const sizeOf = (name: string, r: DOMRect) => {
     if (modes.get(name) === 'timeline') return TIMELINE_GLYPH;
     if (modes.get(name) === 'replace') return r.height * 1.6;
-    // la @ de Sobre mí es un detalle: no crece aunque la tarjeta crezca
-    if (name === 'about') return Math.min(Math.min(r.width, r.height) * 1.25, 130);
     return Math.min(r.width, r.height) * 1.15;
   };
 
