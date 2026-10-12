@@ -4,6 +4,24 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Agregado
+
+- CV en LaTeX compatible con ATS, compilado con Tectonic (`pnpm cv`), y enlaces a CV y LinkedIn ([decisión 019](docs/03-decisiones/019-cv-latex.md)) (#142).
+- Experiencia y Educación en columna de años, con logros desplegables y la línea de estrellas que se dibuja al entrar ([decisión 020](docs/03-decisiones/020-columna-de-anios.md)) (#134).
+- Bento de áreas en puntos (dev, datos, infra y agentes de IA) que se arma con los puntos del agujero al terminar la caída ([decisión 021](docs/03-decisiones/021-bento-agentes-armado.md)) (#133).
+
+### Cambiado
+
+- Orden del home: Experiencia, Proyectos, Educación, Skills (#134).
+- En celular, tarjetas de a dos y menos espacio: el home es ~600 px más corto en 390 px (#146).
+- Vidrio de las tarjetas del bento al 50 % (#133).
+- Resumen de Experiencia al grano y cargo "Soporte TI" (#148); skills sin lo básico ni lo que no se usa (#150).
+
+### Eliminado
+
+- Tarjetas de hora, sonando, jugando y constelación del bento; `nowPlaying` y `nowGaming` (#133, #148).
+- Formulario n8n y analytics del alcance (#140).
+
 ## [0.5.0] - 2026-10-10
 
 Hito **Caso Colchagua**: el proyecto de BI sobre la cereza en Colchagua, con su página propia, y Proyectos con imágenes. Lighthouse sobre `develop`: performance 99 en el home y en el caso; accesibilidad, buenas prácticas y SEO 100.
