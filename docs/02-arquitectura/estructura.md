@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # Estructura de carpetas
@@ -31,16 +31,16 @@ vduarte.dev/
 │  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts + hero-fall.ts (caída al portafolio)
-│  │  │  ├─ about/             About.astro + BentoCard (marco de cada tarjeta) + cards/ + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
+│  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
 │  │  │  ├─ experience/
-│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectGallery (visor)
+│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
 │  │  │  ├─ skills/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
-│  │  ├─ case/                 piezas de los casos de estudio: CaseHeading, CaseDashboard, CaseBlock, BarChart
-│  │  └─ ui/                   piezas reutilizables sin contexto: GlassCard, Button, Chip, SectionHeader, YearBlock (columna de años), Icon, TechIcon, LinkHint
+│  │  ├─ case/                 piezas de los casos de estudio: CaseDashboard, CaseBlock, BarChart
+│  │  └─ ui/                   piezas reutilizables: Link (todo enlace), PillLink, Button, ProfileButtons (GitHub/LinkedIn/CV), GlassCard, Chip, MarkList, Section, SectionHeader, FileHeading (`$ cat …`), Period, YearBlock (columna de años), Glows, Icon, LinkHint
 │  ├─ content/                 datos del sitio (JSON), casos de estudio (cases.json) y uso de IA (ai-usage.json)
-│  ├─ layouts/                 BaseLayout.astro, CaseLayout.astro
+│  ├─ layouts/                 BaseLayout.astro (todas las páginas), PageLayout.astro (páginas internas: caso y uso de IA)
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)
 │  ├─ pages/                   rutas: index.astro, proyectos/[slug].astro, uso-de-ia.astro
 │  ├─ styles/                  global.css (tokens + @theme)
@@ -65,7 +65,9 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
 | Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
-| `target`/`rel` de un enlace | `linkAttrs()` de `src/lib/links.ts`, nunca a mano |
+| Un enlace | `ui/Link.astro` (pone `target`/`rel` con `linkAttrs()` y avisa la pestaña nueva), nunca un `<a>` externo a mano |
+| Una página fuera del home | `layouts/PageLayout.astro` (volver, título, bajada y frase) |
+| Texto de `site.json` que usa un solo componente | Lo lee el componente con `getSite()`; no se pasa por props desde el padre |
 | Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
 | Estado que comparten dos scripts en cada cuadro (agujero, caída, Lenis) | `src/lib/hole.ts`, `src/lib/fall.ts`, `src/lib/smooth.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
