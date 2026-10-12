@@ -23,6 +23,7 @@ interface Linkable {
   caseStudy?: string;
   repo?: string;
   demo?: string;
+  demoLabel?: string;
 }
 
 export interface ProjectLinkLabels {
@@ -33,13 +34,13 @@ export interface ProjectLinkLabels {
 
 /** Enlaces de un proyecto en orden: caso de estudio (interno), repositorio y demo (externos). */
 export function projectLinks(
-  { caseStudy, repo, demo }: Linkable,
+  { caseStudy, repo, demo, demoLabel }: Linkable,
   labels: ProjectLinkLabels,
 ): { href: string; text: string }[] {
   return [
     caseStudy && { href: `/proyectos/${caseStudy}`, text: `${labels.caseStudy} →` },
     repo && { href: repo, text: `${labels.repo} ↗` },
-    demo && { href: demo, text: `${labels.demo} ↗` },
+    demo && { href: demo, text: `${demoLabel ?? labels.demo} ↗` },
   ].filter((link) => !!link);
 }
 

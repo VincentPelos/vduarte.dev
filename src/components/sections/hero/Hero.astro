@@ -8,8 +8,12 @@ const site = await getSite();
 const { name, role, tagline, prompt, labels, scrollCue } = site;
 ---
 
+{/*
+  Ancla de `~/` en la nav (#166): el hero está pegado arriba (`sticky`) y su posición siempre es
+  la de la pantalla, así que un salto a él no movía nada. Esta ancla queda quieta al principio.
+*/}
+<div id="inicio" class="absolute top-0"></div>
 <section
-  id="inicio"
   data-hero
   data-constellation-section="hero"
   class="group/hero sticky top-0 isolate z-[1] flex min-h-svh items-center overflow-hidden"

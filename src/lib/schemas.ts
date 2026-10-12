@@ -246,6 +246,8 @@ export const projectSchema = <T extends z.ZodType>(image: () => T) =>
       image: image().optional(),
       repo: z.url().optional(),
       demo: z.url().optional(),
+      /** Texto del enlace a `demo`; si falta, el de site.json (#168). */
+      demoLabel: z.string().min(1).optional(),
       year: z.number().int().min(2000).max(2100),
       featured: z.boolean().default(false),
       caseStudy: id.optional(),
