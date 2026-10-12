@@ -67,27 +67,6 @@ export const siteSchema = z.object({
     .startsWith('/', 'Ruta dentro de public/, empezando con "/" (ej. "/cv.pdf")')
     .optional(),
   highlightStack: z.array(z.string().min(1)).min(1),
-  nowPlaying: z.object({
-    song: z.string().min(1),
-    artist: z.string().min(1),
-    album: z.string().optional(),
-  }),
-  nowGaming: z.object({
-    title: z.string().min(1),
-    hours: z.number().int().nonnegative().optional(),
-    note: z.string().optional(),
-    gacha: z
-      .object({
-        game: z.string().min(1),
-        pity: z.number().int().nonnegative(),
-        pityMax: z.number().int().positive().default(90),
-      })
-      .refine((g) => g.pity <= g.pityMax, {
-        message: '"pity" no puede superar "pityMax"',
-        path: ['pity'],
-      })
-      .optional(),
-  }),
   /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
   nav: z
     .array(z.object({ section: id, label: z.string().min(1), ariaLabel: z.string().optional() }))

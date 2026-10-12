@@ -29,8 +29,6 @@ const site = {
   linkedin: 'https://www.linkedin.com/in/ejemplo',
   cvPath: '/cv.pdf',
   highlightStack: ['TypeScript', 'Python'],
-  nowPlaying: { song: 'Canción', artist: 'Banda' },
-  nowGaming: { title: 'Juego' },
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
   scrollCue: { label: 'portafolio', ariaLabel: 'Bajar al portafolio' },
@@ -143,13 +141,6 @@ describe('siteSchema', () => {
       cvPath: 'cv.pdf',
     });
     expect(errorPaths(result).sort()).toEqual(['cvPath', 'github', 'timezone']);
-  });
-
-  it('usa 90 como pity máximo y no deja superarlo', () => {
-    const gacha = (g: object) =>
-      siteSchema.safeParse({ ...site, nowGaming: { title: 'Juego', gacha: g } });
-    expect(gacha({ game: 'Genshin', pity: 74 }).data?.nowGaming.gacha?.pityMax).toBe(90);
-    expect(errorPaths(gacha({ game: 'Genshin', pity: 95 }))).toEqual(['nowGaming.gacha.pity']);
   });
 
   it('exige al menos un enlace en la nav con id de sección válido', () => {

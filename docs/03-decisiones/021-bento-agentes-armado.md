@@ -25,6 +25,6 @@ El primer bento tenía mucho texto, se veía genérico y le faltaba vida (#133).
 - **Logos con nombre:** el autor eligió solo logos; el nombre queda en el `title` y para lectores de pantalla.
 
 ## Consecuencias
-- `nowPlaying` y `nowGaming` siguen en `site.json` sin mostrarse; falta decidir dónde van.
+- `nowPlaying` y `nowGaming` quedaron sin mostrarse y se eliminaron de `site.json` y del schema (#148).
 - `lib/time.ts` y el ícono animado de Sonando se eliminaron.
 - Las tarjetas del bento no usan reveal: se animan con el armado o ya están visibles.
