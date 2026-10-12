@@ -75,15 +75,24 @@ export function fitCanvas(
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
+/** Cuadros por segundo de las escenas que se animan solas: en pantallas de 120 Hz no se nota más. */
+export const SCENE_FPS = 60;
+
 /**
  * Bucle de cuadros. `tick` recibe el instante del cuadro y los segundos desde el anterior, con
  * tope de 0,05 s para que una pestaña dormida no haga saltar la escena. Si devuelve `false`, el
- * bucle se detiene.
+ * bucle se detiene. Con `maxFps`, se salta cuadros en pantallas más rápidas (el margen de 20 %
+ * evita saltarse cuadros de 60 Hz que llegan un poco antes).
  */
-export function frameLoop(tick: (now: number, dt: number) => boolean | void) {
+export function frameLoop(tick: (now: number, dt: number) => boolean | void, maxFps = Infinity) {
+  const minMs = (1000 / maxFps) * 0.8;
   let frame = 0;
   let last = 0;
   const step = (now: number) => {
+    if (minMs > 0 && now - last < minMs) {
+      frame = requestAnimationFrame(step);
+      return;
+    }
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     frame = tick(now, dt) === false ? 0 : requestAnimationFrame(step);

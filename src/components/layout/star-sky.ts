@@ -22,7 +22,7 @@ import {
   type Rgb,
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
-import { CELL, fitCanvas, frameLoop, readPalette } from '../../lib/scene';
+import { CELL, fitCanvas, frameLoop, readPalette, SCENE_FPS } from '../../lib/scene';
 
 interface Options {
   reducedMotion: boolean;
@@ -66,6 +66,11 @@ interface Layout {
 
 /** Quieto, el cielo solo cambia por los destellos: basta con ~10 cuadros por segundo. */
 const IDLE_FRAME_MS = 100;
+/**
+ * Orbitando el agujero, a SCENE_FPS (con margen para no saltarse cuadros de 60 Hz). Con scroll se
+ * dibuja en cada cuadro: las constelaciones siguen a las secciones.
+ */
+const ORBIT_FRAME_MS = (1000 / SCENE_FPS) * 0.8;
 const RADII = [0.9, 1.5, 2.2];
 const TIMELINE_GLYPH = 80;
 
@@ -376,7 +381,8 @@ export function mount(
     animating = true;
   const loop = frameLoop((now, dt) => {
     time += dt;
-    if (animating || scrollY !== lastScroll || now - lastDraw >= IDLE_FRAME_MS) {
+    const wait = animating ? ORBIT_FRAME_MS : IDLE_FRAME_MS;
+    if (scrollY !== lastScroll || now - lastDraw >= wait) {
       animating = draw();
       lastDraw = now;
       lastScroll = scrollY;
