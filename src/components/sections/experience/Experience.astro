@@ -7,6 +7,7 @@ import Chip from '../../ui/Chip.astro';
 import Link from '../../ui/Link.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
+import Glows from '../../ui/Glows.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
 import YearBlock from '../../ui/YearBlock.astro';
 
@@ -29,7 +30,9 @@ const meta = [pluralize(jobs.length, texts.unit), since && `${texts.since} ${sin
 const years = groupByYear(jobs);
 ---
 
-<Section id="experiencia" constellation="experience">
+<Section id="experiencia" constellation="experience" class="relative">
+  {/* Brillos (#167): luz detrás de el trabajo actual, para que no quede sobre negro plano. */}
+  <Glows strength={0.45} class="top-[6%] bottom-auto h-[900px] -scale-x-100" />
   <SectionHeader file="experience.json" title={texts.title} meta={meta} />
   {/*
     Columna de años (#134): de cada trabajo se ve rol, empresa, periodo, una línea y el stack; los
