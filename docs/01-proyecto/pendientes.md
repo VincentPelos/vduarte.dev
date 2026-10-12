@@ -36,6 +36,8 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 
 | Pendiente | Necesita del autor |
 |---|---|
+| Confirmar los textos del pipeline de cada proyecto (#162): lo hecho en cada etapa | Revisar los de Placilla y Noneto, y los de DAX, mpv y Tailwind CSS; sumar enlaces a los repos cuando sean públicos |
+| Stack del bento: hoy no muestra ninguna herramienta de BI (las de Colchagua sí se ven en Proyectos) | Decidir si cambia alguna de `highlightStack` por Power BI o pandas |
 | LinkedIn y CV: el CV ya está (`pnpm cv`) y los enlaces funcionan | Actualizar su perfil de LinkedIn; confirmar las fechas de la práctica en AIEP |
 | Noneto CLI con imágenes, galería y enlace al repo | Publicar el repo y mandar 2 o 3 capturas (está trabajando en él) |
 | Reducir los textos del caso Colchagua | Más adelante; por ahora quedan así. `/uso-de-ia` la escribe el agente: cuenta lo que hizo la IA |
@@ -46,3 +48,5 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 | Verificar `gzip` en el primer deploy: `curl -sI -H 'Accept-Encoding: gzip' <url>` debe responder `Content-Encoding: gzip` (#158) | Desplegar `main` en Coolify |
 | Pasada en celular real (rúbrica: responsivo) | Revisar en su celular Android. **Sin iPhone:** iOS/Safari (WebKit) queda sin verificar: caída con el rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte (hay respaldo) y rendimiento del WebGL |
 | Preparar la defensa: explicar código y decisiones | Leer las decisiones y la bitácora |
+
+Hechos en este hito: skills dentro de Proyectos, con lista y detalle y pipeline; sale la sección Skills (#162, [decisión 023](../03-decisiones/023-skills-en-proyectos.md)).

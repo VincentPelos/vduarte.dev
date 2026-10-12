@@ -33,8 +33,7 @@ vduarte.dev/
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts (orquesta las pasadas con twgl) + shaders/ (GLSL) + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
 │  │  │  ├─ experience/
-│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
-│  │  │  ├─ skills/
+│  │  │  ├─ projects/          Projects.astro (lista) + ProjectDetail (detalle) + ProjectPipeline (etapas) + projects.ts (elegir y animar) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseDashboard, CaseBlock, BarChart
@@ -64,7 +63,7 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un script que solo usa una sección | Al lado de su componente (`sections/hero/black-hole.ts`) |
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
-| Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
+| Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getSkillIcons()`, `getIconNames()`) | `src/lib/content.ts` |
 | Un enlace | `ui/Link.astro` (pone `target`/`rel` con `linkAttrs()` y avisa la pestaña nueva), nunca un `<a>` externo a mano |
 | Una página fuera del home | `layouts/PageLayout.astro` (volver, título, bajada y frase) |
 | Texto de `site.json` que usa un solo componente | Lo lee el componente con `getSite()`; no se pasa por props desde el padre |

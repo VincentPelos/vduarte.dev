@@ -9,7 +9,7 @@ actualizado: 2026-10-12
 
 | Ruta | Contenido |
 |---|---|
-| `/` | Home: hero, bento "sobre mí", experiencia, proyectos, educación, skills, contacto |
+| `/` | Home: hero, bento "sobre mí", experiencia, proyectos (con sus skills), educación, contacto |
 | `/proyectos/[slug]` | Caso de estudio. El primero: **colchagua** |
 | `/uso-de-ia` | Declaración de uso de IA (obligatoria por la rúbrica) |
 
@@ -17,7 +17,7 @@ actualizado: 2026-10-12
 
 - **Hero:** prompt `whoami`, nombre, rol, tagline, botones Correo · GitHub · LinkedIn · Descargar CV, agujero negro de puntos de fondo.
 - **Bento "sobre mí":** frase, disponibilidad, cuatro áreas (desarrollo, datos, infraestructura y agentes de IA) que llevan a su prueba, stack en logos y enlaces.
-- **Experiencia, proyectos (bento), educación, skills:** todo desde JSON.
+- **Experiencia, proyectos, educación y las skills de cada proyecto:** todo desde JSON. Skills no tiene sección propia desde #162 ([decisión 023](../03-decisiones/023-skills-en-proyectos.md)).
 - **Caso Colchagua:** problema, enfoque, datos, capturas del Power BI y gráficos HTML, hallazgos, conclusiones, descarga del `.pbix` y links a notebooks. El Power BI no se incrusta: el autor aceptó esta alternativa (2026-10-11).
 - **Contacto:** correo con `mailto:` y botón para copiarlo.
 - **Calidad:** ESLint, Prettier, Vitest, `astro check`, Lighthouse CI, commitlint.

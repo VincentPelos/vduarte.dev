@@ -1,6 +1,6 @@
 ---
 tags: [diseno, tokens]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # Tokens de diseño
@@ -63,9 +63,9 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - Bento "sobre mí" (#133, [decisión 021](../03-decisiones/021-bento-agentes-armado.md)): la frase con los botones GitHub y Descargar CV, Estado, las cuatro áreas (`~/dev` en `--c1`, `~/datos` en `--c2`, `~/infra` en `--c3`, `~/agentes` en `--fg`), el stack solo con logos (gris `--muted`, `--fg` al pasar el mouse) y Encuéntrame. 4 columnas desde 901px; 2 columnas hasta 900px, también en celular, para acortar el scroll: ahí el dibujo baja a 84px y la prueba de cada área se esconde.
 - Dibujos de las áreas (`about/bento-art.ts`): puntos en la grilla de 6px. Código con cursor (530 ms), las barras de la superficie frutal de Colchagua (el cerezo con la paleta, respira en 900 ms), una red con paquetes que viajan y monitos de 5×5 celdas: un orquestador reparte tareas a tres agentes cada 2,6 s.
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
-- Proyectos: los destacados son tarjetas en una fila (2 columnas desde 561px, 3 desde 861px) con imagen de 160 px, relleno compacto (12–13 px) y descripción a 3 líneas; en celular, un carrusel con 1,2 tarjetas a la vista que se detiene en cada una. Los demás van en una lista con miniatura 4:3 (96 px; 72 px en celular). Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
-- Skills: sin tarjetas. Cada grupo es una fila con su título, la cantidad y una línea de puntos, y las herramientas como chips con ícono; siempre 2 columnas. En celular (≤460px), más juntas y con chips de `0.74rem` e ícono de 20px (#146).
-- Orden del home: hero, sobre mí, Experiencia, Proyectos, Educación, Skills, Contacto (#134).
+- Proyectos: **lista y detalle** ([decisión 023](../03-decisiones/023-skills-en-proyectos.md)). Desde 861px, la lista a la izquierda (5/12) y el detalle a la derecha (7/12), fijo (`sticky`, 96px); en celular el detalle se abre bajo su proyecto. Cada fila de la lista: miniatura 4:3 de 64px, título (Martian Mono `1.02rem`), año y los logos de sus skills (`--muted`); la elegida con fondo `--glass-hi`. El detalle es vidrio: portada 16:6, año y "★ destacado", título `clamp(1.35rem, 2.6vw, 1.7rem)`, descripción completa, skills como botones redondos de 30px solo con logo (los sin logo, con su nombre; elegida: fondo `--fg`) y el pipeline en una columna a la derecha desde 561px. Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
+- Pipeline: las etapas como una línea de puntos (`--line-hi`, punteada); el punto de cada etapa mide 7px. Con una skill elegida, sus etapas se encienden con la paleta (`--c1`, `--c2`, `--c3` en orden) a 1,45× y en `--fg`; las demás se apagan al 55 % de `--muted`.
+- Orden del home: hero, sobre mí, Experiencia, Proyectos, Educación, Contacto (#134; Skills salió en #162).
 - Experiencia y Educación: **columna de años** (`ui/YearBlock.astro`, [decisión 020](../03-decisiones/020-columna-de-anios.md)). Desde 721px el año va en una columna de `10rem`, fijo (`sticky`, 96px) mientras pasan sus entradas; el más reciente con `text-grad` y los demás en contorno (`--muted`), `clamp(2.2rem, 6vw, 3.4rem)`. En celular el año va arriba de sus entradas. La línea queda 31px a la izquierda de las entradas.
   - Experiencia: la línea es la constelación del cielo (decisión 009). De cada trabajo se ve periodo, rol (Martian Mono; `clamp(1.35rem, 3.2vw, 2rem)` si está vigente), empresa, `summary` y 6 tecnologías más "+n" (4 en celular, #146); los logros van en un `<details>` ("ver logros").
   - Educación: línea punteada propia (`--c2`). Las carreras son estrellas grandes con la paleta y el periodo en `text-grad`; las capacitaciones de un año van juntas en un bloque compacto con una estrella chica (`--soft`): día y mes, título y folio. Hasta 560px son tarjetas chicas de vidrio de a 2 (#146).
@@ -83,6 +83,8 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - **Brillos:** `animate-drift`, 18 s alternado, desfasados −6 s y −12 s.
 - **Tarjetas:** brillo radial de 320px que sigue al puntero (`spotlight`).
 - **Entrada de las líneas de tiempo** (`layout/Trace.astro`, #134): en Experiencia y Educación la línea se dibuja de arriba abajo en 1100 ms y cada entrada aparece cuando le llega: su estrella crece hasta 1,8× y vuelve (520 ms) y el texto entra desde 10 px a la izquierda (640 ms, `cubic-bezier(.22,1,.36,1)`). Mismas reglas que los reveals.
+- **Cambio de proyecto, "Transformar"** (#162): View Transitions de 520 ms, `ease-out-expo`. La miniatura elegida crece hasta ser la portada del detalle y la anterior vuelve a la lista; el resaltado se desliza y el texto entra 130 ms después (sube 10px). Sin View Transitions o con movimiento reducido, cambia al tiro.
+- **Pipeline, "Señal"** (#162): un punto `--fg` baja por la línea (`cubic-bezier(.45,0,.2,1)`, mín. 420 ms, ~8,5 ms por px) y enciende cada etapa al pasar: su punto crece de 0 a 2,2× y queda en 1,45× (420 ms). Al llegar, los textos se abren de alto 0 al real uno tras otro (55 ms entre cada uno).
 - **Reveals:** subir 38 px + fade, 800 ms, `cubic-bezier(.22,1,.36,1)`, stagger 70 ms entre los que entran juntos. Se marcan con `data-reveal` (títulos de sección y tarjetas de vidrio) y los anima `layout/Reveal.astro`. Solo animan los que están bajo la pantalla al cargar; nunca los que contienen una constelación, porque las estrellas miden su posición.
 - **Regla:** nada de contenido oculto esperando una animación; `prefers-reduced-motion` apaga todo.
 
