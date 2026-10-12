@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, alcance]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # Alcance
@@ -45,5 +45,5 @@ Cada hito es un milestone en GitHub y una versión SemVer al mergear `develop �
 | v0.3.0 | Secciones | Layout, componentes UI, cada sección del home y el agujero negro del hero |
 | v0.4.0 | Movimiento | Fondo de estrellas de la página, reveals, Lenis, nav activa |
 | v0.5.0 | Caso Colchagua | Página del caso, capturas del Power BI y gráficos HTML, descargas, notebooks |
-| v0.6.0 | Contacto y extras | `/uso-de-ia`, SEO/OG, mejorar animaciones (#124) |
-| v1.0.0 | Entrega | Contenido real, CV, repo público, Lighthouse, README final |
+| v0.6.0 | Contacto y extras | `/uso-de-ia`, caída al agujero, bento de áreas, columna de años, CV en LaTeX, rendimiento |
+| v1.0.0 | Entrega | Contenido real, repo público, Lighthouse, README final; SEO/OG y mejorar animaciones (#124), que pasaron desde v0.6.0 |

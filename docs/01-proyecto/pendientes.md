@@ -9,9 +9,11 @@ Lo que falta para la entrega (v1.0.0), por hito. Cada punto dice si tiene issue 
 
 Estado de la rúbrica: [rubrica.md](rubrica.md).
 
-## v0.6.0 · Contacto y extras (en curso)
+## v0.6.0 · Contacto y extras (publicado el 2026-10-12)
 
-### Pedidos del autor (2026-10-11)
+Lo que quedó abierto pasó a v1.0.0 (abajo), incluido #124.
+
+### Pasan a v1.0.0: pedidos del autor (2026-10-11)
 
 | Pendiente | Issue | Necesita del autor |
 |---|---|---|
@@ -20,7 +22,7 @@ Estado de la rúbrica: [rubrica.md](rubrica.md).
 | Stack de Experiencia: aún lista Windows y TCP/IP (Municipalidad) y Redes (práctica) | — | Decidir si salen, como en Skills |
 | Caída al agujero y flecha del hero: probar en celular real y Safari | #136, #131 (PR #138) | Probarla en su celular |
 
-### Del alcance
+### Pasa a v1.0.0: del alcance
 
 | Pendiente | Issue | Necesita del autor |
 |---|---|---|
@@ -28,7 +30,7 @@ Estado de la rúbrica: [rubrica.md](rubrica.md).
 
 Descartados (2026-10-11): formulario n8n (queda el `mailto:`) y analytics con Umami (#140).
 
-Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer sólido (#130); entrada sin pausa (#132); caída y flecha (#136, #131); CV en LaTeX (#142); columna de años (#134); bento de áreas (#133); celular más corto (#146); limpieza de contenido (#148) y skills (#150). Skills queda como está: el autor descartó la lluvia de estrellas.
+Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer sólido (#130); entrada sin pausa (#132); caída y flecha (#136, #131); CV en LaTeX (#142); columna de años (#134); bento de áreas (#133); celular más corto (#146); limpieza de contenido (#148) y skills (#150); orden de componentes (#154), escenas con twgl (#156) y rendimiento (#158). Skills queda como está: el autor descartó la lluvia de estrellas.
 
 ## v1.0.0 · Entrega
 
@@ -41,5 +43,6 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 | Repo público | Cambiar la visibilidad en GitHub |
 | README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | Nada |
 | Lighthouse antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)) | Nada |
+| Verificar `gzip` en el primer deploy: `curl -sI -H 'Accept-Encoding: gzip' <url>` debe responder `Content-Encoding: gzip` (#158) | Desplegar `main` en Coolify |
 | Pasada en celular real (rúbrica: responsivo) | Revisar en su celular Android. **Sin iPhone:** iOS/Safari (WebKit) queda sin verificar: caída con el rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte (hay respaldo) y rendimiento del WebGL |
 | Preparar la defensa: explicar código y decisiones | Leer las decisiones y la bitácora |

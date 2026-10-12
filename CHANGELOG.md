@@ -4,21 +4,37 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [0.6.0] - 2026-10-12
+
+Hito **Contacto y extras**: `/uso-de-ia`, la caída al agujero negro al pasar al portafolio, el bento de áreas, la columna de años, el CV en LaTeX, y una pasada de orden y rendimiento. Lighthouse CI sobre `develop` (mediana de 3): performance 99 en el home y 100 en el caso y en `/uso-de-ia`; accesibilidad, buenas prácticas y SEO 100. Con GPU real (fuera del CI) el home móvil pasó de 86 a 96.
+
 ### Agregado
 
+- Página `/uso-de-ia` con la declaración de uso de IA (#127).
+- Caída al agujero negro al pasar del hero al portafolio, con la flecha del hero ([decisión 018](docs/03-decisiones/018-caida-al-agujero.md)) (#136, #131); no queda atascada si se interrumpe el aterrizaje (#139).
 - CV en LaTeX compatible con ATS, compilado con Tectonic (`pnpm cv`), y enlaces a CV y LinkedIn ([decisión 019](docs/03-decisiones/019-cv-latex.md)) (#142).
 - Experiencia y Educación en columna de años, con logros desplegables y la línea de estrellas que se dibuja al entrar ([decisión 020](docs/03-decisiones/020-columna-de-anios.md)) (#134).
 - Bento de áreas en puntos (dev, datos, infra y agentes de IA) que se arma con los puntos del agujero al terminar la caída ([decisión 021](docs/03-decisiones/021-bento-agentes-armado.md)) (#133).
 
 ### Cambiado
 
+- Footer sólido sobre el cielo de estrellas (#130).
+- Entrada del agujero negro sin la pausa de ~1 s al terminar (#132).
+- Componentes reutilizables (`Link`, `PageLayout`, `ProfileButtons`, `ProjectLinks`…) y tarjetas del bento que leen su contenido, sin cambios visuales (#154).
+- Agujero negro con twgl.js y shaders en archivos; helpers compartidos para los canvas ([decisión 022](docs/03-decisiones/022-twgl-escenas.md)) (#156).
+- Rendimiento: escenas a ~60 fps, shaders compilados en paralelo, sprite de íconos solo en el home, comentarios fuera del HTML y `gzip` en Nginx (#158).
 - Orden del home: Experiencia, Proyectos, Educación, Skills (#134).
 - En celular, tarjetas de a dos y menos espacio: el home es ~600 px más corto en 390 px (#146).
 - Vidrio de las tarjetas del bento al 50 % (#133).
 - Resumen de Experiencia al grano y cargo "Soporte TI" (#148); skills sin lo básico ni lo que no se usa (#150).
 
+### Corregido
+
+- Los dibujos del bento se animaban sin verse en celular (#158).
+
 ### Eliminado
 
+- Panel de Monitoreo TI y Mesa de Ayuda de Proyectos (#129).
 - Tarjetas de hora, sonando, jugando y constelación del bento; `nowPlaying` y `nowGaming` (#133, #148).
 - Formulario n8n y analytics del alcance (#140).
 
