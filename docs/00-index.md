@@ -13,7 +13,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 - **Última versión:** v0.6.0 (2026-10-12) Contacto y extras: `/uso-de-ia`, caída al agujero con flecha, bento de áreas, columna de años, CV en LaTeX, componentes reutilizables, escenas con twgl.js y rendimiento (con GPU real, home móvil de 86 a 96). Lighthouse CI: performance 99 en el home y 100 en las páginas internas, el resto 100. Ver [bitácora 2026-10-12](06-bitacora/2026-10-12.md).
 - **Hito en curso:** v1.0.0 Entrega. Suma lo que quedó de v0.6.0: animaciones de entrada (#124) y SEO/Open Graph.
-- **En curso:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)): lista y detalle, pipeline de etapas con la "Señal" y cambio de proyecto con View Transitions; sale la sección Skills.
+- **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168) y gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)).
 - **Siguiente:** que el autor confirme los textos del pipeline y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
@@ -68,6 +68,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [021](03-decisiones/021-bento-agentes-armado.md) | Bento de áreas que se arma con los puntos del agujero (reemplaza en parte a 009) | Movimiento |
 | [022](03-decisiones/022-twgl-escenas.md) | twgl.js para el agujero negro y helpers compartidos para los canvas | Arquitectura |
 | [023](03-decisiones/023-skills-en-proyectos.md) | Skills dentro de Proyectos: lista y detalle con pipeline (reemplaza en parte a 009) | Diseño |
+| [024](03-decisiones/024-gas-asteroides.md) | Cielo con gas estelar, asteroides y menos estrellas | Movimiento |
 
 ### 04 · Diseño — cómo se ve
 
@@ -87,7 +88,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
-- [2026-10-12](06-bitacora/2026-10-12.md): skills dentro de Proyectos (#162), orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) escenas animadas con twgl.js y helpers compartidos, y análisis y arreglos de rendimiento.
+- [2026-10-12](06-bitacora/2026-10-12.md): gas y asteroides (#172), brillos, nav y Noneto, skills dentro de Proyectos (#162), orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) escenas animadas con twgl.js y helpers compartidos, y análisis y arreglos de rendimiento.
 - [2026-10-11](06-bitacora/2026-10-11.md): bento de áreas, Experiencia y Educación en columna de años, CV en LaTeX y limpieza de contenido.
 - [2026-10-10](06-bitacora/2026-10-10.md): hito Movimiento, laboratorios de UI y Proyectos, hero descartado, Lighthouse y release v0.4.0.
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.
