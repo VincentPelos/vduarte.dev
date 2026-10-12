@@ -148,6 +148,7 @@ export function mount(
           : 'glyph',
     );
   }
+  const heroEnd = document.querySelector<HTMLElement>('[data-hero-end]');
   const marks = [...document.querySelectorAll<HTMLElement>('[data-constellation-mark]')];
   const replaced = [...document.querySelectorAll<HTMLElement>('[data-constellation-replace]')];
   for (const el of replaced) {
@@ -216,9 +217,10 @@ export function mount(
     const centers = sections.map((sec, i) => {
       const r = sec.getBoundingClientRect();
       // El hero queda pegado arriba (decisión 014): su lugar en la página es siempre el inicio,
-      // y lo que tapa es la hoja, que empieza con la sección siguiente.
+      // y lo que lo tapa es la hoja, que empieza en [data-hero-end]. No sirve la sección
+      // siguiente: Sobre mí no tiene constelación y quedaba sin estrellas (#164).
       if (i === 0) {
-        heroBottom = sections[1]?.getBoundingClientRect().top ?? r.bottom;
+        heroBottom = (heroEnd ?? sections[1])?.getBoundingClientRect().top ?? r.bottom;
         previous = r.height / 2 - height / 2;
         return previous;
       }
