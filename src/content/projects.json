@@ -219,7 +219,7 @@
   {
     "id": "noneto-cli",
     "title": "Noneto CLI",
-    "description": "En desarrollo. Reproductor musical de terminal para Windows con interfaz interactiva e integración no oficial con TIDAL. Contempla autenticación OAuth, biblioteca, playlists, letras y visualizador de espectro.",
+    "description": "Cliente de TIDAL para la terminal de Windows, no oficial y de código abierto. Reproduce en Hi-Res, con biblioteca, playlists, cola, letras, visualizador de espectro y temas de color, con teclado o mouse.",
     "steps": ["Interfaz", "Cuenta", "Biblioteca", "Reproducción"],
     "skills": [
       {
@@ -279,8 +279,26 @@
         ]
       }
     ],
+    "image": "../assets/projects/noneto/tema-noneto-dark.png",
+    "repo": "https://github.com/VincentPelos/noneto-cli",
+    "demo": "https://noneto.vduarte.dev/",
+    "demoLabel": "sitio del proyecto",
     "year": 2026,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      {
+        "image": "../assets/projects/noneto/tema-noneto-dark.png",
+        "alt": "Interfaz de Noneto en la terminal con el tema Noneto Dark: una playlist de demostración, la canción en curso y los atajos de teclado"
+      },
+      {
+        "image": "../assets/projects/noneto/tema-catppuccin.png",
+        "alt": "La misma interfaz con el tema Catppuccin Mocha"
+      },
+      {
+        "image": "../assets/projects/noneto/sitio.png",
+        "alt": "Inicio de noneto.vduarte.dev: \"Tu música de TIDAL, en la terminal\", con los botones para instalar y ver el código"
+      }
+    ]
   },
   {
     "id": "condor",
