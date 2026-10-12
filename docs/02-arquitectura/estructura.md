@@ -84,3 +84,4 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 - Carpetas, scripts `.ts`, JSON y notas: `kebab-case` (`smooth-scroll.ts`, `experience.json`).
 - Rutas públicas en español: `/proyectos/colchagua`, `/uso-de-ia`.
 - Notas de decisión: `NNN-titulo.md`; bitácora: `AAAA-MM-DD.md`.
+- Comentarios en plantillas `.astro`: `{/* … */}`, no `<!-- … -->`, que llega al HTML publicado (#158).
