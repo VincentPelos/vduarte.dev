@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, rendimiento]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # Rendimiento
@@ -23,7 +23,8 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Fuentes precargadas:** Martian Mono 700 y Geist latín van con `<link rel="preload">` en `BaseLayout`; las escenas esperan las fuentes antes de montarse.
 - **Precalcular lo que no cambia:** si un cálculo caro no depende del tiempo, se hace una vez y se guarda en una textura ([011](../03-decisiones/011-agujero-precalculado.md)). El precálculo se reparte entre cuadros con un tope de trabajos, porque `gl.finish()` no siempre espera a la GPU.
 - **Smooth scroll (Lenis):** solo suaviza la rueda; el touch queda nativo para no pelear con el scroll del celular. La caída al agujero ([decisión 018](../03-decisiones/018-caida-al-agujero.md)) solo intercepta gestos arriba de todo y, durante 1 s, frena la rueda antes de que llegue a Lenis. **No usar `lenis.stop()`:** le pone `overflow: clip` a la página, la barra de scroll desaparece y todo salta de lado. `lib/smooth.ts` comparte la instancia para hacer scroll suave. Las escenas siguen leyendo `scrollY` una vez por cuadro, así que no necesitan saber de Lenis.
-- **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida) vive en `src/lib/scene.ts`.
+- **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida, `frameLoop`, `fitCanvas`, `hash`) vive en `src/lib/scene.ts`. Todo bucle de cuadros usa `frameLoop`, que limita el paso a 0,05 s.
+- **twgl.js** ([decisión 022](../03-decisiones/022-twgl-escenas.md)) suma ~12 KB gzip al chunk diferido del agujero negro (de ~7 a ~19 KB). Sus texturas van con `auto: false`: sin eso intenta generar mipmaps en texturas que no son potencia de 2.
 
 ## Estado
 

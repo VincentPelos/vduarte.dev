@@ -30,7 +30,7 @@ vduarte.dev/
 │  ├─ components/
 │  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
-│  │  │  ├─ hero/              Hero.astro + black-hole.ts + hero-fall.ts (caída al portafolio)
+│  │  │  ├─ hero/              Hero.astro + black-hole.ts (orquesta las pasadas con twgl) + shaders/ (GLSL) + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
 │  │  │  ├─ experience/
 │  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
@@ -68,7 +68,8 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un enlace | `ui/Link.astro` (pone `target`/`rel` con `linkAttrs()` y avisa la pestaña nueva), nunca un `<a>` externo a mano |
 | Una página fuera del home | `layouts/PageLayout.astro` (volver, título, bajada y frase) |
 | Texto de `site.json` que usa un solo componente | Lo lee el componente con `getSite()`; no se pasa por props desde el padre |
-| Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida) | `src/lib/scene.ts` |
+| Algo que comparten las escenas animadas (celda, DPR, paleta, carga diferida, bucle de cuadros) | `src/lib/scene.ts` |
+| Un shader | `.vert`/`.frag` (o `.glsl` si se comparte) en `shaders/` junto a su escena, importado con `?raw` |
 | Estado que comparten dos scripts en cada cuadro (agujero, caída, Lenis) | `src/lib/hole.ts`, `src/lib/fall.ts`, `src/lib/smooth.ts` |
 | Una imagen que Astro debe optimizar | `src/assets/` |
 | Un archivo que se descarga o sirve tal cual | `public/` |
