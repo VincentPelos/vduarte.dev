@@ -1,36 +1,41 @@
 ---
-import TechIcon from '../../../ui/TechIcon.astro';
-import BentoCard from '../BentoCard.astro';
+import { getCollection } from 'astro:content';
+import { getSite } from '../../../../lib/content';
+import Icon from '../../../ui/Icon.astro';
+import BentoCard from './BentoCard.astro';
 
-interface Props {
-  label: string;
-  /** `icon` viene de skills.json; si la tecnología no tiene, se muestra su nombre. */
-  items: { name: string; icon?: string }[];
-}
-
-const { label, items } = Astro.props;
+const { bento, highlightStack } = await getSite();
+// El ícono de cada tecnología sale de skills.json, buscando por nombre.
+const icons = new Map(
+  (await getCollection('skills')).flatMap((entry) =>
+    entry.data.items.map((item) => [item.name, item.icon] as const),
+  ),
+);
 ---
 
 <!--
   Solo logos (#133), en gris: el color de marca no está en los tokens. El nombre aparece al
   pasar el mouse (`title`) y lo leen los lectores de pantalla.
 -->
-<BentoCard label={label} class="[grid-area:stack]">
+<BentoCard label={bento.stack} class="[grid-area:stack]">
   <ul class="grid flex-1 grid-cols-8 content-center gap-2.5 max-[620px]:grid-cols-4">
-    {items.map(({ name, icon }) => (
-      <li
-        title={name}
-        class="grid place-items-center rounded-[14px] border border-line bg-glass py-4 text-[1.85rem] text-muted transition hover:-translate-y-0.5 hover:border-line-hi hover:text-fg max-[460px]:py-3 max-[460px]:text-[1.5rem]"
-      >
-        <span aria-hidden="true" class="grid place-items-center">
-          {icon ? (
-            <TechIcon name={name} icon={icon} />
-          ) : (
-            <span class="font-mono text-[0.8rem] font-semibold">{name}</span>
-          )}
-        </span>
-        <span class="sr-only">{name}</span>
-      </li>
-    ))}
+    {highlightStack.map((name) => {
+      const icon = icons.get(name);
+      return (
+        <li
+          title={name}
+          class="grid place-items-center rounded-[14px] border border-line bg-glass py-4 text-[1.85rem] text-muted transition hover:-translate-y-0.5 hover:border-line-hi hover:text-fg max-[460px]:py-3 max-[460px]:text-[1.5rem]"
+        >
+          <span aria-hidden="true" class="grid place-items-center">
+            {icon ? (
+              <Icon name={icon} />
+            ) : (
+              <span class="font-mono text-[0.8rem] font-semibold">{name}</span>
+            )}
+          </span>
+          <span class="sr-only">{name}</span>
+        </li>
+      );
+    })}
   </ul>
 </BentoCard>

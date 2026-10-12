@@ -1,19 +1,15 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
-import { linkAttrs } from '../../../lib/links';
-import { projectLinks, type ProjectLinkLabels } from '../../../lib/projects';
 import Chip from '../../ui/Chip.astro';
-import LinkHint from '../../ui/LinkHint.astro';
+import ProjectLinks from './ProjectLinks.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>['data'];
-  labels: ProjectLinkLabels;
 }
 
-const { project, labels } = Astro.props;
-const { title, description, tags, image, repo, demo, caseStudy } = project;
-const links = projectLinks({ caseStudy, repo, demo }, labels);
+const { project } = Astro.props;
+const { title, description, tags, image } = project;
 
 const grid =
   'linear-gradient(var(--color-glass-hi) 1px, transparent 1px) 0 0 / 12px 12px, linear-gradient(90deg, var(--color-glass-hi) 1px, transparent 1px) 0 0 / 12px 12px, var(--color-glass)';
@@ -46,19 +42,6 @@ const grid =
         ))}
       </ul>
     )}
-    {links.length > 0 && (
-      <p class="flex flex-wrap gap-[18px] font-mono text-[0.82rem] leading-none font-medium">
-        {links.map(({ href, text }) => (
-          <a
-            href={href}
-            {...linkAttrs(href)}
-            class="border-b border-line-hi pb-[3px] transition-colors hover:border-fg"
-          >
-            {text}
-            <LinkHint href={href} />
-          </a>
-        ))}
-      </p>
-    )}
+    <ProjectLinks project={project} />
   </div>
 </li>

@@ -5,7 +5,7 @@ import { getSite } from '../../../lib/content';
 import { pluralize } from '../../../lib/text';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
-import TechIcon from '../../ui/TechIcon.astro';
+import Icon from '../../ui/Icon.astro';
 
 const site = await getSite();
 
@@ -38,7 +38,14 @@ const meta = `${pluralize(groups.length, texts.groups)} · ${pluralize(total, te
                 aria-hidden="true"
                 class="grid size-6 flex-none place-items-center rounded-full border border-line text-[0.8rem] max-[460px]:size-5 max-[460px]:text-[0.66rem]"
               >
-                <TechIcon name={item.name} icon={item.icon} fallbackClass="text-[0.55rem]" />
+                {/* Sin ícono de Iconify, las dos primeras letras. */}
+                {item.icon ? (
+                  <Icon name={item.icon} />
+                ) : (
+                  <span class="font-mono text-[0.55rem] font-semibold">
+                    {item.name.slice(0, 2)}
+                  </span>
+                )}
               </span>
               {item.name}
             </li>

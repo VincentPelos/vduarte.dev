@@ -1,10 +1,11 @@
 ---
 import { getSite } from '../../../lib/content';
 import Button from '../../ui/Button.astro';
+import ProfileButtons from '../../ui/ProfileButtons.astro';
 
 const site = await getSite();
 
-const { name, role, tagline, prompt, labels, github, linkedin, cvPath, scrollCue } = site;
+const { name, role, tagline, prompt, labels, scrollCue } = site;
 ---
 
 <section
@@ -69,20 +70,11 @@ const { name, role, tagline, prompt, labels, github, linkedin, cvPath, scrollCue
     >
       {tagline}
     </p>
-    <div class="relative z-20 flex flex-wrap gap-2.5">
+    <ProfileButtons class="relative z-20">
       <Button href="#contacto" variant="primary" arrow="down">
         {labels.email}
       </Button>
-      <Button href={github} arrow="external">
-        {labels.github}
-      </Button>
-      <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
-        {labels.linkedin}
-      </Button>
-      <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
-        {labels.cv}
-      </Button>
-    </div>
+    </ProfileButtons>
   </div>
 
   <!-- Flecha al portafolio (#131): con la escena, dispara la caída; sin ella, es un ancla. -->

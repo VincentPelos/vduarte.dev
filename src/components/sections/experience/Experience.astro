@@ -2,10 +2,9 @@
 import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
 import { groupByYear, sortByRecency } from '../../../lib/dates';
-import { linkAttrs } from '../../../lib/links';
 import { pluralize } from '../../../lib/text';
 import Chip from '../../ui/Chip.astro';
-import LinkHint from '../../ui/LinkHint.astro';
+import Link from '../../ui/Link.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
@@ -17,7 +16,7 @@ const STACK_SHOWN_MOBILE = 4;
 
 const site = await getSite();
 
-const { current, experience: texts } = site.sections;
+const texts = site.sections.experience;
 const jobs = sortByRecency((await getCollection('experience')).map((entry) => entry.data));
 const since = jobs
   .map((job) => job.start)
@@ -60,7 +59,6 @@ const years = groupByYear(jobs);
                     end={job.end}
                     dateNote={job.dateNote}
                     ongoing={job.ongoing}
-                    currentLabel={current}
                   />
                   {job.location && <span>· {job.location}</span>}
                 </p>
@@ -76,10 +74,9 @@ const years = groupByYear(jobs);
                 </h3>
                 <p class="text-[1.05rem] text-soft">
                   {job.url ? (
-                    <a href={job.url} {...linkAttrs(job.url)} class="hover:text-fg">
+                    <Link href={job.url} class="hover:text-fg">
                       {job.company}
-                      <LinkHint href={job.url} />
-                    </a>
+                    </Link>
                   ) : (
                     job.company
                   )}

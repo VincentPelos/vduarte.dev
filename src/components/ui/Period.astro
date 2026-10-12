@@ -1,4 +1,5 @@
 ---
+import { getSite } from '../../lib/content';
 import { periodParts } from '../../lib/dates';
 
 interface Props {
@@ -6,11 +7,11 @@ interface Props {
   end: string | null;
   dateNote?: string;
   ongoing?: boolean;
-  /** Texto para un periodo vigente (`sections.current` de site.json). */
-  currentLabel: string;
 }
 
-const { start, end, dateNote, ongoing, currentLabel } = Astro.props;
+const { start, end, dateNote, ongoing } = Astro.props;
+// Lo que se muestra en lugar del término de un periodo vigente.
+const currentLabel = (await getSite()).sections.current;
 const { from, to, current } = periodParts(start, end, { dateNote, ongoing });
 ---
 

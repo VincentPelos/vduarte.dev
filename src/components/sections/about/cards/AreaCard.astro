@@ -1,4 +1,5 @@
 ---
+import { getCase } from '../../../../lib/content';
 import { linkAttrs } from '../../../../lib/links';
 import GlassCard from '../../../ui/GlassCard.astro';
 import LinkHint from '../../../ui/LinkHint.astro';
@@ -9,11 +10,18 @@ interface Props {
   proof: string;
   cta: string;
   href: string;
-  /** Números del dibujo de `datos` (superficie frutal de Colchagua, de cases.json). */
-  values?: number[];
 }
 
-const { art, title, proof, cta, href, values } = Astro.props;
+const { art, title, proof, cta, href } = Astro.props;
+
+// El dibujo de ~/datos son las barras reales del caso: la superficie frutal de Colchagua.
+const surface = async () => {
+  const chart = (await getCase('colchagua')).blocks
+    .flatMap((block) => block.panels)
+    .find((panel) => panel.chart.type === 'pairs')?.chart;
+  return chart?.type === 'pairs' ? chart.items.map((item) => item.after) : undefined;
+};
+const values = art === 'datos' ? await surface() : undefined;
 // Clases completas (Tailwind no ve las armadas con plantilla): color de la etiqueta y área.
 const classes = {
   dev: ['text-c1', '[grid-area:dev]'],

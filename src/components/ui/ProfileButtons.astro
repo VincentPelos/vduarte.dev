@@ -1,0 +1,25 @@
+---
+import { getSite } from '../../lib/content';
+import Button from './Button.astro';
+
+interface Props {
+  class?: string;
+}
+
+// GitHub, LinkedIn y CV (Hero y Contacto). Lo que va en el slot queda primero en la fila.
+const { class: className } = Astro.props;
+const { github, linkedin, cvPath, labels } = await getSite();
+---
+
+<div class:list={['flex flex-wrap gap-2.5', className]}>
+  <slot />
+  <Button href={github} arrow="external">
+    {labels.github}
+  </Button>
+  <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
+    {labels.linkedin}
+  </Button>
+  <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
+    {labels.cv}
+  </Button>
+</div>
