@@ -70,7 +70,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
   - Experiencia: la línea es la constelación del cielo (decisión 009). De cada trabajo se ve periodo, rol (Martian Mono; `clamp(1.35rem, 3.2vw, 2rem)` si está vigente), empresa, `summary` y 6 tecnologías más "+n" (4 en celular, #146); los logros van en un `<details>` ("ver logros").
   - Educación: línea punteada propia (`--c2`). Las carreras son estrellas grandes con la paleta y el periodo en `text-grad`; las capacitaciones de un año van juntas en un bloque compacto con una estrella chica (`--soft`): día y mes, título y folio. Hasta 560px son tarjetas chicas de vidrio de a 2 (#146).
 - **Brillos** (`ui/Glows.astro`): detrás de Sobre mí (55 %), Experiencia, Proyectos y Educación (45 %, #167) y Contacto (35 %). En Experiencia y Educación van espejados (`-scale-x-100`) para alternar el lado del color; en las tres nuevas cubren una franja de 900px desde el inicio de la sección, detrás del trabajo actual, la lista y el detalle, y las carreras.
-- **Velo** (`veil`): degradado radial del fondo al 100 % detrás de cada entrada de Experiencia y Educación, para que las estrellas no compitan con el texto.
+- **Velo** (`veil`): detrás de cada entrada de Experiencia y Educación, un difuminado (`backdrop-filter: blur(6px)`) con máscara radial, para que las estrellas no compitan con el texto. Hasta #167 era un degradado negro al 100 %, que sobre los brillos dejaba manchas oscuras.
 - Nav: píldora fija arriba y centrada; resalta la sección que cruza el centro de la pantalla (`aria-current`, fondo `--glass-hi`).
 
 ## Movimiento
