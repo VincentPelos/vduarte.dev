@@ -2,6 +2,8 @@
  * Armado del bento (#133, decisión 021): al terminar la caída al agujero (decisión 018), sus
  * puntos salen de arriba, viajan en curva y dibujan cada tarjeta, que aparece cuando le llegan.
  * Una vez por visita. Valores del laboratorio: duración 100 %, puntos 20 %, desorden 100 %.
+ * Empieza con `hero:land`, mientras el portafolio sube, y no al terminar de subir: así no hay
+ * una pausa vacía entre la caída y el armado.
  *
  * - Nada depende de que termine: las tarjetas vuelven por temporizador aunque el cuadro se
  *   detenga, y si el aterrizaje no llega, a los SAFETY_MS.
@@ -73,16 +75,18 @@ export function mountAssemble(section: HTMLElement): () => void {
     timers.push(window.setTimeout(reset, SAFETY_MS));
   };
 
-  const play = () => {
+  /** `top`: scroll donde termina de subir el portafolio; todo se calcula para esa posición. */
+  const play = (top: number) => {
     for (const id of timers) clearTimeout(id);
     timers.length = 0;
     const box = section.getBoundingClientRect();
+    const boxTop = box.top + scrollY - top;
     const dpr = canvasDpr();
     canvas.classList.remove('hidden');
     canvas.width = Math.round(box.width * dpr);
     canvas.height = Math.round(box.height * dpr);
     // El agujero queda arriba al centro de la pantalla, donde terminó la caída.
-    const hole = { x: innerWidth / 2 - box.left, y: -box.top + 18 };
+    const hole = { x: innerWidth / 2 - box.left, y: -boxTop + 18 };
     const density = COUNT * (innerWidth <= 460 ? MOBILE_FACTOR : 1);
     const particles: Particle[] = [];
     const reveals: { card: HTMLElement; at: number }[] = [];
@@ -102,7 +106,7 @@ export function mountAssemble(section: HTMLElement): () => void {
           if (hash(Math.round(x / CELL), Math.round(y / CELL)) < 0.05) points.push([x, y]);
 
       const distance = Math.hypot(x0 + r.width / 2 - hole.x, y0 - hole.y);
-      const cardDelay = 120 + distance * 0.55;
+      const cardDelay = 40 + distance * 0.3;
       points
         .filter((_, i) => hash(i, ci) < density * 0.55)
         .forEach(([tx, ty], i) => {
@@ -125,7 +129,7 @@ export function mountAssemble(section: HTMLElement): () => void {
             size: pick < 0.08 ? 1.6 : 1.05,
           });
         });
-      reveals.push({ card, at: cardDelay + DURATION_MS * 0.62 });
+      reveals.push({ card, at: cardDelay + DURATION_MS * 0.45 });
     });
 
     const total = Math.max(0, ...particles.map((p) => p.delay + p.travel)) + 450;
@@ -196,18 +200,18 @@ export function mountAssemble(section: HTMLElement): () => void {
     frame = requestAnimationFrame(step);
   };
 
-  // Aterrizó en el portafolio: se arma una sola vez por visita.
-  const onLanded = () => {
+  // La caída terminó y el portafolio sube: se arma una sola vez por visita.
+  const onLand = (event: Event) => {
     if (done || !waiting) return;
     done = true;
-    play();
+    play((event as CustomEvent<{ top: number }>).detail.top);
   };
 
   addEventListener('hero:fall', onFall);
-  addEventListener('hero:landed', onLanded);
+  addEventListener('hero:land', onLand);
   return () => {
     reset();
     removeEventListener('hero:fall', onFall);
-    removeEventListener('hero:landed', onLanded);
+    removeEventListener('hero:land', onLand);
   };
 }

@@ -9,8 +9,9 @@
  * - Cualquier otro scroll (barra, nav, anclas) sigue funcionando: la caída acompaña al scroll.
  * - Nada depende de que el scroll suave termine: si el aterrizaje se interrumpe arriba de todo,
  *   la cámara retrocede sola, y cualquier gesto hacia arriba la hace retroceder.
- * - Avisa con eventos en `window`: `hero:fall` al empezar la caída y `hero:landed` al llegar al
- *   portafolio. El bento se arma con ellos (bento-assemble.ts, #133).
+ * - Avisa con eventos en `window`: `hero:fall` al empezar la caída, `hero:land` cuando la caída
+ *   termina y el portafolio empieza a subir (con el scroll de destino en `detail.top`) y
+ *   `hero:landed` al llegar. El bento se arma con los dos primeros (bento-assemble.ts, #133).
  * - Sin escena (sin WebGL o por software) no intercepta nada.
  * - No se monta con `prefers-reduced-motion` (Hero.astro).
  */
@@ -78,6 +79,7 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
       if (focus) toFocus();
       dispatchEvent(new Event('hero:landed'));
     };
+    dispatchEvent(new CustomEvent('hero:land', { detail: { top } }));
     const lenis = smooth.lenis;
     if (lenis) lenis.scrollTo(top, { onComplete: landed });
     else {

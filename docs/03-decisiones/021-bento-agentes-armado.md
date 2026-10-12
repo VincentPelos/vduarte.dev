@@ -14,7 +14,7 @@ El primer bento tenía mucho texto, se veía genérico y le faltaba vida (#133).
 ## Decisión
 - El bento muestra la frase (`bio`), Estado, cuatro áreas (`bento.areas` en `site.json`), el stack en logos y Encuéntrame. Cada área es un enlace a su prueba: proyectos, el caso Colchagua, la experiencia y `/uso-de-ia`.
 - Cada área tiene un dibujo en puntos (`about/bento-art.ts`). El de `~/datos` lee las barras reales del caso en `cases.json`. Se pausa fuera de pantalla y queda quieto con movimiento reducido.
-- **Armado** (`about/bento-assemble.ts`): la caída avisa con `hero:fall` y `hero:landed`. Al empezar, las tarjetas se esconden; al aterrizar, los puntos salen del agujero y las dibujan. Una vez por visita. Las tarjetas vuelven por temporizador aunque el cuadro se detenga, y a los 4 s si el aterrizaje no llega.
+- **Armado** (`about/bento-assemble.ts`): la caída avisa con `hero:fall`, `hero:land` y `hero:landed`. Al empezar, las tarjetas se esconden; cuando la caída termina y el portafolio empieza a subir (`hero:land`), los puntos salen del agujero y las dibujan, sin esperar a que termine de subir (el autor notó que tardaba mucho en empezar). Una vez por visita. Las tarjetas vuelven por temporizador aunque el cuadro se detenga, y a los 4 s si el aterrizaje no llega.
 - Sin la tarjeta de la constelación, Sobre mí sale de la cinemática: las estrellas que escapan del agujero van directo a la línea de Experiencia.
 - Dos columnas hasta 900px, también en celular; cuatro desde 901px.
 
