@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, rubrica]
-actualizado: 2026-10-11
+actualizado: 2026-10-12
 ---
 
 # Rúbrica ISI802
@@ -38,7 +38,7 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ cumplido · ❌ descartado.
 
 | Criterio | Peso | Qué pide "Destacado" | Cómo lo cubrimos | Estado |
 |---|---|---|---|---|
-| B1 Perfil profesional | 10% | Rol, competencias (ETL, DAX, ML, viz), stack, narrativa de analista/ingeniero de datos | Perfil híbrido Software & Datos; grupo Datos y BI en Skills y Colchagua destacado | ✅ |
+| B1 Perfil profesional | 10% | Rol, competencias (ETL, DAX, ML, viz), stack, narrativa de analista/ingeniero de datos | Perfil híbrido Software & Datos; stack en el bento; Colchagua primero y abierto, con sus skills de BI (Python, pandas, scikit-learn, Power BI, DAX, Jupyter) y en qué etapa se usó cada una ([decisión 023](../03-decisiones/023-skills-en-proyectos.md)) | ✅ |
 | B2 Caso Colchagua | 10% | Claro para un no técnico: problema, enfoque, datos reales, valor; storytelling con visualizaciones | `/proyectos/colchagua`: pregunta, cifras, Power BI, 5 hallazgos con gráficos | ✅ |
 | B3 Conclusiones | 10% | Accionables, respaldadas, honestas (correlación ≠ causalidad) | "Qué hacer" y "Límites" en el caso, con correlación ≠ causalidad explícito | ✅ |
 

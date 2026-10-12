@@ -4,6 +4,14 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+### Cambiado
+
+- Proyectos en lista y detalle: cada proyecto muestra sus skills como logos y, al elegir una, su pipeline enciende las etapas donde se usó; el cambio de proyecto se anima con View Transitions ([decisión 023](docs/03-decisiones/023-skills-en-proyectos.md)) (#162).
+
+### Eliminado
+
+- La sección Skills: las skills viven ahora en cada proyecto y el stack en el bento (#162).
+
 ## [0.6.0] - 2026-10-12
 
 Hito **Contacto y extras**: `/uso-de-ia`, la caída al agujero negro al pasar al portafolio, el bento de áreas, la columna de años, el CV en LaTeX, y una pasada de orden y rendimiento. Lighthouse CI sobre `develop` (mediana de 3): performance 99 en el home y 100 en el caso y en `/uso-de-ia`; accesibilidad, buenas prácticas y SEO 100. Con GPU real (fuera del CI) el home móvil pasó de 86 a 96.

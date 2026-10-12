@@ -59,7 +59,6 @@ const site = {
   constellations: {
     experience: '>_',
     projects: '</>',
-    skills: '#',
     education: 'π',
     contact: '?',
   },
@@ -85,12 +84,13 @@ const site = {
       repo: 'repo',
       demo: 'demo',
       caseStudy: 'ver caso',
+      skills: {
+        list: 'Proyectos',
+        steps: { one: 'etapa', other: 'etapas' },
+        pick: 'elige una skill',
+        usedIn: 'dónde se usó',
+      },
       gallery: { open: 'Ver', close: 'Cerrar', prev: 'Anterior', next: 'Siguiente', of: 'de' },
-    },
-    skills: {
-      title: 'Skills',
-      groups: { one: 'grupo', other: 'grupos' },
-      items: { one: 'herramienta', other: 'herramientas' },
     },
     contact: {
       kicker: '$ ./contacto.sh',
@@ -228,7 +228,8 @@ describe('projectSchema', () => {
     id: 'colchagua',
     title: 'Colchagua',
     description: 'Caso de BI.',
-    tags: ['Power BI'],
+    steps: ['ETL', 'Dashboard'],
+    skills: [{ name: 'Power BI', uses: [{ step: 'Dashboard', text: 'El dashboard.' }] }],
     year: 2026,
   };
 
@@ -241,6 +242,11 @@ describe('projectSchema', () => {
     expect(errorPaths(schema.safeParse({ ...project, caseStudy: 'Caso Colchagua' }))).toEqual([
       'caseStudy',
     ]);
+  });
+
+  it('exige que cada skill se use en una etapa de steps', () => {
+    const skills = [{ name: 'DAX', uses: [{ step: 'Modelo' }] }];
+    expect(errorPaths(schema.safeParse({ ...project, skills }))).toEqual(['skills.0.uses.0.step']);
   });
 });
 

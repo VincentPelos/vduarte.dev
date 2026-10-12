@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Reemplazada en parte por 021 (Sobre mí sin constelación)
+estado: Reemplazada en parte por 021 (Sobre mí sin constelación) y 023 (sale Skills)
 fecha: 2026-10-08
 ---
 
@@ -20,7 +20,7 @@ Con el agujero negro del hero ([decisión 008](008-agujero-negro-puntos.md)), el
   | Sobre mí | `@` | Ventana chica de 1 celda en el bento (`~/constelacion`), como detalle |
   | Experiencia | `>_` | Al inicio de una línea de tiempo de estrellas en el margen izquierdo; marca cada trabajo y el `_` parpadea |
   | Proyectos | `</>` | Junto al título; las tarjetas conservan su vidrio |
-  | Skills | `#` | Junto al título |
+  | Skills | `#` | Junto al título (salió con la sección, [decisión 023](023-skills-en-proyectos.md)) |
   | Educación | `π` | Al cierre, bajo la lista |
   | Contacto | `?` | Reemplaza el `?` de "¿Hablamos?", más grande que la letra |
 
