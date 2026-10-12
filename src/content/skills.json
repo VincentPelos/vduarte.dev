@@ -53,12 +53,7 @@
     "group": "Sistemas e infraestructura",
     "items": [
       { "name": "Linux", "icon": "simple-icons:linux" },
-      { "name": "Windows", "icon": "simple-icons:windows" },
       { "name": "Windows Server" },
-      { "name": "TCP/IP" },
-      { "name": "DNS" },
-      { "name": "DHCP" },
-      { "name": "VLAN" },
       { "name": "SSH" },
       { "name": "RDP" },
       { "name": "Virtualización" }
@@ -73,8 +68,7 @@
       { "name": "Exchange Online" },
       { "name": "Microsoft Entra ID" },
       { "name": "Microsoft Graph" },
-      { "name": "MSAL" },
-      { "name": "Power Apps" }
+      { "name": "MSAL" }
     ]
   },
   {
@@ -85,7 +79,6 @@
       { "name": "GitHub", "icon": "simple-icons:github" },
       { "name": "GitHub Actions", "icon": "simple-icons:githubactions" },
       { "name": "Git Worktrees" },
-      { "name": "Neovim", "icon": "simple-icons:neovim" },
       { "name": "VS Code" },
       { "name": "WSL2" },
       { "name": "cPanel", "icon": "simple-icons:cpanel" }
@@ -96,12 +89,9 @@
     "group": "En aprendizaje e investigación",
     "items": [
       { "name": "Rust", "icon": "simple-icons:rust" },
-      { "name": "Vue", "icon": "simple-icons:vuedotjs" },
-      { "name": "Svelte", "icon": "simple-icons:svelte" },
       { "name": "Astro", "icon": "simple-icons:astro" },
       { "name": "LoRa" },
       { "name": "Bluetooth Mesh" },
-      { "name": "Wi-Fi Direct" },
       { "name": "Orquestación multiagente" }
     ]
   }
