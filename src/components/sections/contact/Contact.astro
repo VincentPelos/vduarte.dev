@@ -1,11 +1,11 @@
 ---
 import { getSite } from '../../../lib/content';
-import Button from '../../ui/Button.astro';
 import Glows from '../../ui/Glows.astro';
+import ProfileButtons from '../../ui/ProfileButtons.astro';
 
 const site = await getSite();
 
-const { email, github, linkedin, cvPath, labels } = site;
+const { email } = site;
 const texts = site.sections.contact;
 ---
 
@@ -43,17 +43,7 @@ const texts = site.sections.contact;
         {texts.copy}
       </button>
     </div>
-    <div class="mt-9 flex flex-wrap gap-2.5">
-      <Button href={github} arrow="external">
-        {labels.github}
-      </Button>
-      <Button href={linkedin} arrow="external" pendingLabel={labels.pending}>
-        {labels.linkedin}
-      </Button>
-      <Button href={cvPath} arrow="down" download pendingLabel={labels.pending}>
-        {labels.cv}
-      </Button>
-    </div>
+    <ProfileButtons class="mt-9" />
   </div>
 </section>
 

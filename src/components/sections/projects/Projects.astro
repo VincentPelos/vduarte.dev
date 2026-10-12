@@ -14,7 +14,6 @@ const texts = site.sections.projects;
 const projects = sortProjects((await getCollection('projects')).map((entry) => entry.data));
 const featured = projects.filter((project) => project.featured);
 const rest = projects.filter((project) => !project.featured);
-const links = { repo: texts.repo, demo: texts.demo, caseStudy: texts.caseStudy };
 const meta = [
   pluralize(projects.length, texts.unit),
   featured.length > 0 && pluralize(featured.length, texts.featured),
@@ -34,17 +33,13 @@ const meta = [
     class="-mx-4 grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-3 overflow-x-auto scroll-px-4 px-4 [scrollbar-width:none] *:snap-start min-[561px]:mx-0 min-[561px]:grid-flow-row min-[561px]:grid-cols-2 min-[561px]:overflow-visible min-[561px]:px-0 min-[861px]:grid-cols-3"
   >
     {featured.map((project) => (
-      <ProjectCard
-        project={project}
-        labels={{ ...links, featured: texts.featured.one }}
-        gallery={texts.gallery}
-      />
+      <ProjectCard project={project} />
     ))}
   </div>
   {rest.length > 0 && (
     <ul class="mt-3 border-t border-line">
       {rest.map((project) => (
-        <ProjectRow project={project} labels={links} />
+        <ProjectRow project={project} />
       ))}
     </ul>
   )}

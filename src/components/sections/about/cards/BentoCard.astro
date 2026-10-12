@@ -1,0 +1,22 @@
+---
+import GlassCard from '../../../ui/GlassCard.astro';
+
+interface Props {
+  /** Etiqueta mono de la esquina (`Estado`, `Stack principal`…). */
+  label: string;
+  /** Clases extra: siempre el `[grid-area:…]` de la tarjeta en la grilla del bento. */
+  class: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<!-- Sin reveal: el bento se arma con los puntos del agujero (bento-assemble.ts, #133). -->
+<GlassCard
+  reveal={false}
+  data-bento-card
+  class:list={['flex min-w-0 flex-col gap-3 p-[22px] max-[460px]:p-4', className]}
+>
+  <p class="label">{label}</p>
+  <slot />
+</GlassCard>

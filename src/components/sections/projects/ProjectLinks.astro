@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getSite } from '../../../lib/content';
+import { projectLinks } from '../../../lib/projects';
+import Link from '../../ui/Link.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>['data'];
+  class?: string;
+}
+
+// Caso de estudio, repositorio y demo de un proyecto (ProjectCard y ProjectRow).
+const { project, class: className } = Astro.props;
+const links = projectLinks(project, (await getSite()).sections.projects);
+---
+
+{links.length > 0 && (
+  <p
+    class:list={[
+      'flex flex-wrap gap-[18px] font-mono text-[0.82rem] leading-none font-medium',
+      className,
+    ]}
+  >
+    {links.map(({ href, text }) => (
+      <Link href={href} class="border-b border-line-hi pb-[3px] transition-colors hover:border-fg">
+        {text}
+      </Link>
+    ))}
+  </p>
+)}

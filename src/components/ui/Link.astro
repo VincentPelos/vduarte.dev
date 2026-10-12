@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { linkAttrs } from '../../lib/links';
+import LinkHint from './LinkHint.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+}
+
+// Todo enlace del sitio: los externos abren en otra pestaña y lo avisan a los lectores de pantalla.
+const { href, ...attrs } = Astro.props;
+---
+
+<a href={href} {...linkAttrs(href)} {...attrs}>
+  <slot />
+  <LinkHint href={href} />
+</a>

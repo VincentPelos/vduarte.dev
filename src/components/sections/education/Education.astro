@@ -2,9 +2,8 @@
 import { getCollection } from 'astro:content';
 import { getSite } from '../../../lib/content';
 import { formatDate, groupByYear, sortByRecency } from '../../../lib/dates';
-import { linkAttrs } from '../../../lib/links';
 import { pluralize } from '../../../lib/text';
-import LinkHint from '../../ui/LinkHint.astro';
+import Link from '../../ui/Link.astro';
 import Period from '../../ui/Period.astro';
 import Section from '../../ui/Section.astro';
 import SectionHeader from '../../ui/SectionHeader.astro';
@@ -12,7 +11,7 @@ import YearBlock from '../../ui/YearBlock.astro';
 
 const site = await getSite();
 
-const { current, education: texts } = site.sections;
+const texts = site.sections.education;
 const items = sortByRecency((await getCollection('education')).map((entry) => entry.data));
 const count = (type: 'degree' | 'cert' | 'training') =>
   items.filter((item) => item.type === type).length;
@@ -53,15 +52,13 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
                     end={item.end}
                     dateNote={item.dateNote}
                     ongoing={item.ongoing}
-                    currentLabel={current}
                   />
                 </p>
                 <h3 class="text-[clamp(1.25rem,2.8vw,1.7rem)] leading-[1.2] font-semibold tracking-[-0.02em] text-balance">
                   {item.url ? (
-                    <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
+                    <Link href={item.url} class="hover:text-white">
                       {item.title}
-                      <LinkHint href={item.url} />
-                    </a>
+                    </Link>
                   ) : (
                     item.title
                   )}
@@ -96,10 +93,9 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
                       </span>
                       <span>
                         {item.url ? (
-                          <a href={item.url} {...linkAttrs(item.url)} class="hover:text-white">
+                          <Link href={item.url} class="hover:text-white">
                             {item.title}
-                            <LinkHint href={item.url} />
-                          </a>
+                          </Link>
                         ) : (
                           item.title
                         )}
