@@ -1,6 +1,6 @@
 ---
 tags: [decision, movimiento, diseno]
-estado: Aceptada
+estado: Reemplazada en parte por 021 (Sobre mí sin constelación)
 fecha: 2026-10-08
 ---
 

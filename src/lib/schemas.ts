@@ -99,23 +99,32 @@ export const siteSchema = z.object({
   scrollCue: z.object({ label: z.string().min(1), ariaLabel: z.string().min(1) }),
   /** Prompt del hero: `<user>:~$ <command>`. */
   prompt: z.object({ user: z.string().min(1), command: z.string().min(1) }),
-  /** Etiquetas de las tarjetas del bento "Sobre mí". */
+  /** Etiquetas y áreas del bento "Sobre mí" (#133). */
   bento: z.object({
     about: z.string().min(1),
-    clock: z.string().min(1),
     status: z.string().min(1),
     available: z.string().min(1),
     unavailable: z.string().min(1),
     stack: z.string().min(1),
-    playing: z.string().min(1),
-    gaming: z.string().min(1),
     links: z.string().min(1),
-    /** Título de la ventana chica donde se forma la constelación de Sobre mí. */
-    constellation: z.string().min(1),
+    /**
+     * Las cuatro áreas, cada una con su dibujo en puntos (`art`) y un enlace a la prueba: un
+     * proyecto, el caso, la experiencia o el uso de IA.
+     */
+    areas: z
+      .array(
+        z.object({
+          art: z.enum(['dev', 'datos', 'infra', 'agentes']),
+          title: z.string().min(1),
+          proof: z.string().min(1),
+          cta: z.string().min(1),
+          href: z.string().min(1),
+        }),
+      )
+      .length(4),
   }),
   /** Símbolo que forman las estrellas en cada sección (decisión 009). */
   constellations: z.object({
-    about: z.string().min(1).max(3),
     experience: z.string().min(1).max(3),
     projects: z.string().min(1).max(3),
     skills: z.string().min(1).max(3),

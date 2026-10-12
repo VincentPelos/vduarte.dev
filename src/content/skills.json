@@ -68,7 +68,7 @@
     "id": "microsoft-365",
     "group": "Microsoft 365",
     "items": [
-      { "name": "Microsoft 365" },
+      { "name": "Microsoft 365", "icon": "simple-icons:microsoft" },
       { "name": "SharePoint", "icon": "simple-icons:microsoftsharepoint" },
       { "name": "Exchange Online" },
       { "name": "Microsoft Entra ID" },

@@ -4,21 +4,32 @@ import BentoCard from '../BentoCard.astro';
 
 interface Props {
   label: string;
-  /** `icon` viene de skills.json; si la tecnología no está ahí, se muestra una abreviatura. */
+  /** `icon` viene de skills.json; si la tecnología no tiene, se muestra su nombre. */
   items: { name: string; icon?: string }[];
 }
 
 const { label, items } = Astro.props;
 ---
 
-<BentoCard label={label} class="min-[461px]:[grid-area:stack]">
-  <ul class="flex flex-wrap gap-2">
+<!--
+  Solo logos (#133), en gris: el color de marca no está en los tokens. El nombre aparece al
+  pasar el mouse (`title`) y lo leen los lectores de pantalla.
+-->
+<BentoCard label={label} class="[grid-area:stack]">
+  <ul class="grid flex-1 grid-cols-8 content-center gap-2.5 max-[620px]:grid-cols-4">
     {items.map(({ name, icon }) => (
-      <li class="inline-flex items-center gap-2 rounded-full border border-line bg-glass px-3 py-2 text-[0.88rem] leading-none">
-        <span aria-hidden="true" class="grid size-[18px] place-items-center text-[0.95rem]">
-          <TechIcon name={name} icon={icon} fallbackClass="text-[0.55rem]" />
+      <li
+        title={name}
+        class="grid place-items-center rounded-[14px] border border-line bg-glass py-4 text-[1.85rem] text-muted transition hover:-translate-y-0.5 hover:border-line-hi hover:text-fg max-[460px]:py-3 max-[460px]:text-[1.5rem]"
+      >
+        <span aria-hidden="true" class="grid place-items-center">
+          {icon ? (
+            <TechIcon name={name} icon={icon} />
+          ) : (
+            <span class="font-mono text-[0.8rem] font-semibold">{name}</span>
+          )}
         </span>
-        {name}
+        <span class="sr-only">{name}</span>
       </li>
     ))}
   </ul>

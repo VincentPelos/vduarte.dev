@@ -52,7 +52,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [006](03-decisiones/006-power-bi-descarga.md) | Power BI: descarga + dashboard web | BI |
 | [007](03-decisiones/007-iconos.md) | Íconos de Iconify como SVG en el build | UI |
 | [008](03-decisiones/008-agujero-negro-puntos.md) | Hero: agujero negro con puntos de terminal | Movimiento |
-| [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección | Movimiento |
+| [009](03-decisiones/009-cinematica-constelaciones.md) | Cinemática de constelaciones por sección (reemplazada en parte por 021) | Movimiento |
 | [010](03-decisiones/010-iconos-sprite.md) | Íconos en un sprite SVG (reemplaza en parte a 007) | UI |
 | [011](03-decisiones/011-agujero-precalculado.md) | Agujero negro con trayectorias precalculadas (reemplaza en parte a 008) | Movimiento |
 | [012](03-decisiones/012-entrada-colapso.md) | Entrada del agujero negro por colapso (reemplaza en parte a 011) | Movimiento |
@@ -63,6 +63,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [018](03-decisiones/018-caida-al-agujero.md) | Caída al agujero negro al pasar al portafolio (reemplaza en parte a 014) | Movimiento |
 | [019](03-decisiones/019-cv-latex.md) | CV en LaTeX compilado con Tectonic | Contenido |
 | [020](03-decisiones/020-columna-de-anios.md) | Experiencia y Educación con columna de años | Diseño |
+| [021](03-decisiones/021-bento-agentes-armado.md) | Bento de áreas que se arma con los puntos del agujero (reemplaza en parte a 009) | Movimiento |
 
 ### 04 · Diseño — cómo se ve
 

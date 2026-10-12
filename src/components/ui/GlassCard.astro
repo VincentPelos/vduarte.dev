@@ -1,18 +1,21 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-type CardTag = 'article' | 'div' | 'li';
+type CardTag = 'article' | 'div' | 'li' | 'a';
 
 interface Props extends HTMLAttributes<'div'> {
   as?: CardTag;
+  href?: string;
+  /** `false` en las tarjetas que se animan de otra forma (el bento se arma con puntos, #133). */
+  reveal?: boolean;
 }
 
-const { as: Tag = 'article', class: className, ...attrs } = Astro.props;
+const { as: Tag = 'article', reveal = true, class: className, ...attrs } = Astro.props;
 ---
 
 <Tag
   data-spotlight
-  data-reveal
+  data-reveal={reveal ? '' : undefined}
   class:list={[
     'glass spotlight relative overflow-hidden transition-colors hover:border-line-hi',
     className,
