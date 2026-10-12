@@ -1,16 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
-import { getSite } from '../../../../lib/content';
+import { getSite, getSkillIcons } from '../../../../lib/content';
 import Icon from '../../../ui/Icon.astro';
 import BentoCard from './BentoCard.astro';
 
 const { bento, highlightStack } = await getSite();
 // El ícono de cada tecnología sale de skills.json, buscando por nombre.
-const icons = new Map(
-  (await getCollection('skills')).flatMap((entry) =>
-    entry.data.items.map((item) => [item.name, item.icon] as const),
-  ),
-);
+const icons = await getSkillIcons();
 ---
 
 {/*

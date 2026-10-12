@@ -106,7 +106,6 @@ export const siteSchema = z.object({
   constellations: z.object({
     experience: z.string().min(1).max(3),
     projects: z.string().min(1).max(3),
-    skills: z.string().min(1).max(3),
     education: z.string().min(1).max(3),
     contact: z.string().min(1).max(3),
   }),
@@ -135,6 +134,13 @@ export const siteSchema = z.object({
       repo: z.string().min(1),
       demo: z.string().min(1),
       caseStudy: z.string().min(1),
+      /** Lista de proyectos y pipeline de skills (#162). */
+      skills: z.object({
+        list: z.string().min(1),
+        steps: plural,
+        pick: z.string().min(1),
+        usedIn: z.string().min(1),
+      }),
       /** Textos del visor de imágenes de un proyecto. */
       gallery: z.object({
         open: z.string().min(1),
@@ -144,7 +150,6 @@ export const siteSchema = z.object({
         of: z.string().min(1),
       }),
     }),
-    skills: z.object({ title: z.string().min(1), groups: plural, items: plural }),
     contact: z.object({
       /** Línea de terminal sobre el título, p. ej. `$ ./contacto.sh`. */
       kicker: z.string().min(1),
@@ -196,20 +201,30 @@ export const educationSchema = z
   .refine(endAfterStart, endAfterStartError)
   .refine(hasDateNote, dateNoteError);
 
+const iconName = z
+  .string()
+  .regex(/^[a-z0-9-]+:[a-z0-9-]+$/, 'Ícono de Iconify con prefijo (ej. "simple-icons:python")');
+
+/** Catálogo de tecnologías con su ícono: lo usan el stack del bento y las skills de los proyectos. */
 export const skillGroupSchema = z.object({
   id,
   group: z.string().min(1),
-  items: z
+  items: z.array(z.object({ name: z.string().min(1), icon: iconName.optional() })).min(1),
+});
+
+/**
+ * Skill de un proyecto (#162): en qué etapas se usó. `text` es lo que se hizo en esa etapa; sin
+ * `text`, la etapa solo se enciende. `icon` hace falta si la skill no está en skills.json.
+ */
+const projectSkill = z.object({
+  name: z.string().min(1),
+  icon: iconName.optional(),
+  uses: z
     .array(
       z.object({
-        name: z.string().min(1),
-        icon: z
-          .string()
-          .regex(
-            /^[a-z0-9-]+:[a-z0-9-]+$/,
-            'Ícono de Iconify con prefijo (ej. "simple-icons:python")',
-          )
-          .optional(),
+        step: z.string().min(1),
+        text: z.string().min(1).optional(),
+        href: z.url().optional(),
       }),
     )
     .min(1),
@@ -220,20 +235,36 @@ export const skillGroupSchema = z.object({
  * En los tests se reemplaza por un schema de texto.
  */
 export const projectSchema = <T extends z.ZodType>(image: () => T) =>
-  z.object({
-    id,
-    title: z.string().min(1),
-    description: z.string().min(1),
-    tags: z.array(z.string().min(1)),
-    image: image().optional(),
-    repo: z.url().optional(),
-    demo: z.url().optional(),
-    year: z.number().int().min(2000).max(2100),
-    featured: z.boolean().default(false),
-    caseStudy: id.optional(),
-    /** Imágenes del visor que se abre al hacer clic en la tarjeta (con 2 o más). */
-    gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]),
-  });
+  z
+    .object({
+      id,
+      title: z.string().min(1),
+      description: z.string().min(1),
+      /** Etapas del proyecto, en orden: la línea de puntos del pipeline. */
+      steps: z.array(z.string().min(1)).min(1),
+      skills: z.array(projectSkill).min(1),
+      image: image().optional(),
+      repo: z.url().optional(),
+      demo: z.url().optional(),
+      year: z.number().int().min(2000).max(2100),
+      featured: z.boolean().default(false),
+      caseStudy: id.optional(),
+      /** Imágenes del visor que se abre al hacer clic en la tarjeta (con 2 o más). */
+      gallery: z.array(z.object({ image: image(), alt: z.string().min(1) })).default([]),
+    })
+    .superRefine((project, ctx) => {
+      project.skills.forEach((skill, i) =>
+        skill.uses.forEach((use, j) => {
+          if (!project.steps.includes(use.step)) {
+            ctx.addIssue({
+              code: 'custom',
+              message: `La etapa "${use.step}" no está en steps`,
+              path: ['skills', i, 'uses', j, 'step'],
+            });
+          }
+        }),
+      );
+    });
 
 const text = z.string().min(1);
 /** Cifra destacada: el número y qué significa. */

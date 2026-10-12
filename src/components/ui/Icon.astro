@@ -14,7 +14,9 @@ const { id, width, height } = iconSymbol(name);
 // El dibujo vive una sola vez en el sprite (IconSprite, que la página debe incluir: hoy solo el
 // home); aquí solo se referencia.
 if (!(await getIconNames()).includes(name)) {
-  throw new Error(`El ícono "${name}" no está en el sprite: agrégalo a skills.json`);
+  throw new Error(
+    `El ícono "${name}" no está en el sprite: agrégalo a skills.json o a la skill del proyecto`,
+  );
 }
 ---
 

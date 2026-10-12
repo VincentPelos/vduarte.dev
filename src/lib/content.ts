@@ -1,11 +1,23 @@
 /** Consultas a las colecciones de contenido que usan varios componentes. */
 import { getCollection, getEntry } from 'astro:content';
 
-/** Íconos de Iconify que usa el sitio (todos salen de skills.json), sin repetir y en orden. */
+/**
+ * Ícono de cada tecnología por nombre: el de skills.json o, si la skill de un proyecto trae el
+ * suyo (#162), ese.
+ */
+export async function getSkillIcons(): Promise<Map<string, string>> {
+  const catalog = (await getCollection('skills')).flatMap((group) =>
+    group.data.items.flatMap((item) => (item.icon ? [[item.name, item.icon] as const] : [])),
+  );
+  const own = (await getCollection('projects')).flatMap((project) =>
+    project.data.skills.flatMap((skill) => (skill.icon ? [[skill.name, skill.icon] as const] : [])),
+  );
+  return new Map([...catalog, ...own]);
+}
+
+/** Íconos de Iconify que usa el sitio (skills.json y las skills de los proyectos), sin repetir. */
 export async function getIconNames(): Promise<string[]> {
-  const skills = await getCollection('skills');
-  const names = skills.flatMap((group) => group.data.items.flatMap((item) => item.icon ?? []));
-  return [...new Set(names)];
+  return [...new Set((await getSkillIcons()).values())];
 }
 
 /** Datos generales del sitio (`site.json`): textos, enlaces y etiquetas. */
