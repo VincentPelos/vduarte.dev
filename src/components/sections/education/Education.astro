@@ -26,11 +26,11 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
 
 <Section id="educacion" constellation="education">
   <SectionHeader file="education.json" title={texts.title} meta={meta} />
-  <!--
+  {/*
     Columna de años (#134): las carreras y certificaciones con peso, una estrella grande con la
     paleta cada una; las capacitaciones de un año, juntas en un bloque compacto con una estrella
     chica. Trace.astro dibuja la línea y enciende cada estrella al entrar.
-  -->
+  */}
   <div data-trace class="grid gap-11">
     {years.map(([year, list], index) => {
       const studies = list.filter((item) => item.type !== 'training');
@@ -118,6 +118,6 @@ const dayMonth = (date: string | null) => (date ? formatDate(date).replace(/ \d{
       );
     })}
   </div>
-  <!-- Cierre de la sección: aquí las estrellas forman su símbolo (decisión 009). -->
+  {/* Cierre de la sección: aquí las estrellas forman su símbolo (decisión 009). */}
   <div data-constellation="education" aria-hidden="true" class="mt-7 h-[150px] sm:h-[170px]"></div>
 </Section>

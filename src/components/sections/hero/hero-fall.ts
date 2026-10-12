@@ -38,13 +38,22 @@ export function mountFall(section: HTMLElement, end: HTMLElement): () => void {
   let falling = false; // solo durante el segundo de la caída
   let landTimer = 0;
 
+  // Solo se escribe una variable CSS si cambió: cada escritura recalcula el estilo del hero, y el
+  // scroll de toda la página pasa por aquí aunque el hero ya esté tapado (#158).
+  const vars = new Map<string, string>();
+  const setVar = (name: string, value: number) => {
+    const text = value.toFixed(3);
+    if (vars.get(name) === text) return;
+    vars.set(name, text);
+    section.style.setProperty(name, text);
+  };
   const apply = () => {
     // La caída acompaña también al scroll normal: así la barra o la nav nunca dejan el hero a medias.
     // Al cuadrado: con la hoja a medio bajar, la cámara ya retrocedió casi entera y el texto vuelve.
     const p = Math.max(auto, clamp01(scrollY / innerHeight) ** 2);
     fall.progress = p;
-    section.style.setProperty('--fall-text', String(textOpacity(p)));
-    section.style.setProperty('--fall-cue', String(clamp01(1 - Math.max(scrollY / 80, p * 4))));
+    setVar('--fall-text', textOpacity(p));
+    setVar('--fall-cue', clamp01(1 - Math.max(scrollY / 80, p * 4)));
   };
 
   const animate = (to: number, ms: number, done?: () => void) => {

@@ -16,16 +16,16 @@ const { bento } = await getSite();
   aria-label={bento.about}
   class="relative pt-[clamp(48px,8vw,80px)] pb-[clamp(48px,12vw,140px)]"
 >
-  <!-- Sin isolate ni recorte: los brillos se extienden detrás de Experiencia. No suben sobre el
-       hero: la hoja que lo tapa empieza aquí (decisión 014). -->
+  {/* Sin isolate ni recorte: los brillos se extienden detrás de Experiencia. No suben sobre el
+       hero: la hoja que lo tapa empieza aquí (decisión 014). */}
   <Glows class="top-0 bottom-[-35%]" />
   <div class="wrap">
-    <!--
+    {/*
       Bento (#133): la frase y el estado; las cuatro áreas, cada una con su dibujo en puntos y un
       enlace a su prueba; el stack en logos y los enlaces. Dos columnas hasta 900px (en celular,
       de a dos por fila para acortar el scroll) y cuatro desde 901px. Las tarjetas llevan el vidrio
       a la mitad (elegido en el laboratorio): se ven más los brillos de atrás.
-    -->
+    */}
     <div
       data-bento-grid
       class="grid grid-cols-2 gap-3 *:backdrop-blur-[10px] *:backdrop-saturate-[135%] *:[background:linear-gradient(color-mix(in_srgb,var(--color-glass)_50%,transparent),color-mix(in_srgb,var(--color-glass)_50%,transparent)),color-mix(in_srgb,var(--color-bg)_15%,transparent)] [grid-template-areas:'bio_bio'_'dev_datos'_'infra_agentes'_'status_links'_'stack_stack'] max-[460px]:gap-2.5 min-[901px]:grid-cols-4 min-[901px]:[grid-template-areas:'bio_bio_bio_status'_'dev_datos_infra_agentes'_'stack_stack_stack_links']"
@@ -39,7 +39,7 @@ const { bento } = await getSite();
       <LinksCard />
     </div>
   </div>
-  <!-- Donde los puntos del agujero dibujan el bento al terminar la caída (bento-assemble.ts). -->
+  {/* Donde los puntos del agujero dibujan el bento al terminar la caída (bento-assemble.ts). */}
   <canvas
     data-bento-fx
     aria-hidden="true"

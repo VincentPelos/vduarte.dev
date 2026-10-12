@@ -19,14 +19,14 @@
  * Con `prefers-reduced-motion`: un cuadro estático detrás del texto real, sin deformarlo. Si WebGL
  * va por software (sin GPU), no se monta: queda el respaldo sin WebGL.
  *
- * Interfaz intercambiable: `mount(section, scene, options) → unmount`.
+ * Interfaz intercambiable: `mount(section, scene, options) → Promise<unmount>`.
  */
 
 import {
   bindFramebufferInfo,
   createBufferInfoFromArrays,
   createFramebufferInfo,
-  createProgramInfo,
+  createProgramInfoAsync,
   createTexture,
   drawBufferInfo,
   resizeFramebufferInfo,
@@ -43,6 +43,7 @@ import {
   frameLoop,
   isSoftwareRenderer,
   readPalette,
+  SCENE_FPS,
   webglRenderer,
 } from '../../../lib/scene';
 import bakeFrag from './shaders/bake.frag?raw';
@@ -129,7 +130,11 @@ function pxPerRsFor(width: number, height: number): number {
   return Math.max(8, Math.min(width, height) * 0.022) * SCALE;
 }
 
-export function mount(section: HTMLElement, container: HTMLElement, options: Options): () => void {
+export async function mount(
+  section: HTMLElement,
+  container: HTMLElement,
+  options: Options,
+): Promise<() => void> {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl', {
     antialias: false,
@@ -146,11 +151,24 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   const { reducedMotion } = options;
 
   // Si un shader no compila, queda la grilla de puntos en CSS y el texto normal.
+  // Los shaders se compilan en paralelo (KHR_parallel_shader_compile, si el navegador lo tiene):
+  // compilarlos en el hilo principal era una tarea larga de ~300 ms en un celular (#158). Si uno no
+  // compila, queda la grilla de puntos en CSS y el texto normal.
   const program = (fragment: string) =>
-    createProgramInfo(gl, [quadVert, common + fragment], { errorCallback: () => {} });
-  const bake = program(bakeFrag);
-  const trace = program(traceFrag);
-  const draw = program(drawFrag);
+    createProgramInfoAsync(gl, [quadVert, common + fragment], {
+      errorCallback: () => {},
+      attribLocations: { aPos: 0 },
+    });
+  let bake: ProgramInfo, trace: ProgramInfo, draw: ProgramInfo;
+  try {
+    [bake, trace, draw] = await Promise.all([
+      program(bakeFrag),
+      program(traceFrag),
+      program(drawFrag),
+    ]);
+  } catch {
+    return () => {};
+  }
   if (!bake || !trace || !draw) return () => {};
 
   // La escena aparece cuando termina el precálculo (sin fundido: entra por colapso); mientras,
@@ -160,14 +178,18 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   // Sin animación, la escena va detrás del texto real: el contenido no depende de WebGL.
   if (reducedMotion) container.style.zIndex = '-1';
 
-  // Un triángulo que cubre la pantalla: las tres pasadas son shaders de fragmentos.
+  // Un triángulo que cubre la pantalla: las tres pasadas son shaders de fragmentos. `aPos` está en
+  // la ubicación 0 en los tres programas, así que el buffer se conecta una sola vez.
   const quad = createBufferInfoFromArrays(gl, {
     aPos: { numComponents: 2, data: [-1, -1, 3, -1, -1, 3] },
   });
-  const pass = (info: ProgramInfo, uniforms: Record<string, unknown>) => {
+  setBuffersAndAttributes(gl, trace, quad);
+  const use = (info: ProgramInfo, uniforms: Record<string, unknown>) => {
     gl.useProgram(info.program);
-    setBuffersAndAttributes(gl, info, quad);
     setUniforms(info, uniforms);
+  };
+  const pass = (info: ProgramInfo, uniforms: Record<string, unknown>) => {
+    use(info, uniforms);
     drawBufferInfo(gl, quad);
   };
 
@@ -185,7 +207,9 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   const textCanvas = document.createElement('canvas');
 
   const [uC1, uC2, uC3] = readPalette().map((rgb) => rgb.map((v) => v / 255));
-  const palette = { uC1, uC2, uC3 };
+  // Lo que no cambia se fija una sola vez en cada programa; en cada cuadro solo va lo que cambia.
+  use(trace, { uC1, uC2, uC3, uInt: INTENSITY, uCell: CELL });
+  use(draw, { uC1, uC2, uC3, uCell: CELL, uLens: reducedMotion ? 0 : 1, uEdge: COLLAPSE_EDGE });
 
   // Tabla de trayectorias: unos 2 texels por celda de la pantalla, entre 128 y 512 por lado.
   // Está en radios de Schwarzschild, así que sirve para cualquier tamaño de pantalla.
@@ -199,8 +223,13 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   const lut = Array.from({ length: LUT_TEXTURES }, () =>
     createFramebufferInfo(gl, [exact], lutSize, lutSize),
   );
-  const lutUniforms = Object.fromEntries(lut.map((fb, i) => [`uLut${i}`, fb.attachments[0]]));
   bindFramebufferInfo(gl, null);
+  // Uniforms de cada cuadro, reusados para no crear objetos en el bucle. Las texturas van siempre:
+  // las unidades de textura se comparten entre programas.
+  const traceFrame: Record<string, unknown> = Object.fromEntries(
+    lut.map((fb, i) => [`uLut${i}`, fb.attachments[0]]),
+  );
+  const drawFrame: Record<string, unknown> = { uCells: cells.attachments[0], uText: textTex };
 
   let width = 1,
     height = 1,
@@ -261,36 +290,24 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
     shared.ready = true;
 
     bindFramebufferInfo(gl, cells);
-    pass(trace, {
-      ...palette,
-      ...lutUniforms,
-      uHole: hole,
-      uPx: pxPerRs,
-      uTime: time,
-      uInt: INTENSITY,
-      uCell: CELL,
-      uZoom: zoom,
-    });
+    traceFrame.uHole = hole;
+    traceFrame.uPx = pxPerRs;
+    traceFrame.uTime = time;
+    traceFrame.uZoom = zoom;
+    pass(trace, traceFrame);
 
     const [cover, coverOnly, edgeKeep] = collapse(hole);
     bindFramebufferInfo(gl, null);
-    pass(draw, {
-      ...palette,
-      uCells: cells.attachments[0],
-      uText: textTex,
-      uGrid: [cells.width, cells.height],
-      uRes: [width, height],
-      uHole: hole,
-      uCell: CELL,
-      uDpr: dpr,
-      uPx: pxPerRs,
-      uLens: reducedMotion ? 0 : 1,
-      uTextFade: textOpacity(fall.progress),
-      uCover: cover,
-      uCoverOnly: coverOnly,
-      uEdgeKeep: edgeKeep,
-      uEdge: COLLAPSE_EDGE,
-    });
+    drawFrame.uGrid = [cells.width, cells.height];
+    drawFrame.uRes = [width, height];
+    drawFrame.uHole = hole;
+    drawFrame.uDpr = dpr;
+    drawFrame.uPx = pxPerRs;
+    drawFrame.uTextFade = textOpacity(fall.progress);
+    drawFrame.uCover = cover;
+    drawFrame.uCoverOnly = coverOnly;
+    drawFrame.uEdgeKeep = edgeKeep;
+    pass(draw, drawFrame);
   };
 
   // Colapso de entrada: devuelve el radio de la sombra que cubre (px, -1 = terminado), si fuera
@@ -327,7 +344,7 @@ export function mount(section: HTMLElement, container: HTMLElement, options: Opt
   const loop = frameLoop((_, dt) => {
     time += dt * SPEED;
     render();
-  });
+  }, SCENE_FPS);
   const play = () => {
     if (reducedMotion || !visible || !ready || !baked) return;
     loop.start();

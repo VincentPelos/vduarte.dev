@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { hash, hexToRgb, isSoftwareRenderer } from './scene';
+import { describe, expect, it, vi } from 'vitest';
+import { frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
 
 describe('hexToRgb', () => {
   it('convierte un hex de 6 dígitos', () => {
@@ -44,5 +44,29 @@ describe('hash', () => {
     const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
     expect(mean).toBeGreaterThan(0.45);
     expect(mean).toBeLessThan(0.55);
+  });
+});
+
+describe('frameLoop', () => {
+  // Cuadros de una pantalla de 120 Hz (cada 8,33 ms), entregados a mano.
+  const run = (maxFps?: number) => {
+    let callback: FrameRequestCallback | undefined;
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => ((callback = cb), 1));
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+    vi.spyOn(performance, 'now').mockReturnValue(0);
+    const ticks: number[] = [];
+    frameLoop((now) => void ticks.push(now), maxFps).start();
+    for (let i = 1; i <= 12; i++) callback?.((i * 1000) / 120);
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    return ticks.length;
+  };
+
+  it('sin tope, corre en cada cuadro', () => {
+    expect(run()).toBe(12);
+  });
+
+  it('con tope de 60 fps, en 120 Hz dibuja uno de cada dos', () => {
+    expect(run(60)).toBe(6);
   });
 });

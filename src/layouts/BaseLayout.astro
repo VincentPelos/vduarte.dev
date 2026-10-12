@@ -3,7 +3,6 @@ import '../styles/global.css';
 import displayFont from '@fontsource/martian-mono/files/martian-mono-latin-700-normal.woff2?url';
 import sansFont from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 import Footer from '../components/layout/Footer.astro';
-import IconSprite from '../components/layout/IconSprite.astro';
 import Nav from '../components/layout/Nav.astro';
 import OffscreenPause from '../components/layout/OffscreenPause.astro';
 import Reveal from '../components/layout/Reveal.astro';
@@ -29,24 +28,23 @@ const { title, description } = Astro.props;
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <!-- Las fuentes del nombre y del texto: las escenas animadas esperan a que carguen. -->
+    {/* Las fuentes del nombre y del texto: las escenas animadas esperan a que carguen. */}
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
     <meta name="generator" content={Astro.generator} />
     <Seo title={title} description={description} />
   </head>
   <body class="min-h-dvh text-fg">
-    <IconSprite />
     <a
       href="#contenido"
       class="fixed top-3 left-3 z-[60] -translate-y-[200%] rounded-full bg-fg px-4 py-2.5 text-sm font-semibold text-bg focus-visible:translate-y-0"
     >
       Saltar al contenido
     </a>
-    <!--
+    {/*
       Sin z-index propio: así el hero (z-1), la hoja (z-2), el cielo de estrellas (z-3) y el
       contenido (z-4) se ordenan entre sí (ver pages/index.astro).
-    -->
+    */}
     <main id="contenido" tabindex="-1" class="relative outline-none">
       <slot />
     </main>

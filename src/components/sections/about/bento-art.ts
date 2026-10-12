@@ -5,7 +5,15 @@
  * Con movimiento reducido se dibuja una vez, quieto.
  */
 
-import { CELL, cssPalette, cssToken, fitCanvas, frameLoop, hash } from '../../../lib/scene';
+import {
+  CELL,
+  cssPalette,
+  cssToken,
+  fitCanvas,
+  frameLoop,
+  hash,
+  SCENE_FPS,
+} from '../../../lib/scene';
 
 type Kind = 'dev' | 'datos' | 'infra' | 'agentes';
 type Cell = [number, number];
@@ -236,11 +244,16 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
     draw(performance.now());
   };
 
-  const loop = frameLoop((now) => draw(now));
-  const observer = new IntersectionObserver(([entry]) => {
-    if (entry?.isIntersecting && !reducedMotion) loop.start();
-    else loop.stop();
-  });
+  const loop = frameLoop((now) => draw(now), SCENE_FPS);
+  // Un píxel hacia adentro: en celular el bento empieza justo bajo el hero, y tocar el borde ya
+  // cuenta como visible (se animaba mientras se miraba el hero, #158).
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry?.isIntersecting && !reducedMotion) loop.start();
+      else loop.stop();
+    },
+    { rootMargin: '-1px 0px' },
+  );
 
   let width = innerWidth;
   const onResize = () => {

@@ -21,9 +21,9 @@ const meta = `${pluralize(groups.length, texts.groups)} · ${pluralize(total, te
 
 <Section id="skills" constellation="skills">
   <SectionHeader file="skills.json" title={texts.title} meta={meta} constellation="skills" />
-  <!-- Filas sin tarjetas (#98): título del grupo con su cantidad y una línea de puntos; las
+  {/* Filas sin tarjetas (#98): título del grupo con su cantidad y una línea de puntos; las
        herramientas como chips con ícono. Siempre 2 columnas; en celular, más juntas y con chips
-       más chicos para acortar el scroll (#146). -->
+       más chicos para acortar el scroll (#146). */}
   <div class="grid grid-cols-2 gap-x-5 gap-y-[30px] max-[460px]:gap-x-3 max-[460px]:gap-y-6 min-[901px]:gap-x-14">
     {groups.map((group) => (
       <div data-reveal class="grid min-w-0 content-start gap-3 max-[460px]:gap-2">

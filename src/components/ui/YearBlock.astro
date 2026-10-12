@@ -13,11 +13,11 @@ interface Props {
 const { year, current = false, line = false } = Astro.props;
 ---
 
-<!--
+{/*
   Columna de años (#134): desde 721px el año queda fijo a la izquierda mientras pasan sus
   entradas. La línea va 31px a la izquierda de las entradas, a la misma altura en celular y en
   escritorio, y las estrellas de cada entrada se alinean con ella.
--->
+*/}
 <div class="grid gap-4 pl-10 min-[721px]:grid-cols-[10rem_minmax(0,1fr)] min-[721px]:gap-x-9 min-[721px]:pl-0">
   <p
     aria-hidden="true"
