@@ -23,14 +23,6 @@
       "Linux",
       "Microsoft 365"
     ],
-    "nowPlaying": {
-      "song": "Hail to the King",
-      "artist": "Avenged Sevenfold"
-    },
-    "nowGaming": {
-      "title": "Total War: WARHAMMER III",
-      "note": "También juego The Battle Cats y Wuthering Waves"
-    },
     "nav": [
       { "section": "inicio", "label": "~/", "ariaLabel": "Inicio" },
       { "section": "experiencia", "label": "experiencia" },

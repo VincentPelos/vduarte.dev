@@ -35,7 +35,7 @@ actualizado: 2026-10-11
 | `--c2` | `#7a5cff` |
 | `--c3` | `#ff5ca8` |
 
-Reemplaza a la paleta Sangre (`#ff0040`, `#9b00ff`, `#ff8a00`) desde la decisión 008. Se usa en: el disco y el cielo del agujero negro, brillos de fondo, portada de *Sonando*, estrellas de gacha, barra de progreso, el `?` de "¿Hablamos?" y los gráficos del caso Colchagua.
+Reemplaza a la paleta Sangre (`#ff0040`, `#9b00ff`, `#ff8a00`) desde la decisión 008. Se usa en: el disco y el cielo del agujero negro, brillos de fondo, los dibujos del bento, el `?` de "¿Hablamos?" y los gráficos del caso Colchagua.
 
 ## Vidrio y brillos
 
