@@ -18,7 +18,10 @@ const projects = sortProjects((await getCollection('projects')).map((entry) => e
 const featured = projects.filter((project) => project.featured);
 const meta = [
   pluralize(projects.length, texts.unit),
-  featured.length > 0 && pluralize(featured.length, texts.featured),
+  // Si todos son destacados, "3 proyectos · 3 destacados" no dice nada: va solo el total.
+  featured.length > 0 &&
+    featured.length < projects.length &&
+    pluralize(featured.length, texts.featured),
 ]
   .filter(Boolean)
   .join(' · ');
