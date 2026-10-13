@@ -1,6 +1,6 @@
 ---
 tags: [proyecto, pendientes]
-actualizado: 2026-10-12
+actualizado: 2026-10-13
 ---
 
 # Pendientes
@@ -21,30 +21,17 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 
 ## v1.0.0 · Entrega
 
-### Lo hace el agente (no necesita al autor)
+El código está listo (#185): Power BI en el bento, favicon, imagen para compartir, `sitemap.xml`, `robots.txt`, README, rúbrica revisada, CHANGELOG y versión 1.0.0. Lo que queda lo hace el autor, en este orden:
 
-| Pendiente | Issue |
+| Paso | Qué |
 |---|---|
-| SEO e imagen para compartir: Open Graph y Twitter Card en `Seo.astro`, `og.png` (1200 × 630), `robots.txt` y `sitemap.xml`. Hoy solo hay `title`, `description` y `canonical` | — |
-| README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | — |
-| Release: `CHANGELOG.md` con `[1.0.0]`, `package.json` a 1.0.0, PR `develop` → `main` y tag `v1.0.0` | — |
+| 1. Release | Mergear el PR `develop` → `main`: Coolify despliega. Después, el tag `v1.0.0` y el GitHub Release (lo puede hacer el agente) |
+| 2. Dominio | En Coolify, de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido |
+| 3. Repo público | Cambiar la visibilidad en GitHub: los puntos del grafo de `/uso-de-ia` y los enlaces a la bitácora dejan de dar 404 |
+| 4. Verificar | `curl -sI -H 'Accept-Encoding: gzip' https://vduarte.dev` responde `Content-Encoding: gzip` (#158); compartir el enlace muestra la imagen; pasada en su Android (iOS/Safari queda sin verificar) |
+| 5. LinkedIn | Actualizar el perfil; confirmar las fechas de la práctica en AIEP |
+| 6. Defensa | Leer las decisiones, la bitácora y la [revisión de la rúbrica](rubrica.md#revisión-antes-de-v100-2026-10-13) |
 
-### Necesita al autor
+Decidido por el autor el 2026-10-13: los textos del pipeline quedan como están, las animaciones también (#124 cerrado) y el stack de Experiencia no cambia. Opcional, más adelante: reducir los textos del caso Colchagua.
 
-| Pendiente | Necesita del autor |
-|---|---|
-| Textos del pipeline de cada proyecto (#162) | Revisar los de Placilla y Noneto, y los de DAX, mpv y Tailwind CSS; sumar enlaces a los repos cuando sean públicos |
-| Animaciones de entrada y fundidos | Decidir si falta algo o se cierra #124 |
-| Stack de Experiencia: aún lista Windows y TCP/IP (Municipalidad) y Redes (práctica) | Decidir si salen |
-| Stack del bento: no muestra ninguna herramienta de BI (las de Colchagua sí se ven en Proyectos) | Decidir si cambia alguna de `highlightStack` por Power BI o pandas |
-| LinkedIn y CV: el CV está al día (`pnpm cv`) | Actualizar LinkedIn; confirmar las fechas de la práctica en AIEP |
-| Dominio final: de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido | Lo hace en Coolify; el agente no lo toca |
-| Repo público (los puntos del grafo de `/uso-de-ia` y los enlaces a la bitácora llevan a GitHub) | Cambiar la visibilidad en GitHub |
-| Verificar `gzip` en el primer deploy: `curl -sI -H 'Accept-Encoding: gzip' <url>` debe responder `Content-Encoding: gzip` (#158) | Desplegar `main` en Coolify |
-| Pasada en celular real (rúbrica: responsivo), con la caída al agujero y la flecha del hero (#136, #131) | Revisar en su Android. **Sin iPhone:** iOS/Safari queda sin verificar (rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte con respaldo, WebGL) |
-| Preparar la defensa: explicar código y decisiones | Leer las decisiones y la bitácora |
-| Reducir los textos del caso Colchagua | Opcional, más adelante |
-
-Lighthouse sobre `develop` el 2026-10-12, tras la fase de detalles (mediana de 3): home 97, `/proyectos/colchagua` 100 y `/uso-de-ia` 100; accesibilidad, buenas prácticas y SEO 100 en las tres. Se repite antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)).
-
-Hechos en este hito: skills dentro de Proyectos, con lista y detalle y pipeline; sale la sección Skills (#162, [decisión 023](../03-decisiones/023-skills-en-proyectos.md)); Noneto CLI con su sitio, repo y galería (#168); Cóndor sale de Proyectos hasta que esté listo (#174); sale "Configuro redes" de Experiencia y del CV (#176); grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](../03-decisiones/025-grafo-memoria.md)); skill elegida y con color en Proyectos, y footer sin "Hecho con Astro" (#180); logros que se abren suave (#181).
+Hechos en este hito: skills dentro de Proyectos, con lista y detalle y pipeline; sale la sección Skills (#162, [decisión 023](../03-decisiones/023-skills-en-proyectos.md)); Noneto CLI con su sitio, repo y galería (#168); Cóndor sale de Proyectos hasta que esté listo (#174); sale "Configuro redes" de Experiencia y del CV (#176); grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](../03-decisiones/025-grafo-memoria.md)); skill elegida y con color en Proyectos, y footer sin "Hecho con Astro" (#180); logros que se abren suave (#181); Power BI en el bento, favicon, imagen para compartir, sitemap, README y rúbrica (#185).

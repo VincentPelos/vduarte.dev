@@ -46,4 +46,4 @@ Cada hito es un milestone en GitHub y una versión SemVer al mergear `develop �
 | v0.4.0 | Movimiento | Fondo de estrellas de la página, reveals, Lenis, nav activa |
 | v0.5.0 | Caso Colchagua | Página del caso, capturas del Power BI y gráficos HTML, descargas, notebooks |
 | v0.6.0 | Contacto y extras | `/uso-de-ia`, caída al agujero, bento de áreas, columna de años, CV en LaTeX, rendimiento |
-| v1.0.0 | Entrega | Contenido real, repo público, Lighthouse, README final; SEO/OG y mejorar animaciones (#124), que pasaron desde v0.6.0 |
+| v1.0.0 | Entrega | Contenido real, repo público, Lighthouse, README final, SEO/OG (#185) y animaciones (#124, cerrado sin cambios) |

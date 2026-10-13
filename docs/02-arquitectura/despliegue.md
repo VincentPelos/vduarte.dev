@@ -1,11 +1,11 @@
 ---
 tags: [arquitectura, despliegue]
-actualizado: 2026-10-12
+actualizado: 2026-10-13
 ---
 
 # Despliegue
 
-> Estado: **activo**. Coolify despliega `main` en `https://preview.vduarte.dev`; el servidor y el dominio final los administra el autor.
+> Estado: **activo**. Coolify despliega `main` en `https://preview.vduarte.dev`; con v1.0.0 el autor lo pasa a `https://vduarte.dev`, sin acceso restringido. El servidor y el dominio los administra el autor.
 
 ## Pipeline
 

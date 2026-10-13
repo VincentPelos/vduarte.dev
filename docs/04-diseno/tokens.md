@@ -1,6 +1,6 @@
 ---
 tags: [diseno, tokens]
-actualizado: 2026-10-12
+actualizado: 2026-10-13
 ---
 
 # Tokens de diseño
@@ -60,7 +60,7 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 
 - Contenedor máximo `1200px` con gutter `clamp(16px, 4vw, 40px)`.
 - Espacio vertical de cada sección: `clamp(48px, 12vw, 140px)` arriba y abajo (48px en celular, #146).
-- Bento "sobre mí" (#133, [decisión 021](../03-decisiones/021-bento-agentes-armado.md)): la frase con los botones GitHub y Descargar CV, Estado, las cuatro áreas (`~/dev` en `--c1`, `~/datos` en `--c2`, `~/infra` en `--c3`, `~/agentes` en `--fg`), el stack solo con logos (gris `--muted`, `--fg` al pasar el mouse) y Encuéntrame. 4 columnas desde 901px; 2 columnas hasta 900px, también en celular, para acortar el scroll: ahí el dibujo baja a 84px y la prueba de cada área se esconde.
+- Bento "sobre mí" (#133, [decisión 021](../03-decisiones/021-bento-agentes-armado.md)): la frase con los botones GitHub y Descargar CV, Estado, las cuatro áreas (`~/dev` en `--c1`, `~/datos` en `--c2`, `~/infra` en `--c3`, `~/agentes` en `--fg`), el stack solo con logos (gris `--muted`, `--fg` al pasar el mouse; 9 en una línea desde 621px, a `1.5rem`, y 5 + 4 en celular, #185) y Encuéntrame. 4 columnas desde 901px; 2 columnas hasta 900px, también en celular, para acortar el scroll: ahí el dibujo baja a 84px y la prueba de cada área se esconde.
 - Dibujos de las áreas (`about/bento-art.ts`): puntos en la grilla de 6px. Código con cursor (530 ms), las barras de la superficie frutal de Colchagua (el cerezo con la paleta, respira en 900 ms), una red con paquetes que viajan y monitos de 5×5 celdas: un orquestador reparte tareas a tres agentes cada 2,6 s.
 - Celular (≤460px): el texto va al 90 % (`font-size` de `html`).
 - Proyectos: **lista y detalle** ([decisión 023](../03-decisiones/023-skills-en-proyectos.md)). Desde 861px, la lista a la izquierda (5/12) y el detalle a la derecha (7/12), fijo (`sticky`, 96px); en celular el detalle se abre bajo su proyecto. Cada fila de la lista: miniatura 4:3 de 64px, título (Martian Mono `1.02rem`), año y los logos de sus skills (`--muted`); la elegida con fondo `--glass-hi`. El detalle es vidrio: portada 16:6, año y "★ destacado", título `clamp(1.35rem, 2.6vw, 1.7rem)`, descripción completa, skills como botones redondos de 30px solo con logo (los sin logo, con su nombre), cada uno con un color de la paleta en orden (`--c1`, `--c2`, `--c3`: logo del color, borde al 40 % y fondo al 8 %; elegida: fondo del color y logo `--bg`). Cada proyecto abre con una skill elegida (`skill` en `projects.json`, si falta la primera) y su señal se repite la primera vez que se ve y al cambiar de proyecto, para que se note que se pulsan (#180) y el pipeline en una columna a la derecha desde 561px. Con 2 o más imágenes, la portada lleva "⧉ n" y abre un visor (`<dialog>`): imagen grande, anterior y siguiente, miniaturas, flechas del teclado y Esc.
@@ -96,3 +96,9 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 - Contraste AA mínimo sobre negro (`--muted` sobre `--bg` cumple para texto ≥14px).
 - Foco visible: outline de 2px `--fg`.
 - HTML semántico: `section`, `article`, `nav`, encabezados en orden.
+
+## Marca (#185)
+
+- **Favicon:** un agujero negro de puntos en la grilla: fondo `--bg` con radio 7/32, anillo de puntos entre 6 y 14 unidades del centro (viewBox 32) con la paleta por ángulo (`--c1` → `--c2` → `--c3`), puntos más grandes y brillantes en el borde interno (anillo de fotones) y un lado más brillante (Doppler). Se generó una vez y está en `public/`: `favicon.svg`, `favicon.ico` (PNG de 32 px) y `apple-touch-icon.png` (180 px, sin radio: iOS lo pone).
+- **Imagen para compartir** (`public/og.png`, 1200 × 630): fondo `--bg` con la grilla de puntos tenue, `$ whoami` (Geist Mono, `$` en `--ok`), el nombre en Martian Mono 700 a 68px, rol (Geist 23px, `--soft`), la frase (`--muted`) y `vduarte.dev` con el degradado de la paleta; a la derecha, el mismo agujero en grande. Si cambian el nombre, el rol o la frase en `site.json`, hay que regenerarla.
+

@@ -4,7 +4,7 @@ Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de softwar
 
 [![CI](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/VincentPelos/vduarte.dev/actions/workflows/ci.yml)
 
-- **Producción:** desplegado con Coolify; por ahora en https://preview.vduarte.dev (acceso restringido)
+- **Producción:** https://vduarte.dev, desplegado con Coolify desde `main`
 - **Documentación completa:** [`docs/00-index.md`](docs/00-index.md)
 
 ## Stack
@@ -14,7 +14,7 @@ Portafolio profesional de **Vicente Contreras Duarte**, desarrollador de softwar
 | Framework  | [Astro](https://astro.build) con TypeScript strict, sin framework de UI ([por qué](docs/03-decisiones/001-astro-sin-framework-ui.md)) |
 | Estilos    | Tailwind CSS v4 con tokens propios en `src/styles/global.css`                                                                         |
 | Contenido  | Un JSON por sección validado con zod ([por qué](docs/03-decisiones/002-json-por-seccion.md))                                          |
-| Animación  | WebGL directo (agujero negro del hero), canvas 2D (cielo de estrellas), Web Animations (reveals) y Lenis (smooth scroll)              |
+| Animación  | WebGL con twgl.js (agujero negro del hero), canvas 2D (cielo y bento), Web Animations (reveals, grafo) y Lenis (smooth scroll)        |
 | Calidad    | ESLint, Prettier, Vitest, `astro check`, commitlint + husky                                                                           |
 | CI         | GitHub Actions + Lighthouse CI                                                                                                        |
 | Despliegue | Coolify en VPS propio ([por qué](docs/03-decisiones/003-despliegue-coolify.md))                                                       |
@@ -35,25 +35,36 @@ pnpm dev                 # http://localhost:4321
 
 ### Scripts
 
-| Comando                             | Qué hace                                       |
-| ----------------------------------- | ---------------------------------------------- |
-| `pnpm dev`                          | Servidor de desarrollo con recarga en caliente |
-| `pnpm build`                        | Genera el sitio estático en `dist/`            |
-| `pnpm preview`                      | Sirve `dist/` como en producción               |
-| `pnpm lint`                         | ESLint sobre `.ts` y `.astro`                  |
-| `pnpm format` / `pnpm format:check` | Aplica / verifica el formato con Prettier      |
-| `pnpm check`                        | Verifica tipos con `astro check`               |
-| `pnpm test` / `pnpm test:watch`     | Tests con Vitest                               |
+| Comando                             | Qué hace                                         |
+| ----------------------------------- | ------------------------------------------------ |
+| `pnpm dev`                          | Servidor de desarrollo con recarga en caliente   |
+| `pnpm build`                        | Genera el sitio estático en `dist/`              |
+| `pnpm preview`                      | Sirve `dist/` como en producción                 |
+| `pnpm lint`                         | ESLint sobre `.ts` y `.astro`                    |
+| `pnpm format` / `pnpm format:check` | Aplica / verifica el formato con Prettier        |
+| `pnpm check`                        | Verifica tipos con `astro check`                 |
+| `pnpm test` / `pnpm test:watch`     | Tests con Vitest                                 |
+| `pnpm cv`                           | Compila `cv/cv.tex` a `public/cv.pdf` (Tectonic) |
+
+## Rutas
+
+| Ruta                   | Qué muestra                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `/`                    | Hero, sobre mí (bento), Experiencia, Proyectos con sus skills, Educación y Contacto             |
+| `/proyectos/colchagua` | Caso de estudio de BI: pregunta, cifras, Power BI, hallazgos, conclusiones, límites y notebooks |
+| `/uso-de-ia`           | Declaración de uso de IA y el grafo de la memoria del proyecto (`docs/`)                        |
+
+También genera `sitemap.xml`, `robots.txt` y la imagen para compartir (`og.png`).
 
 ## Estructura
 
 ```
 src/
-├─ components/   layout/ (global) · sections/<seccion>/ (home) · case/ · ui/ (reutilizables)
+├─ components/   layout/ (global) · sections/<seccion>/ (home) · case/ · ai-usage/ · ui/ (reutilizables)
 ├─ content/      datos del sitio en JSON
-├─ layouts/      BaseLayout.astro
+├─ layouts/      BaseLayout.astro · PageLayout.astro (páginas internas)
 ├─ lib/          lógica compartida + tests (*.test.ts al lado)
-├─ pages/        rutas
+├─ pages/        rutas + sitemap.xml.ts
 └─ styles/       global.css (tokens de diseño)
 ```
 
@@ -79,7 +90,7 @@ develop → PR "release: vX.Y.Z" a main → tag + GitHub Release → despliegue 
 ```
 PR a develop ──► GitHub Actions: lint · formato · tipos · tests · build · docker
              └─► Coolify: preview del PR en una URL temporal
-push a main ───► Coolify: Dockerfile (pnpm build → Nginx en puerto 80) → https://vduarte.dev
+push a main ───► Coolify (webhook de GitHub): Dockerfile (pnpm build → Nginx en puerto 80) → https://vduarte.dev
 ```
 
 Lighthouse no corre en cada PR: se lanza a mano sobre `develop` antes de cada versión menor o mayor.
@@ -88,4 +99,4 @@ En Coolify, usar el método **Dockerfile** desde el repositorio Git y exponer el
 
 ## Uso de IA
 
-Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic) y **Codex** (OpenAI) para proponer opciones, escribir código, ordenar contenido, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó. La declaración completa estará en la página `/uso-de-ia`.
+Este proyecto se desarrolla con apoyo de **Claude Code** (Anthropic) y **Codex** (OpenAI) para proponer opciones, escribir código, ordenar contenido, redactar documentación y automatizar tareas en GitHub. **Todas las decisiones de producto, diseño, stack y flujo son del autor**, que revisa los cambios antes de integrarlos. Cada sesión queda registrada en la [bitácora](docs/06-bitacora/) con qué se hizo, qué decidió el autor y cómo se verificó, y cada decisión en [`docs/03-decisiones/`](docs/03-decisiones/). La declaración completa está en [`/uso-de-ia`](https://vduarte.dev/uso-de-ia), con un grafo de toda esa memoria.
