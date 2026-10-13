@@ -334,6 +334,16 @@ describe('aiUsageSchema', () => {
     subtitle: 'Subtítulo',
     intro: 'Intro.',
     tools: [{ name: 'Claude Code', maker: 'Anthropic', use: 'Código.' }],
+    memory: {
+      file: 'docs/',
+      title: 'La memoria',
+      text: 'Texto.',
+      kinds: { index: 'Índice', note: 'Notas', decision: 'Decisiones', log: 'Bitácoras' },
+      notes: { one: 'nota', other: 'notas' },
+      links: { one: 'enlace', other: 'enlaces' },
+      hint: 'Pasa el mouse.',
+      repo: 'https://github.com/usuario/repo/blob/develop/docs/',
+    },
     projects: [
       { id: 'sitio', file: 'vduarte.dev', title: 'Este sitio', decidedBy: 'Yo', rows: [row] },
     ],

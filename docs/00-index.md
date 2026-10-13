@@ -13,7 +13,7 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 - **Última versión:** v0.6.0 (2026-10-12) Contacto y extras: `/uso-de-ia`, caída al agujero con flecha, bento de áreas, columna de años, CV en LaTeX, componentes reutilizables, escenas con twgl.js y rendimiento (con GPU real, home móvil de 86 a 96). Lighthouse CI: performance 99 en el home y 100 en las páginas internas, el resto 100. Ver [bitácora 2026-10-12](06-bitacora/2026-10-12.md).
 - **Hito en curso:** v1.0.0 Entrega. Suma lo que quedó de v0.6.0: animaciones de entrada (#124) y SEO/Open Graph.
-- **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168) y gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)).
+- **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168) gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)) y el grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](03-decisiones/025-grafo-memoria.md)).
 - **Siguiente:** que el autor confirme los textos del pipeline y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
@@ -69,6 +69,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 | [022](03-decisiones/022-twgl-escenas.md) | twgl.js para el agujero negro y helpers compartidos para los canvas | Arquitectura |
 | [023](03-decisiones/023-skills-en-proyectos.md) | Skills dentro de Proyectos: lista y detalle con pipeline (reemplaza en parte a 009) | Diseño |
 | [024](03-decisiones/024-gas-asteroides.md) | Cielo con gas estelar, asteroides y menos estrellas | Movimiento |
+| [025](03-decisiones/025-grafo-memoria.md) | Grafo de la memoria en `/uso-de-ia`, calculado en el build | Contenido |
 
 ### 04 · Diseño — cómo se ve
 

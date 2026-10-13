@@ -21,6 +21,27 @@
         "use": "En Colchagua: búsqueda de datasets, análisis preliminar y descarga de parte de los datos."
       }
     ],
+    "memory": {
+      "file": "docs/",
+      "title": "La memoria del proyecto",
+      "text": "Todo lo que se decidió y se hizo quedó escrito en docs/ mientras se trabajaba: la IA lee esa memoria al empezar cada sesión y la actualiza en cada PR, y yo la reviso. Cada punto es una nota y cada línea, un enlace entre dos.",
+      "kinds": {
+        "index": "Índice",
+        "note": "Notas",
+        "decision": "Decisiones",
+        "log": "Bitácoras"
+      },
+      "notes": {
+        "one": "nota",
+        "other": "notas"
+      },
+      "links": {
+        "one": "enlace",
+        "other": "enlaces"
+      },
+      "hint": "Pasa el mouse o toca un punto para ver la nota; con un clic o un segundo toque se abre en GitHub.",
+      "repo": "https://github.com/VincentPelos/vduarte.dev/blob/develop/docs/"
+    },
     "projects": [
       {
         "id": "sitio",
@@ -118,6 +139,10 @@
         "href": "https://github.com/VincentPelos/vduarte.dev/tree/develop/docs/06-bitacora"
       }
     ],
-    "labels": { "back": "volver al inicio", "ai": "La IA", "links": "Registro" }
+    "labels": {
+      "back": "volver al inicio",
+      "ai": "La IA",
+      "links": "Registro"
+    }
   }
 ]

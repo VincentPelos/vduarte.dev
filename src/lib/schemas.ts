@@ -360,6 +360,18 @@ export const aiUsageSchema = z.object({
   subtitle: text,
   intro: text,
   tools: z.array(z.object({ name: text, maker: text, use: text })).min(1),
+  /** Grafo de las notas de `docs/` (#177). */
+  memory: z.object({
+    file: text,
+    title: text,
+    text,
+    kinds: z.object({ index: text, note: text, decision: text, log: text }),
+    notes: plural,
+    links: plural,
+    hint: text,
+    /** Carpeta `docs/` en GitHub: cada punto enlaza a su nota. */
+    repo: z.url(),
+  }),
   projects: z
     .array(
       z.object({

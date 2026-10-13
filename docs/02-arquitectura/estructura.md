@@ -37,6 +37,7 @@ vduarte.dev/
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseDashboard, CaseBlock, BarChart
+│  │  ├─ ai-usage/             piezas de /uso-de-ia: MemoryGraph + memory-graph.ts (grafo de docs/, decisión 025)
 │  │  └─ ui/                   piezas reutilizables: Link (todo enlace), PillLink, Button, ProfileButtons (GitHub/LinkedIn/CV), GlassCard, Chip, MarkList, Section, SectionHeader, FileHeading (`$ cat …`), Period, YearBlock (columna de años), Glows, Icon, LinkHint
 │  ├─ content/                 datos del sitio (JSON), casos de estudio (cases.json) y uso de IA (ai-usage.json)
 │  ├─ layouts/                 BaseLayout.astro (todas las páginas), PageLayout.astro (páginas internas: caso y uso de IA)
