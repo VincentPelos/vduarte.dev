@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fileName, projectLinks, signalTime, sortProjects } from './projects';
+import { fileName, initialSkill, projectLinks, signalTime, sortProjects } from './projects';
 
 describe('sortProjects', () => {
   const projects = [
@@ -71,5 +71,17 @@ describe('projectLinks con demoLabel', () => {
     expect(projectLinks({ demo: 'https://ejemplo.dev', demoLabel: 'sitio' }, labels)).toEqual([
       { href: 'https://ejemplo.dev', text: 'sitio ↗' },
     ]);
+  });
+});
+
+describe('initialSkill', () => {
+  const skills = [{ name: 'Python' }, { name: 'React' }];
+
+  it('usa la skill elegida en el contenido', () => {
+    expect(initialSkill({ skill: 'React', skills })).toBe('React');
+  });
+
+  it('sin elegida, la primera', () => {
+    expect(initialSkill({ skills })).toBe('Python');
   });
 });

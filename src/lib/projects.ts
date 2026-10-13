@@ -19,6 +19,11 @@ export function sortProjects<T extends Sortable>(projects: readonly T[]): T[] {
   );
 }
 
+/** Skill elegida al abrir un proyecto (#180): la de `skill` o, si falta, la primera. */
+export function initialSkill({ skill, skills }: { skill?: string; skills: { name: string }[] }) {
+  return skill ?? skills[0]?.name ?? null;
+}
+
 interface Linkable {
   caseStudy?: string;
   repo?: string;

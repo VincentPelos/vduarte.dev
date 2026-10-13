@@ -1,6 +1,7 @@
 [
   {
     "id": "colchagua",
+    "skill": "Python",
     "title": "Resiliencia agrícola de Colchagua",
     "description": "Caso de Business Intelligence con datos oficiales: ETL en Python, Datamart en esquema estrella, machine learning, proyecciones climáticas y un dashboard en Power BI. Muestra que la provincia depende de la cereza y que la amenaza que más golpea su empleo agrícola es el invierno cálido.",
     "steps": [
@@ -130,6 +131,7 @@
   },
   {
     "id": "sitio-municipalidad-placilla",
+    "skill": "React",
     "title": "Sitio web Municipalidad de Placilla",
     "description": "En desarrollo. Reconstrucción del portal institucional como aplicación responsiva con navegación mediante hash, noticias en JSON, documentos institucionales y despliegue automatizado. Considera accesibilidad y normativa del sector público.",
     "steps": ["Interfaz", "Navegación", "Contenido", "Build", "Despliegue"],
@@ -218,6 +220,7 @@
   },
   {
     "id": "noneto-cli",
+    "skill": "Python",
     "title": "Noneto CLI",
     "description": "Cliente de TIDAL para la terminal de Windows, no oficial y de código abierto. Reproduce en Hi-Res, con biblioteca, playlists, cola, letras, visualizador de espectro y temas de color, con teclado o mouse.",
     "steps": ["Interfaz", "Cuenta", "Biblioteca", "Reproducción"],

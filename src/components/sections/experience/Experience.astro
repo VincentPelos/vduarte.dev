@@ -101,26 +101,34 @@ const years = groupByYear(jobs);
                   </ul>
                 )}
                 {job.highlights && (
-                  <details class="group">
+                  <details data-smooth class="group">
                     <summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-line px-3 py-1.5 font-mono text-[0.76rem] text-soft transition-colors hover:border-line-hi hover:text-fg [&::-webkit-details-marker]:hidden">
-                      <span aria-hidden="true" class="transition-transform group-open:rotate-90">
+                      <span
+                        aria-hidden="true"
+                        data-chevron
+                        class="transition-transform group-open:rotate-90"
+                      >
                         ›
                       </span>
-                      <span class="group-open:hidden">
+                      <span data-when-closed class="group-open:hidden">
                         {texts.highlights.show} ({job.highlights.length})
                       </span>
-                      <span class="hidden group-open:inline">{texts.highlights.hide}</span>
+                      <span data-when-open class="hidden group-open:inline">
+                        {texts.highlights.hide}
+                      </span>
                     </summary>
-                    <ul class="mt-3 grid max-w-[62ch] gap-1.5">
-                      {job.highlights.map((highlight) => (
-                        <li class="relative pl-5 text-soft">
-                          <span aria-hidden="true" class="absolute left-0 font-mono text-muted">
-                            →
-                          </span>
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
+                    <div data-smooth-body class="overflow-hidden">
+                      <ul class="grid max-w-[62ch] gap-1.5 pt-3">
+                        {job.highlights.map((highlight) => (
+                          <li class="relative pl-5 text-soft">
+                            <span aria-hidden="true" class="absolute left-0 font-mono text-muted">
+                              →
+                            </span>
+                            {highlight}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </details>
                 )}
               </div>
@@ -131,3 +139,57 @@ const years = groupByYear(jobs);
     ))}
   </div>
 </Section>
+
+<style>
+  /* Mientras se cierra (script de abajo) el <details> sigue abierto: el botón ya dice "ver". */
+  details[data-closing] [data-chevron] {
+    rotate: 0deg;
+  }
+  details[data-closing] [data-when-open] {
+    display: none;
+  }
+  details[data-closing] [data-when-closed] {
+    display: inline;
+  }
+</style>
+
+<script>
+  // "Ver logros" se abre y se cierra suave (#181): se anima el alto del contenido. El <details>
+  // nativo sigue funcionando sin JS y con movimiento reducido se abre y cierra al tiro.
+  const DURATION = 420;
+  const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+  for (const details of document.querySelectorAll<HTMLDetailsElement>('details[data-smooth]')) {
+    const summary = details.querySelector('summary');
+    const body = details.querySelector<HTMLElement>('[data-smooth-body]');
+    if (!summary || !body) continue;
+    let running: Animation | undefined;
+
+    summary.addEventListener('click', (event) => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      event.preventDefault();
+      const from = running ? body.offsetHeight : details.open ? body.offsetHeight : 0;
+      running?.cancel();
+      const closing = details.open && !details.hasAttribute('data-closing');
+      details.toggleAttribute('data-closing', closing);
+      details.open = true;
+      const to = closing ? 0 : body.scrollHeight;
+      running = body.animate(
+        [
+          { height: `${from}px`, opacity: closing ? 1 : 0 },
+          { height: `${to}px`, opacity: closing ? 0 : 1 },
+        ],
+        { duration: DURATION, easing: EASING },
+      );
+      running.finished
+        .then(() => {
+          running = undefined;
+          if (closing) {
+            details.open = false;
+            details.removeAttribute('data-closing');
+          }
+        })
+        .catch(() => {});
+    });
+  }
+</script>
