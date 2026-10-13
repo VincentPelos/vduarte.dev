@@ -1,4 +1,5 @@
 ---
+import MemoryGraph from '../components/ai-usage/MemoryGraph.astro';
 import FileHeading from '../components/ui/FileHeading.astro';
 import GlassCard from '../components/ui/GlassCard.astro';
 import MarkList from '../components/ui/MarkList.astro';
@@ -29,6 +30,8 @@ const { title, subtitle, intro, tools, projects, checks, links, labels } = await
       </GlassCard>
     ))}
   </ul>
+
+  <MemoryGraph />
 
   {projects.map((project) => (
     <section id={project.id} class="mt-[clamp(56px,8vw,90px)]">
