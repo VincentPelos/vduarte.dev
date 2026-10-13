@@ -6,7 +6,7 @@ import GlassCard from '../ui/GlassCard.astro';
 import Link from '../ui/Link.astro';
 import { memoryGraph, type NoteKind } from './memory-graph';
 
-// Las notas de docs/ se leen en el build; la página no las publica, solo el grafo.
+// Las notas de docs/ se leen en el build; la página no las publica, solo el grafo. test
 const files = Object.fromEntries(
   Object.entries(
     import.meta.glob<string>('/docs/**/*.md', { query: '?raw', import: 'default', eager: true }),
