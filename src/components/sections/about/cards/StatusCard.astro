@@ -9,7 +9,12 @@ const { bento, available, availabilityNote } = await getSite();
   <p class="flex items-center gap-2.5 text-xl leading-[1.25] font-semibold">
     <span
       aria-hidden="true"
-      class:list={['size-2.5 rounded-full', available ? 'animate-pulse-ok bg-ok' : 'bg-muted']}
+      class:list={[
+        'size-2.5 rounded-full',
+        available
+          ? 'relative bg-ok after:absolute after:inset-0 after:animate-pulse-ok after:rounded-full after:bg-ok/55'
+          : 'bg-muted',
+      ]}
     ></span>
     {available ? bento.available : bento.unavailable}
   </p>

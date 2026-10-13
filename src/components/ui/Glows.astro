@@ -11,8 +11,9 @@ const { strength = 0.55, class: className } = Astro.props;
 {/*
   Brillos difuminados detrás del vidrio. El padre necesita `relative`; con `isolate` quedan
   dentro de la sección, sin él pasan por detrás de las secciones vecinas.
-  Cada brillo es un degradado (`glow-orb`), no un `filter: blur`: con blur, el navegador
-  vuelve a difuminar en cada cuadro de la animación (docs/02-arquitectura/rendimiento.md).
+  Cada brillo es un degradado (`glow-orb`), no un `filter: blur`, y quedan quietos: animados
+  dentro de la máscara, la GPU recomponía la máscara y el vidrio de encima en cada cuadro (#192,
+  docs/02-arquitectura/rendimiento.md). Cada uno queda en un punto distinto del antiguo `drift`.
 */}
 <div
   aria-hidden="true"
@@ -22,7 +23,7 @@ const { strength = 0.55, class: className } = Astro.props;
   ]}
   style={`opacity: calc(${strength} * var(--glow));`}
 >
-  <span class="absolute top-[10%] left-[2%] aspect-square w-[38%] animate-drift glow-orb [--orb:var(--color-c1)]"></span>
-  <span class="absolute top-[45%] left-[40%] aspect-square w-[32%] animate-drift glow-orb [--orb:var(--color-c2)] [animation-delay:-6s]"></span>
-  <span class="absolute top-0 right-0 aspect-square w-[30%] animate-drift glow-orb [--orb:var(--color-c3)] [animation-delay:-12s]"></span>
+  <span class="absolute top-[10%] left-[2%] aspect-square w-[38%] [transform:translate(2%,-3%)_scale(1.05)] glow-orb [--orb:var(--color-c1)]"></span>
+  <span class="absolute top-[45%] left-[40%] aspect-square w-[32%] [transform:translate(4%,-5%)_scale(1.1)] glow-orb [--orb:var(--color-c2)]"></span>
+  <span class="absolute top-0 right-0 aspect-square w-[30%] [transform:translate(6%,-8%)_scale(1.15)] glow-orb [--orb:var(--color-c3)]"></span>
 </div>

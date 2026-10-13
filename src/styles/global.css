@@ -41,7 +41,6 @@
 
   /* Movimiento */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-  --animate-drift: drift 18s ease-in-out infinite alternate;
 
   --animate-blink: blink 1.05s steps(1) infinite;
 
@@ -62,18 +61,19 @@
 
   --animate-pulse-ok: pulse-ok 2s infinite;
 
+  /*
+    Anillo que crece y se apaga, en un ::after del punto (StatusCard). Solo transform y opacity:
+    con box-shadow se repintaba en cada cuadro, dentro de una tarjeta con blur (#192). Escala 3,4 =
+    el punto de 10 px más 12 px de anillo por lado.
+  */
   @keyframes pulse-ok {
     0% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ok) 55%, transparent);
+      transform: scale(1);
+      opacity: 1;
     }
     100% {
-      box-shadow: 0 0 0 12px transparent;
-    }
-  }
-
-  @keyframes drift {
-    to {
-      transform: translate(6%, -8%) scale(1.15);
+      transform: scale(3.4);
+      opacity: 0;
     }
   }
 }
