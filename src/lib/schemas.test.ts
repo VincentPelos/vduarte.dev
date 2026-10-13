@@ -28,6 +28,7 @@ const site = {
   github: 'https://github.com/VincentPelos',
   linkedin: 'https://www.linkedin.com/in/ejemplo',
   cvPath: '/cv.pdf',
+  share: { image: '/og.png', alt: 'Tarjeta' },
   highlightStack: ['TypeScript', 'Python'],
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',

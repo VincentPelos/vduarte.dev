@@ -66,6 +66,11 @@ export const siteSchema = z.object({
     .string()
     .startsWith('/', 'Ruta dentro de public/, empezando con "/" (ej. "/cv.pdf")')
     .optional(),
+  /** Imagen para compartir el enlace (Open Graph, #185): 1200 × 630 en public/. */
+  share: z.object({
+    image: z.string().startsWith('/', 'Ruta dentro de public/, empezando con "/"'),
+    alt: z.string().min(1),
+  }),
   highlightStack: z.array(z.string().min(1)).min(1),
   /** Enlaces de la nav a las secciones del home; `section` es el id de la sección. */
   nav: z
