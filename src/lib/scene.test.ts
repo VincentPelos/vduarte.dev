@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
+import { dotBatch, frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
 
 describe('hexToRgb', () => {
   it('convierte un hex de 6 dígitos', () => {
@@ -68,5 +68,45 @@ describe('frameLoop', () => {
 
   it('con tope de 60 fps, en 120 Hz dibuja uno de cada dos', () => {
     expect(run(60)).toBe(6);
+  });
+});
+
+describe('dotBatch', () => {
+  // En Node no hay Path2D: basta un doble que cuente los círculos de cada grupo.
+  class FakePath {
+    arcs = 0;
+    moveTo() {}
+    arc() {
+      this.arcs++;
+    }
+  }
+
+  it('rellena una vez por color y opacidad, con la opacidad en pasos de 1/20', () => {
+    vi.stubGlobal('Path2D', FakePath);
+    const fills: { alpha: number; color: string; arcs: number }[] = [];
+    const ctx = {
+      globalAlpha: 1,
+      fillStyle: '',
+      fill(path: FakePath) {
+        fills.push({ alpha: this.globalAlpha, color: this.fillStyle, arcs: path.arcs });
+      },
+    };
+    const batch = dotBatch();
+    batch.add(0, 0, 1, '#fff', 0.5);
+    batch.add(6, 0, 1, '#fff', 0.51); // mismo paso que 0,5
+    batch.add(12, 0, 1, '#f00', 0.5);
+    batch.add(18, 0, 1, '#fff', 0); // invisible: no se dibuja
+    batch.flush(ctx as unknown as CanvasRenderingContext2D);
+
+    expect(fills).toEqual([
+      { alpha: 0.5, color: '#fff', arcs: 2 },
+      { alpha: 0.5, color: '#f00', arcs: 1 },
+    ]);
+    expect(ctx.globalAlpha).toBe(1);
+
+    // flush vacía los grupos
+    batch.flush(ctx as unknown as CanvasRenderingContext2D);
+    expect(fills).toHaveLength(2);
+    vi.unstubAllGlobals();
   });
 });

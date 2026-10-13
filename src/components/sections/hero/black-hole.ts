@@ -408,11 +408,18 @@ export async function mount(
   // El hero queda pegado arriba mientras la hoja del portafolio lo tapa (decisión 014): se ve
   // mientras el borde de la hoja ([data-hero-end]) no haya pasado arriba de la pantalla.
   const end = document.querySelector<HTMLElement>('[data-hero-end]');
-  const io = new IntersectionObserver(([entry]) => {
-    visible = end ? entry.isIntersecting || entry.boundingClientRect.top > 0 : entry.isIntersecting;
-    if (visible) play();
-    else loop.stop();
-  });
+  // El área observada se extiende hacia abajo sin límite: el borde cuenta como visible mientras no
+  // haya pasado arriba de la pantalla. Con el área normal, un salto con la nav (de bajo la
+  // pantalla a arriba de ella) no cambiaba el estado, el observador no avisaba y el agujero seguía
+  // dibujando tapado (#192). Los 2 px de arriba evitan que tocar el borde ya cuente.
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) play();
+      else loop.stop();
+    },
+    { rootMargin: end ? '-2px 0px 100000px 0px' : '0px' },
+  );
   const ro = new ResizeObserver(resize);
   io.observe(end ?? section);
   ro.observe(container);

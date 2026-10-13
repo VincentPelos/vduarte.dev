@@ -2,17 +2,18 @@
  * Dibujos en puntos de las áreas del bento (#133): código (`dev`), las barras de Colchagua
  * (`datos`), una red (`infra`) y monitos que se pasan tareas (`agentes`). Todo en la grilla de
  * celdas de 6px (decisión 008), en un solo bucle que se pausa con el bento fuera de pantalla.
- * Con movimiento reducido se dibuja una vez, quieto.
+ * Los puntos quietos se pintan una vez en una capa aparte; en cada cuadro solo se copia la capa y
+ * se dibuja lo que se mueve, a 30 fps (#192). Con movimiento reducido se dibuja una vez, quieto.
  */
 
 import {
   CELL,
   cssPalette,
   cssToken,
+  dotBatch,
   fitCanvas,
   frameLoop,
   hash,
-  SCENE_FPS,
 } from '../../../lib/scene';
 
 type Kind = 'dev' | 'datos' | 'infra' | 'agentes';
@@ -35,6 +36,9 @@ interface Art {
   ctx: CanvasRenderingContext2D;
   width: number;
   height: number;
+  /** Puntos quietos, pintados una vez en `layer`. */
+  layer: HTMLCanvasElement;
+  /** Puntos que cambian en cada cuadro (cursor, barras que respiran). */
   dots: Dot[];
   links: Cell[][];
   agents?: { orch: Cell; workers: Cell[] };
@@ -44,6 +48,8 @@ interface Art {
 const SPRITE = ['..x..', '.xxx.', 'xexex', '.xxx.', '.x.x.'];
 /** Ciclo de una tarea de los agentes (ms): baja, trabaja, sube el resultado. */
 const TASK_MS = 2600;
+/** Los dibujos se mueven de a una celda: 30 fps alcanzan y cuestan la mitad (#192). */
+const ART_FPS = 30;
 
 export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotion: boolean }) {
   const fg = cssToken('--color-fg');
@@ -67,7 +73,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
       if (x >= 0 && y >= 0 && x < cols && y < rows)
         dots.push({ x, y, color, size, alpha, ...extra });
     };
-    const art: Art = { kind, canvas, ctx, width, height, dots, links };
+    const art: Art = { kind, canvas, ctx, width, height, layer: canvas, dots, links };
 
     if (kind === 'dev') {
       // Bloques de código: sangría, palabra clave en color, el resto en blanco; cursor al final.
@@ -145,34 +151,60 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
       const workers = [0.2, 0.5, 0.8].map((f): Cell => [Math.round(cols * f) - 2, rows - 6]);
       art.agents = { orch: [Math.round(cols / 2) - 2, 0], workers };
     }
+    // Lo que no se mueve va a la capa quieta; con movimiento reducido, todo.
+    const moving = (d: Dot) => !reducedMotion && (d.cursor || d.rise !== undefined);
+    art.layer = paintLayer(
+      canvas,
+      width,
+      height,
+      dots.filter((d) => !moving(d)),
+    );
+    art.dots = dots.filter(moving);
     return art;
   };
 
-  const circle = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number) => {
-    ctx.beginPath();
-    ctx.arc(x * CELL + CELL / 2, y * CELL + CELL / 2, r, 0, Math.PI * 2);
-    ctx.fill();
+  /** Centro en px de una celda. */
+  const px = (v: number) => v * CELL + CELL / 2;
+
+  const paintLayer = (canvas: HTMLCanvasElement, width: number, height: number, dots: Dot[]) => {
+    const layer = document.createElement('canvas');
+    const g = layer.getContext('2d');
+    if (!g) return layer;
+    layer.width = canvas.width;
+    layer.height = canvas.height;
+    g.setTransform(
+      canvas.width / Math.max(1, width),
+      0,
+      0,
+      canvas.height / Math.max(1, height),
+      0,
+      0,
+    );
+    const batch = dotBatch();
+    for (const d of dots) batch.add(px(d.x), px(d.y), d.size, d.color, d.alpha);
+    batch.flush(g);
+    return layer;
   };
 
-  const sprite = (
-    ctx: CanvasRenderingContext2D,
-    [x, y]: Cell,
-    body: string,
-    eye: string,
-    blink: boolean,
-  ) => {
+  // Lo que se mueve también va en grupos: un `fill` por color y opacidad (#192). Los enlaces
+  // punteados van en su propio grupo, debajo de los paquetes y los monitos.
+  const under = dotBatch();
+  const over = dotBatch();
+  const dot = (x: number, y: number, r: number, color: string, alpha = 1) =>
+    over.add(px(x), px(y), r, color, alpha);
+
+  const sprite = ([x, y]: Cell, body: string, eye: string, blink: boolean) => {
     SPRITE.forEach((row, r) =>
       [...row].forEach((ch, c) => {
         if (ch === '.' || (ch === 'e' && blink)) return;
-        ctx.globalAlpha = ch === 'e' ? 1 : 0.85;
-        ctx.fillStyle = ch === 'e' ? eye : body;
-        circle(ctx, x + c, y + r, ch === 'e' ? 1.6 : 1.25);
+        if (ch === 'e') dot(x + c, y + r, 1.6, eye);
+        else dot(x + c, y + r, 1.25, body, 0.85);
       }),
     );
   };
 
   const drawAgents = (art: Art, t: number) => {
-    const { ctx, agents } = art;
+    const { agents } = art;
     if (!agents) return;
     const { orch, workers } = agents;
     const from: Cell = [orch[0] + 2, orch[1] + 5];
@@ -184,17 +216,14 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
         Math.round(from[0] + ((to[0] - from[0]) * s) / n),
         Math.round(from[1] + ((to[1] - from[1]) * s) / n),
       ];
-      ctx.globalAlpha = 0.22;
-      ctx.fillStyle = muted;
-      for (let s = 0; s <= n; s += 2) circle(ctx, ...at(s), 0.8);
+      for (let s = 0; s <= n; s += 2) {
+        const [x, y] = at(s);
+        under.add(px(x), px(y), 0.8, muted, 0.22);
+      }
       const color = palette[i % 3];
       let hop = 0;
       let eyes = color;
-      const packet = (k: number, c: string) => {
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = c;
-        circle(ctx, ...at(Math.round(k * n)), 1.9);
-      };
+      const packet = (k: number, c: string) => dot(...at(Math.round(k * n)), 1.9, c);
       if (!reducedMotion) {
         const u = ((t + i * 860) % TASK_MS) / TASK_MS;
         if (u < 0.35)
@@ -207,35 +236,32 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
           packet(1 - (u - 0.6) / 0.3, fg); // el resultado sube
         else orchBlink ||= u < 0.93;
       }
-      sprite(ctx, [wx, wy + hop], soft, eyes, false);
+      sprite([wx, wy + hop], soft, eyes, false);
     });
-    sprite(ctx, orch, fg, palette[1], orchBlink);
+    sprite(orch, fg, palette[1], orchBlink);
   };
 
   const draw = (t: number) => {
     for (const art of arts) {
       const { ctx } = art;
       ctx.clearRect(0, 0, art.width, art.height);
+      ctx.globalAlpha = 1;
+      ctx.drawImage(art.layer, 0, 0, art.width, art.height);
       for (const d of art.dots) {
         let alpha = d.alpha;
-        if (d.cursor) alpha = reducedMotion || Math.floor(t / 530) % 2 === 0 ? 1 : 0;
-        if (d.rise !== undefined && !reducedMotion)
-          alpha *= 0.75 + 0.25 * Math.sin(t / 900 - d.rise * 4);
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = d.color;
-        circle(ctx, d.x, d.y, d.size);
+        if (d.cursor) alpha = Math.floor(t / 530) % 2 === 0 ? 1 : 0;
+        if (d.rise !== undefined) alpha *= 0.75 + 0.25 * Math.sin(t / 900 - d.rise * 4);
+        dot(d.x, d.y, d.size, d.color, alpha);
       }
       if (!reducedMotion)
         art.links.forEach((path, i) => {
           const k = Math.floor((t / 90 + i * 7) % (path.length * 1.6));
           const cell = path[k];
-          if (!cell) return;
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = palette[i % 3];
-          circle(ctx, cell[0], cell[1], 1.8);
+          if (cell) dot(cell[0], cell[1], 1.8, palette[i % 3]);
         });
       drawAgents(art, t);
-      ctx.globalAlpha = 1;
+      under.flush(ctx);
+      over.flush(ctx);
     }
   };
 
@@ -244,7 +270,7 @@ export function mountArt(section: HTMLElement, { reducedMotion }: { reducedMotio
     draw(performance.now());
   };
 
-  const loop = frameLoop((now) => draw(now), SCENE_FPS);
+  const loop = frameLoop((now) => draw(now), ART_FPS);
   // Un píxel hacia adentro: en celular el bento empieza justo bajo el hero, y tocar el borde ya
   // cuenta como visible (se animaba mientras se miraba el hero, #158).
   const observer = new IntersectionObserver(

@@ -75,6 +75,34 @@ export function fitCanvas(
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
+/**
+ * Puntos juntados por color y opacidad: cada grupo se rellena con un solo `fill`. Un `fill` por
+ * punto era el grueso del costo de los canvas 2D (#192). La opacidad va en pasos de 1/20.
+ */
+export function dotBatch() {
+  const groups = new Map<string, Path2D>();
+  return {
+    add(x: number, y: number, radius: number, color: string, alpha: number) {
+      if (alpha <= 0) return;
+      const key = `${Math.round(Math.min(1, alpha) * 20)}|${color}`;
+      let path = groups.get(key);
+      if (!path) groups.set(key, (path = new Path2D()));
+      path.moveTo(x + radius, y);
+      path.arc(x, y, radius, 0, Math.PI * 2);
+    },
+    flush(ctx: CanvasRenderingContext2D) {
+      for (const [key, path] of groups) {
+        const bar = key.indexOf('|');
+        ctx.globalAlpha = Number(key.slice(0, bar)) / 20;
+        ctx.fillStyle = key.slice(bar + 1);
+        ctx.fill(path);
+      }
+      groups.clear();
+      ctx.globalAlpha = 1;
+    },
+  };
+}
+
 /** Cuadros por segundo de las escenas que se animan solas: en pantallas de 120 Hz no se nota más. */
 export const SCENE_FPS = 60;
 
