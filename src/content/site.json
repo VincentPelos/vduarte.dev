@@ -95,7 +95,7 @@
         "title": "Educación",
         "degree": { "one": "formación", "other": "formaciones" },
         "cert": { "one": "certificación", "other": "certificaciones" },
-        "training": { "one": "capacitación", "other": "capacitaciones" },
+        "training": { "one": "capacitación", "other": "capacitaciones." },
         "folio": "folio"
       },
       "projects": {
