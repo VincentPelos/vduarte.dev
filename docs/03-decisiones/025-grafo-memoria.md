@@ -16,6 +16,7 @@ Respeta el lenguaje de puntos de la [decisión 008](008-agujero-negro-puntos.md)
 - **Layout:** de fuerzas (Fruchterman–Reingold), determinista (parte de una espiral, sin azar) y calculado en el build, así el cliente no hace la simulación. Cada nodo cae en la grilla de 6 unidades, sin dos en la misma celda.
 - **Dibujo:** las aristas en un SVG (línea punteada `--line-hi`) y cada nota como un `Link` HTML encima, ubicado en porcentaje. Así los puntos miden lo mismo en celular, el foco funciona con teclado y cada uno abre su nota en GitHub. Color por tipo: decisiones `--c2`, bitácoras `--c3`, notas `--c1` y el índice `--fg`; tres tamaños (5, 8 y 12px) según cuántas notas enlaza.
 - **Interacción:** al pasar el mouse, enfocar o tocar una nota se encienden ella, sus vecinas y sus enlaces, y arriba se lee su ruta y su título. En celular el primer toque muestra y el segundo abre. Sin JS se ve el grafo y cada punto abre su nota.
+- **Animaciones:** al entrar en pantalla, el grafo aparece en onda desde el índice: cada punto espera 220 ms por salto de enlaces más 1,6 ms por unidad de distancia al índice (calculado en el build), aparece con un pulso (escala 0 → 1,8 → 1, 700 ms) y sus líneas se encienden detrás. Después, cada 650 ms viaja una señal (un punto del color de la nota de origen) por una línea al azar y hace latir a la nota de llegada. Con una nota elegida, las señales salen de ella a todas sus vecinas. Las señales se detienen fuera de pantalla o con la pestaña oculta; con `prefers-reduced-motion` no hay entrada ni señales.
 - **Dónde vive:** `components/ai-usage/MemoryGraph.astro` y `memory-graph.ts` (con tests); los textos en `ai-usage.json` (`memory`).
 
 ## Alternativas consideradas
@@ -24,5 +25,5 @@ Respeta el lenguaje de puntos de la [decisión 008](008-agujero-negro-puntos.md)
 - **Una colección de contenido con `glob()` sobre `docs/`:** procesaría el markdown de toda la bóveda para usar solo el título y los enlaces.
 
 ## Consecuencias
-- El HTML de `/uso-de-ia` suma los nodos y las aristas (45 y 159 al crearse); el script es chico y no hay canvas.
+- El HTML de `/uso-de-ia` suma los nodos y las aristas (45 y 159 al crearse); el script es chico y no hay canvas: las señales son círculos SVG animados con la Web Animations API, a lo sumo unas decenas a la vez.
 - Las notas de `docs/` no se publican; solo su título y su ruta, que enlaza al repositorio (privado hasta la entrega).

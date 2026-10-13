@@ -13,6 +13,8 @@ export interface MemoryNode {
   kind: NoteKind;
   /** Enlaces con otras notas, en ambos sentidos. */
   degree: number;
+  /** Saltos desde el índice: ordena la entrada en ola. Las notas sueltas van al final. */
+  depth: number;
   x: number;
   y: number;
 }
@@ -63,7 +65,7 @@ export function noteLinks(path: string, source: string): string[] {
 
 /** Nodos y aristas a partir de las notas (`{ ruta: contenido }`), todavía sin posición. */
 export function buildGraph(files: Record<string, string>): {
-  nodes: Omit<MemoryNode, 'x' | 'y'>[];
+  nodes: Omit<MemoryNode, 'x' | 'y' | 'depth'>[];
   edges: [number, number][];
 } {
   const paths = Object.keys(files).sort();
@@ -93,6 +95,29 @@ export function buildGraph(files: Record<string, string>): {
     degree: degree[i]!,
   }));
   return { nodes, edges };
+}
+
+/** Saltos de cada nodo desde `start` (búsqueda en anchura); los que no alcanza, el máximo + 1. */
+export function depths(count: number, edges: [number, number][], start: number): number[] {
+  const neighbors = Array.from({ length: count }, () => [] as number[]);
+  for (const [a, b] of edges) {
+    neighbors[a]!.push(b);
+    neighbors[b]!.push(a);
+  }
+  const depth: number[] = Array.from({ length: count }, () => -1);
+  if (start >= 0 && start < count) {
+    depth[start] = 0;
+    const queue = [start];
+    for (let i = 0; i < queue.length; i++) {
+      for (const next of neighbors[queue[i]!]!) {
+        if (depth[next] !== -1) continue;
+        depth[next] = depth[queue[i]!]! + 1;
+        queue.push(next);
+      }
+    }
+  }
+  const max = Math.max(0, ...depth);
+  return depth.map((d) => (d === -1 ? max + 1 : d));
 }
 
 interface LayoutOptions {
@@ -186,8 +211,13 @@ export function memoryGraph(
 ): MemoryGraph {
   const { nodes, edges } = buildGraph(files);
   const points = layout(nodes.length, edges, { width, height, cell, padding, iterations });
+  const depth = depths(
+    nodes.length,
+    edges,
+    nodes.findIndex((node) => node.kind === 'index'),
+  );
   return {
-    nodes: nodes.map((node, i) => ({ ...node, ...points[i]! })),
+    nodes: nodes.map((node, i) => ({ ...node, ...points[i]!, depth: depth[i]! })),
     edges,
     width,
     height,

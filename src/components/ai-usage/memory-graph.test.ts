@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildGraph,
+  depths,
   memoryGraph,
   noteKind,
   noteLinks,
@@ -93,5 +94,20 @@ describe('buildGraph', () => {
 
   it('da el mismo layout en cada build', () => {
     expect(memoryGraph(files)).toEqual(memoryGraph(files));
+  });
+});
+
+describe('depths', () => {
+  it('cuenta los saltos desde el inicio y deja las notas sueltas al final', () => {
+    const edges: [number, number][] = [
+      [0, 1],
+      [1, 2],
+      [0, 3],
+    ];
+    expect(depths(5, edges, 0)).toEqual([0, 1, 2, 1, 3]);
+  });
+
+  it('sin inicio, todas quedan juntas', () => {
+    expect(depths(2, [], -1)).toEqual([1, 1]);
   });
 });

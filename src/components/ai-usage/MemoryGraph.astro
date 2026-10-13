@@ -18,12 +18,22 @@ const kinds: NoteKind[] = ['decision', 'log', 'note', 'index'];
 const count = (kind: NoteKind) => nodes.filter((node) => node.kind === kind).length;
 // Tres tamaños de punto (· • ●), según cuántas notas enlaza.
 const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
+// Entrada en onda desde el índice: cada punto espera según sus saltos (WAVE ms por salto) y su
+// distancia al índice (SPREAD ms por unidad); cada línea, a su punto más tardío.
+const WAVE = 220;
+const SPREAD = 1.6;
+const origin = nodes.find((node) => node.kind === 'index') ?? { x: width / 2, y: height / 2 };
+const wait = nodes.map(
+  (node) => node.depth * WAVE + Math.hypot(node.x - origin.x, node.y - origin.y) * SPREAD,
+);
+const delay = (ms: number) => `${Math.round(ms)}ms`;
 ---
 
 {/*
   Grafo de la memoria (#177): las aristas en un SVG y cada nota como un enlace encima, en
   porcentaje de la caja, así los puntos no se achican en celular y el foco funciona con teclado.
-  Sin JS se ve el grafo completo y cada punto abre su nota.
+  Sin JS se ve el grafo completo y cada punto abre su nota. Con JS entra en ola desde el índice y
+  por las líneas viajan señales (script de abajo); con movimiento reducido, nada se anima.
 */}
 <section id="memoria" class="mt-[clamp(56px,8vw,90px)]">
   <FileHeading file={memory.file} title={memory.title} />
@@ -60,6 +70,7 @@ const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
             x2={nodes[b]!.x}
             y2={nodes[b]!.y}
             vector-effect="non-scaling-stroke"
+            style={`--delay: ${delay(Math.max(wait[a]!, wait[b]!))}`}
           />
         ))}
       </svg>
@@ -73,8 +84,10 @@ const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
               data-title={node.title}
               data-degree={pluralize(node.degree, memory.links)}
               data-kind={node.kind}
+              data-x={node.x}
+              data-y={node.y}
               class="node absolute block -translate-1/2 rounded-full"
-              style={`left: ${(node.x / width) * 100}%; top: ${(node.y / height) * 100}%; --size: ${size(node.degree)}px`}
+              style={`left: ${(node.x / width) * 100}%; top: ${(node.y / height) * 100}%; --size: ${size(node.degree)}px; --delay: ${delay(wait[i]!)}`}
             >
               <span class="sr-only">{node.title}</span>
             </Link>
@@ -148,12 +161,42 @@ const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
   .node[data-current] {
     scale: 1.6;
   }
+  .signal {
+    pointer-events: none;
+  }
   @media (prefers-reduced-motion: no-preference) {
     .node,
     line {
       transition:
         opacity 300ms var(--ease-out-expo),
         scale 300ms var(--ease-out-expo);
+    }
+    /* Entrada: hasta que el grafo se ve, todo espera oculto; después cada punto aparece con un
+       pulso y sus líneas se encienden detrás, salto por salto desde el índice. */
+    .memory[data-wait] .node,
+    .memory[data-wait] line {
+      opacity: 0;
+    }
+    .memory[data-in] .node {
+      animation: memory-node-in 700ms var(--ease-out-expo) var(--delay) backwards;
+    }
+    .memory[data-in] line {
+      animation: memory-line-in 900ms ease-out calc(var(--delay) + 180ms) backwards;
+    }
+  }
+  @keyframes memory-node-in {
+    from {
+      opacity: 0;
+      scale: 0;
+    }
+    55% {
+      opacity: 1;
+      scale: 1.8;
+    }
+  }
+  @keyframes memory-line-in {
+    from {
+      opacity: 0;
     }
   }
 </style>
@@ -173,6 +216,7 @@ const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
     const title = card.querySelector<HTMLElement>('[data-memory-title]')!;
 
     const clear = () => {
+      current = -1;
       delete box.dataset.active;
       for (const el of [...nodes, ...lines]) {
         el.removeAttribute('data-on');
@@ -201,7 +245,87 @@ const size = (degree: number) => (degree >= 12 ? 12 : degree >= 5 ? 8 : 5);
       path.textContent = node.dataset.path!;
       degree.textContent = node.dataset.degree!;
       title.textContent = node.dataset.title!;
+      current = Number(i);
+      tick = 1;
+      if (ready) burst(current);
     };
+
+    // Animaciones (#177): entrada en ola y señales por las líneas, solo mientras el grafo se ve.
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const svg = box.querySelector('svg')!;
+    const viewWidth = svg.viewBox.baseVal.width;
+    const waves = Math.max(
+      ...nodes.map((node) => parseFloat(node.style.getPropertyValue('--delay'))),
+    );
+    let visible = false;
+    let ready = false;
+    let current = -1;
+
+    // Un punto de la paleta de la nota de origen que viaja hasta su vecina y la hace latir al llegar.
+    const signal = (from: number, to: number) => {
+      const [a, b] = [nodes[from]!, nodes[to]!];
+      const [ax, ay, bx, by] = [a.dataset.x, a.dataset.y, b.dataset.x, b.dataset.y].map(Number);
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.classList.add('signal');
+      dot.setAttribute('r', String((2.5 * viewWidth) / box.clientWidth));
+      dot.style.fill = getComputedStyle(a).getPropertyValue('--kind');
+      svg.append(dot);
+      const duration = 500 + Math.hypot(bx! - ax!, by! - ay!) * 2.2;
+      dot
+        .animate(
+          [
+            { transform: `translate(${ax}px, ${ay}px)`, opacity: 0 },
+            { opacity: 1, offset: 0.15 },
+            { opacity: 1, offset: 0.85 },
+            { transform: `translate(${bx}px, ${by}px)`, opacity: 0 },
+          ],
+          { duration, easing: 'cubic-bezier(0.65, 0, 0.35, 1)' },
+        )
+        .finished.then(() => {
+          dot.remove();
+          if (!b.hasAttribute('data-current'))
+            b.animate([{ scale: 1 }, { scale: 1.7 }, { scale: 1 }], {
+              duration: 420,
+              easing: 'ease-out',
+            });
+        })
+        .catch(() => dot.remove());
+    };
+
+    // Elegida una nota, las señales salen de ella a todas sus vecinas; si no, por una línea al azar.
+    const neighbors = (i: number) =>
+      lines.flatMap(({ dataset: { a, b } }) =>
+        Number(a) === i ? [Number(b)] : Number(b) === i ? [Number(a)] : [],
+      );
+    const burst = (i: number) => neighbors(i).forEach((j) => signal(i, j));
+    let tick = 0;
+    const loop = () => {
+      if (visible && ready && !document.hidden) {
+        if (current >= 0) {
+          if (tick++ % 3 === 0) burst(current);
+        } else {
+          const { a, b } = lines[Math.floor(Math.random() * lines.length)]!.dataset;
+          if (Math.random() < 0.5) signal(Number(a), Number(b));
+          else signal(Number(b), Number(a));
+        }
+      }
+      setTimeout(loop, 650);
+    };
+
+    if (!reduce && lines.length) {
+      box.dataset.wait = '';
+      new IntersectionObserver(
+        ([entry]) => {
+          visible = entry!.isIntersecting;
+          if (!visible || box.hasAttribute('data-in')) return;
+          delete box.dataset.wait;
+          box.dataset.in = '';
+          setTimeout(() => (ready = true), waves + 900);
+        },
+        { threshold: 0.25 },
+      ).observe(box);
+      loop();
+    }
 
     let touch = false;
     box.addEventListener('pointerdown', (event) => (touch = event.pointerType !== 'mouse'));
