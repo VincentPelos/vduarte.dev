@@ -9,7 +9,7 @@
  *   se mueven con la página, algo más lento que el contenido.
  */
 import { mixRgb } from '../../lib/constellation';
-import { CELL, canvasDpr, hash, type Rgb } from '../../lib/scene';
+import { CELL, canvasDpr, dotBatch, hash, type Rgb } from '../../lib/scene';
 
 /** Una celda del gas: su posición en la nube y su densidad (0..1). */
 export interface GasCell {
@@ -256,6 +256,8 @@ export function createMatter(colors: [Rgb, Rgb, Rgb], reducedMotion: boolean) {
       measuredAt = time;
     }
     const gutter = Math.max(16, (width - 1200) / 2 + 40);
+    // Un `fill` por color y opacidad, no por celda (#192).
+    const cells = dotBatch();
     for (const rock of rocks) {
       const r = rock.radius * CELL;
       const cx = rock.side < 0 ? gutter * rock.inset : width - gutter * rock.inset;
@@ -266,14 +268,16 @@ export function createMatter(colors: [Rgb, Rgb, Rgb], reducedMotion: boolean) {
       for (const c of rockCells(rock.seed, rock.radius, rock.seed + t * rock.spin)) {
         const y = oy + c.y * CELL;
         if (y < top) continue;
-        ctx.globalAlpha = 0.25 + c.light * 0.65;
-        ctx.fillStyle = c.light > 0.55 ? rock.lit : rock.shade;
-        ctx.beginPath();
-        ctx.arc(ox + c.x * CELL, y, c.light > 0.7 ? 2.2 : 1.6, 0, Math.PI * 2);
-        ctx.fill();
+        cells.add(
+          ox + c.x * CELL,
+          y,
+          c.light > 0.7 ? 2.2 : 1.6,
+          c.light > 0.55 ? rock.lit : rock.shade,
+          0.25 + c.light * 0.65,
+        );
       }
     }
-    ctx.globalAlpha = 1;
+    cells.flush(ctx);
   };
 
   return { build, drawGas, drawRocks };
