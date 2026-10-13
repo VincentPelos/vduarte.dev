@@ -11,6 +11,8 @@ actualizado: 2026-10-13
 
 **Lenguaje gráfico: puntos de terminal.** Todo lo que se dibuja (cielo, disco, futuras gráficas) es una grilla fija de celdas con un punto o nada, en pocos tamaños (· • ●). Nada de halos ni posiciones al azar ([decisión 008](../03-decisiones/008-agujero-negro-puntos.md)).
 
+**Resolución del cielo (#196):** su canvas tiene un presupuesto de 1,5 millones de píxeles; mantiene los tamaños y posiciones en px CSS. En 1280 × 900 con DPR 2 dibuja a DPR 1, y en 390 × 900 conserva DPR 2. En pantallas densas los puntos pueden verse más suaves. El texto HTML y la paleta conservan su definición. Ver [rendimiento](../02-arquitectura/rendimiento.md#implementación-del-presupuesto-del-cielo-196).
+
 ## Color
 
 | Token | Valor | Uso |
@@ -101,4 +103,3 @@ Escala clave: nombre `clamp(2.5rem, 10.5vw, 7.5rem)`, títulos de sección `clam
 
 - **Favicon:** un agujero negro de puntos en la grilla: fondo `--bg` con radio 7/32, anillo de puntos entre 6 y 14 unidades del centro (viewBox 32) con la paleta por ángulo (`--c1` → `--c2` → `--c3`), puntos más grandes y brillantes en el borde interno (anillo de fotones) y un lado más brillante (Doppler). Se generó una vez y está en `public/`: `favicon.svg`, `favicon.ico` (PNG de 32 px) y `apple-touch-icon.png` (180 px, sin radio: iOS lo pone).
 - **Imagen para compartir** (`public/og.png`, 1200 × 630): fondo `--bg` con la grilla de puntos tenue, `$ whoami` (Geist Mono, `$` en `--ok`), el nombre en Martian Mono 700 a 68px, rol (Geist 23px, `--soft`), la frase (`--muted`) y `vduarte.dev` con el degradado de la paleta; a la derecha, el mismo agujero en grande. Si cambian el nombre, el rol o la frase en `site.json`, hay que regenerarla.
-

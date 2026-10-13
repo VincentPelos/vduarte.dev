@@ -14,7 +14,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **~60 fps para lo que se anima solo:** `frameLoop(tick, SCENE_FPS)` se salta cuadros en pantallas de 120/144 Hz. El agujero negro va a ~60 fps; el cielo también mientras orbita el agujero **y el hero se ve**, y con scroll dibuja en cada cuadro para que las constelaciones sigan a las secciones. Los dibujos del bento van a 30 fps: se mueven de a una celda (#192).
 - **Nada de trabajo por cuadro que no cambie:** los uniforms constantes del agujero negro se fijan una vez; `hero-fall` solo escribe una variable CSS si cambió.
 - **DOM fuera del cuadro por elemento:** en un loop de animación, las lecturas de layout (`getBoundingClientRect`, `scrollY`) se hacen **una vez por cuadro**, nunca por estrella o por partícula.
-- **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2.
+- **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2. El cielo tiene además un presupuesto de 1.500.000 píxeles de salida (#196): `fitCanvas` calcula el DPR que cabe, lo redondea hacia abajo a un entero cuando es ≥ 1 y respeta la densidad del dispositivo. En 1280 × 900 con DPR 2, el cielo queda a DPR 1; en 390 × 900 conserva DPR 2. Para ventanas que exceden el presupuesto incluso a DPR 1, puede bajar de 1. Las coordenadas siguen en px CSS. El presupuesto solo lo solicita `star-sky.ts`; las capas precalculadas del gas conservan su resolución.
 - **Móvil:** el alto de la ventana cambia al aparecer o esconderse la barra del navegador; eso no debe regenerar escenas, solo reajustar el canvas.
 - **`prefers-reduced-motion`:** un cuadro estático; se redibuja solo al hacer scroll o cambiar el tamaño.
 - **Sin GPU, sin WebGL:** si WebGL va por software (SwiftShader, llvmpipe, Microsoft Basic Render Driver), el agujero negro no se monta y queda el respaldo (grilla de puntos y texto normal). En la CPU, solo compilar los shaders tardaba ~3 s y cada cuadro trababa la página; en Lighthouse (sin GPU) el bloqueo total llegaba a ~80 s (#109).
@@ -50,6 +50,44 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 | Brillos quietos, `fill` por grupo, bento con capa quieta a 30 fps, pulso compositable, borde de la hoja con área extendida | Cumplida (#192) |
 
 ## Mediciones
+
+### Revisión de producción tras #192 (2026-10-13)
+
+El autor sigue viendo tirones en Sobre mí y Proyectos. **Las optimizaciones de #192 sí están publicadas:** los recursos servidos incluyen `Path2D` para agrupar puntos y el observador extendido del hero. La mejora anterior no alcanza para todas las densidades de pantalla.
+
+Banco: `https://vduarte.dev/`, Edge 155 con ventana visible, Intel Iris Xe (ANGLE D3D11), sin ralentización de CPU. Viewport de 1280 × 900 CSS px y DPR emulado de 1,25 y 2; fases de 3,5 s con desplazamiento programático de ida y vuelta dentro de cada sección. Se midieron intervalos de `requestAnimationFrame`, cuadros descartados del trace y tiempo ocupado por hilo. Las variantes se aplicaron solo en la sesión de diagnóstico, sin modificar el sitio. La comparación de DPR del cielo se repitió invirtiendo el orden.
+
+**Reproducción con DPR 2:** el cielo ocupa 2560 × 1800 píxeles y se repinta entero durante el scroll. El hilo `CrGpuMain` llega a ~1000 ms de trabajo por segundo, mientras `CrRendererMain` queda aproximadamente entre 240 y 385 ms/s. Este dato es tiempo ocupado del hilo gráfico, **no una lectura del porcentaje de utilización física de la GPU**.
+
+| Prueba durante scroll, 1280 × 900, DPR 2 | Sobre mí | Proyectos |
+|---|---|---|
+| Producción, sin intervención | ~35–39 fps | ~39–42 fps |
+| Sin `backdrop-filter`, conservando el cielo a DPR 2 | ~39–42 fps | ~45–46 fps |
+| Sin pintar el cielo, conservando sus cálculos y el resto del sitio | ~60 fps | ~59–60 fps |
+| Solo el canvas del cielo a DPR 1; CSS, vidrio, gas y cantidad de objetos conservados | ~60 fps | ~60 fps |
+
+En la primera comparación a DPR 1,25, ambas secciones sostuvieron cerca de 60 fps durante el scroll, pero con ~744–914 ms/s de trabajo en el hilo gráfico. Quitar el blur bajó ese costo a ~488–540 ms/s: **el vidrio suma costo, pero quitarlo por sí solo no resuelve el escenario DPR 2**. No pintar los dibujos del bento o esconder los brillos tampoco resolvió ese escenario.
+
+La intervención de DPR solo reduce el lienzo de salida del cielo de 4,61 a 1,15 millones de píxeles. Mantiene la cantidad de estrellas y asteroides, el cálculo de posiciones y las capas precalculadas del gas. Por eso la evidencia prioriza el costo de dibujar/componer el fondo a alta resolución; no demuestra que sobre contenido ni que haya que borrar objetos.
+
+En 768 × 900 CSS px con DPR 2, la misma comparación dio ~54 → 60 fps en Sobre mí y ~58 → 60 en Proyectos. Los cuadros descartados en los traces de 3,5 s bajaron de 23 y 10, respectivamente, a 0. En 390 × 900 con DPR 2, producción ya sostuvo ~60 fps en ambas secciones en esta GPU. Son comprobaciones adicionales con la misma laptop, no mediciones en una tablet o un celular físicos.
+
+**Limitaciones:** es una prueba sobre GPU real con viewport/DPR emulados, no un celular real ni una reproducción confirmada de la configuración del autor. El scroll programático sirve para comparar el renderizado; no evalúa por separado el manejo de rueda de Lenis. No se midieron aún el hover del brillo ni las View Transitions al elegir proyecto. Un `display: none` del canvas no detiene su bucle de dibujo: para aislar el costo de pintura se suprimieron temporalmente `clearRect`, `fill` y `drawImage` solo en el contexto del cielo. No confundir esa prueba con pausar sus cálculos.
+
+**Propuesta de la auditoría, implementada después en #196:** presupuesto de píxeles específico para el cielo. La cifra histórica de «60 fps en todas las fases» describe el banco anterior; no garantiza fluidez con DPR 2.
+
+### Implementación del presupuesto del cielo (#196)
+
+`SKY_MAX_PIXELS = 1_500_000` en `star-sky.ts`; `fitCanvas` admite ese presupuesto como parámetro opcional. En ventanas chicas mantiene la densidad del dispositivo hasta DPR 2, y en 1280 × 900 produce un lienzo de 1280 × 900 (1,15 MP frente a 4,61 MP). Se conservan estrellas, asteroides, gas, vidrio y frecuencia de animación. Los puntos del cielo pueden verse más suaves en pantallas de alta densidad; el texto HTML conserva su resolución.
+
+Comparación del código compilado servido con `pnpm preview` contra producción, Chrome 154 administrado por `agent-browser`, ventana visible, Intel Iris Xe, 1280 × 900 CSS px y DPR 2 emulado. Dos corridas por versión en orden antes/después/después/antes, 3,5 s por sección, sin ralentizar CPU:
+
+| Sección | Producción | Con #196 | Cuadros descartados antes → después |
+|---|---|---|---|
+| Sobre mí | 28–32 fps | 54–58 fps | 102–117 → 8–24 |
+| Proyectos | 28–34 fps | ~56 fps | 93–113 → 15–18 |
+
+El nuevo banco usa Chrome y la auditoría anterior Edge: comparar cada par dentro de su banco. No se promete 60 fps en toda GPU. La alternativa inicial con presupuesto de 1,2 MP y DPR fraccionario (~1,02 en escritorio) dio menos margen; se eligieron escalas enteras cuando caben. La escala fraccionaria bajo DPR 1 se reserva para ventanas grandes. Seis casos de test cubren presupuesto, coordenadas CSS, móvil a DPR nativo, escritorio y escenas sin presupuesto.
 
 ### GPU integrada (#192)
 

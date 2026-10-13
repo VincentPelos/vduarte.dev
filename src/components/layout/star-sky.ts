@@ -67,6 +67,8 @@ interface Layout {
 
 /** Quieto, el cielo solo cambia por los destellos: basta con ~10 cuadros por segundo. */
 const IDLE_FRAME_MS = 100;
+/** Hasta 1,5 MP: permite DPR 2 en móvil y DPR 1 en 1280 × 900, medido en la Iris Xe (#196). */
+const SKY_MAX_PIXELS = 1_500_000;
 /**
  * Orbitando el agujero, a SCENE_FPS (con margen para no saltarse cuadros de 60 Hz). Con scroll se
  * dibuja en cada cuadro: las constelaciones siguen a las secciones.
@@ -378,7 +380,7 @@ export function mount(
     const widthChanged = innerWidth !== width;
     width = innerWidth;
     height = innerHeight;
-    fitCanvas(canvas, ctx, width, height);
+    fitCanvas(canvas, ctx, width, height, SKY_MAX_PIXELS);
     // Solo un cambio de ancho (o una ventana más alta que el cielo) rehace las estrellas.
     if (widthChanged || height > skyHeight) {
       skyHeight = Math.max(height, widthChanged ? screen.height || height : height);
