@@ -1,5 +1,61 @@
 import { describe, expect, it, vi } from 'vitest';
-import { dotBatch, frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
+import { dotBatch, fitCanvas, frameLoop, hash, hexToRgb, isSoftwareRenderer } from './scene';
+
+describe('fitCanvas', () => {
+  it.each([
+    [390, 844, 1],
+    [390, 844, 2],
+    [768, 900, 2],
+    [1280, 900, 2],
+    [2560, 1440, 3],
+  ])('respeta el presupuesto y las coordenadas CSS en %i × %i con DPR %i', (width, height, dpr) => {
+    vi.stubGlobal('devicePixelRatio', dpr);
+    try {
+      const canvas = { width: 0, height: 0 } as HTMLCanvasElement;
+      const setTransform = vi.fn();
+      fitCanvas(
+        canvas,
+        { setTransform } as unknown as CanvasRenderingContext2D,
+        width,
+        height,
+        1_500_000,
+      );
+      expect(canvas.width * canvas.height).toBeLessThanOrEqual(1_500_000);
+      expect(canvas.width).toBeLessThanOrEqual(width * Math.min(dpr, 2));
+      expect(setTransform).toHaveBeenCalledWith(
+        canvas.width / width,
+        0,
+        0,
+        canvas.height / height,
+        0,
+        0,
+      );
+      if (width * height * dpr ** 2 <= 1_500_000) {
+        expect(canvas.width).toBe(width * dpr);
+        expect(canvas.height).toBe(height * dpr);
+      }
+      if (width === 1280) expect([canvas.width, canvas.height]).toEqual([1280, 900]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('mantiene DPR 2 en las escenas que no piden presupuesto', () => {
+    vi.stubGlobal('devicePixelRatio', 3);
+    try {
+      const canvas = { width: 0, height: 0 } as HTMLCanvasElement;
+      fitCanvas(
+        canvas,
+        { setTransform: vi.fn() } as unknown as CanvasRenderingContext2D,
+        1280,
+        900,
+      );
+      expect([canvas.width, canvas.height]).toEqual([2560, 1800]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});
 
 describe('hexToRgb', () => {
   it('convierte un hex de 6 dígitos', () => {

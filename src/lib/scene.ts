@@ -62,17 +62,27 @@ export function hash(x: number, y: number): number {
   return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
 }
 
-/** Ajusta un canvas 2D a `width` × `height` px CSS con la densidad de píxeles acotada. */
+/** Ajusta un canvas 2D en px CSS; permite acotar también el total de píxeles de salida. */
 export function fitCanvas(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
+  maxPixels = Infinity,
 ): void {
-  const dpr = canvasDpr();
-  canvas.width = Math.round(width * dpr);
-  canvas.height = Math.round(height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const budgetDpr = Math.sqrt(maxPixels / Math.max(1, width * height));
+  // Cuando hay presupuesto, evita reescalar la grilla con una densidad fraccionaria mayor a 1.
+  const dpr = Math.min(canvasDpr(), budgetDpr >= 1 ? Math.floor(budgetDpr) : budgetDpr);
+  canvas.width = Math.max(1, Math.floor(width * dpr));
+  canvas.height = Math.max(1, Math.floor(height * dpr));
+  ctx.setTransform(
+    canvas.width / Math.max(1, width),
+    0,
+    0,
+    canvas.height / Math.max(1, height),
+    0,
+    0,
+  );
 }
 
 /**
