@@ -13,10 +13,15 @@
     "github": "https://github.com/VincentPelos",
     "linkedin": "https://www.linkedin.com/in/vicente-contreras-duarte-ab7b72343/",
     "cvPath": "/cv.pdf",
+    "share": {
+      "image": "/og.png",
+      "alt": "Vicente Contreras Duarte, Desarrollador de Software | Soporte e Infraestructura TI, junto a un agujero negro dibujado con puntos."
+    },
     "highlightStack": [
       "TypeScript",
       "JavaScript",
       "Python",
+      "Power BI",
       "Node.js",
       "React",
       "SQL",
@@ -28,10 +33,9 @@
       { "section": "experiencia", "label": "experiencia" },
       { "section": "proyectos", "label": "proyectos" },
       { "section": "educacion", "label": "educación" },
-      { "section": "skills", "label": "skills" },
       { "section": "contacto", "label": "contacto" }
     ],
-    "footerNote": "Hecho con Astro · vduarte.dev",
+    "footerNote": "vduarte.dev",
     "footerLinks": [{ "label": "Uso de IA", "href": "/uso-de-ia" }],
     "scrollCue": { "label": "portafolio", "ariaLabel": "Bajar al portafolio" },
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
@@ -76,7 +80,6 @@
     "constellations": {
       "experience": ">_",
       "projects": "</>",
-      "skills": "#",
       "education": "π",
       "contact": "?"
     },
@@ -102,6 +105,12 @@
         "repo": "repo",
         "demo": "sitio institucional",
         "caseStudy": "ver caso",
+        "skills": {
+          "list": "Lista de proyectos",
+          "steps": { "one": "etapa", "other": "etapas" },
+          "pick": "elige una skill",
+          "usedIn": "dónde se usó"
+        },
         "gallery": {
           "open": "Ver las imágenes de",
           "close": "Cerrar",
@@ -109,11 +118,6 @@
           "next": "Imagen siguiente",
           "of": "de"
         }
-      },
-      "skills": {
-        "title": "Skills",
-        "groups": { "one": "grupo", "other": "grupos" },
-        "items": { "one": "herramienta", "other": "herramientas" }
       },
       "contact": {
         "kicker": "$ ./contacto.sh",

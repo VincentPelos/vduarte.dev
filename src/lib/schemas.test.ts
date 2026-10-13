@@ -28,6 +28,7 @@ const site = {
   github: 'https://github.com/VincentPelos',
   linkedin: 'https://www.linkedin.com/in/ejemplo',
   cvPath: '/cv.pdf',
+  share: { image: '/og.png', alt: 'Tarjeta' },
   highlightStack: ['TypeScript', 'Python'],
   nav: [{ section: 'inicio', label: '~/', ariaLabel: 'Inicio' }],
   footerNote: 'Hecho con Astro',
@@ -59,7 +60,6 @@ const site = {
   constellations: {
     experience: '>_',
     projects: '</>',
-    skills: '#',
     education: 'π',
     contact: '?',
   },
@@ -85,12 +85,13 @@ const site = {
       repo: 'repo',
       demo: 'demo',
       caseStudy: 'ver caso',
+      skills: {
+        list: 'Proyectos',
+        steps: { one: 'etapa', other: 'etapas' },
+        pick: 'elige una skill',
+        usedIn: 'dónde se usó',
+      },
       gallery: { open: 'Ver', close: 'Cerrar', prev: 'Anterior', next: 'Siguiente', of: 'de' },
-    },
-    skills: {
-      title: 'Skills',
-      groups: { one: 'grupo', other: 'grupos' },
-      items: { one: 'herramienta', other: 'herramientas' },
     },
     contact: {
       kicker: '$ ./contacto.sh',
@@ -228,7 +229,8 @@ describe('projectSchema', () => {
     id: 'colchagua',
     title: 'Colchagua',
     description: 'Caso de BI.',
-    tags: ['Power BI'],
+    steps: ['ETL', 'Dashboard'],
+    skills: [{ name: 'Power BI', uses: [{ step: 'Dashboard', text: 'El dashboard.' }] }],
     year: 2026,
   };
 
@@ -241,6 +243,16 @@ describe('projectSchema', () => {
     expect(errorPaths(schema.safeParse({ ...project, caseStudy: 'Caso Colchagua' }))).toEqual([
       'caseStudy',
     ]);
+  });
+
+  it('exige que cada skill se use en una etapa de steps', () => {
+    const skills = [{ name: 'DAX', uses: [{ step: 'Modelo' }] }];
+    expect(errorPaths(schema.safeParse({ ...project, skills }))).toEqual(['skills.0.uses.0.step']);
+  });
+
+  it('exige que la skill elegida esté en skills', () => {
+    expect(schema.safeParse({ ...project, skill: 'Power BI' }).success).toBe(true);
+    expect(errorPaths(schema.safeParse({ ...project, skill: 'DAX' }))).toEqual(['skill']);
   });
 });
 
@@ -323,6 +335,16 @@ describe('aiUsageSchema', () => {
     subtitle: 'Subtítulo',
     intro: 'Intro.',
     tools: [{ name: 'Claude Code', maker: 'Anthropic', use: 'Código.' }],
+    memory: {
+      file: 'docs/',
+      title: 'La memoria',
+      text: 'Texto.',
+      kinds: { index: 'Índice', note: 'Notas', decision: 'Decisiones', log: 'Bitácoras' },
+      notes: { one: 'nota', other: 'notas' },
+      links: { one: 'enlace', other: 'enlaces' },
+      hint: 'Pasa el mouse.',
+      repo: 'https://github.com/usuario/repo/blob/develop/docs/',
+    },
     projects: [
       { id: 'sitio', file: 'vduarte.dev', title: 'Este sitio', decidedBy: 'Yo', rows: [row] },
     ],

@@ -4,6 +4,38 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [1.0.0] - 2026-10-13
+
+Hito **Entrega**: el portafolio queda listo para producción en `vduarte.dev` y para la evaluación de ISI802. Lighthouse CI sobre `develop` (2026-10-12, mediana de 3): performance 97 en el home y 100 en el caso y en `/uso-de-ia`; accesibilidad, buenas prácticas y SEO 100.
+
+### Agregado
+
+- Grafo de la memoria del proyecto en `/uso-de-ia`: cada nota de `docs/` es un punto y cada enlace, una línea; se arma en el build, entra en onda desde el índice y por sus líneas viajan señales ([decisión 025](docs/03-decisiones/025-grafo-memoria.md)) (#177).
+- Cielo con gas estelar y asteroides, y menos estrellas ([decisión 024](docs/03-decisiones/024-gas-asteroides.md)) (#172).
+- Brillos detrás de Experiencia, Proyectos y Educación (#167).
+- Noneto CLI con su sitio, repo y galería (#168).
+- Favicon propio (un agujero negro de puntos), imagen para compartir (Open Graph y Twitter Card), `sitemap.xml` y `robots.txt` (#185).
+- Power BI en el stack del bento (#185).
+
+### Cambiado
+
+- Proyectos en lista y detalle: cada proyecto muestra sus skills como logos y, al elegir una, su pipeline enciende las etapas donde se usó; el cambio de proyecto se anima con View Transitions ([decisión 023](docs/03-decisiones/023-skills-en-proyectos.md)) (#162).
+- Cada proyecto abre con una skill elegida y los botones de skill llevan la paleta, para que se note que se pulsan (#180).
+- Los logros de Experiencia se abren y se cierran suave (#181).
+- El velo de las entradas de Experiencia y Educación difumina en vez de oscurecer (#167).
+- Footer sin "Hecho con Astro" (#180).
+
+### Corregido
+
+- Estrellas detrás del bento: Sobre mí se quedaba sin cielo (#164).
+- `~/` de la nav no llevaba al inicio y la nav marcaba la sección equivocada al volver (#166).
+
+### Eliminado
+
+- La sección Skills: las skills viven ahora en cada proyecto y el stack en el bento (#162).
+- Cóndor de Proyectos, hasta que esté listo (#174).
+- "Configuro redes" de Experiencia y del CV (#176).
+
 ## [0.6.0] - 2026-10-12
 
 Hito **Contacto y extras**: `/uso-de-ia`, la caída al agujero negro al pasar al portafolio, el bento de áreas, la columna de años, el CV en LaTeX, y una pasada de orden y rendimiento. Lighthouse CI sobre `develop` (mediana de 3): performance 99 en el home y 100 en el caso y en `/uso-de-ia`; accesibilidad, buenas prácticas y SEO 100. Con GPU real (fuera del CI) el home móvil pasó de 86 a 96.
@@ -181,7 +213,11 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v0.3.1...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v1.0.0...develop
+[1.0.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.0
+[0.6.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.6.0
+[0.5.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.5.0
+[0.4.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.4.0
 [0.3.1]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.3.1
 [0.3.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.3.0
 [0.2.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.2.0

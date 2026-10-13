@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, estructura]
-actualizado: 2026-10-12
+actualizado: 2026-10-13
 ---
 
 # Estructura de carpetas
@@ -22,27 +22,27 @@ vduarte.dev/
 ├─ docs/                       esta bóveda
 ├─ .dockerignore                exclusiones del contexto de build de Docker
 ├─ Dockerfile                   build de Astro y servidor Nginx para Coolify
-├─ public/                     archivos servidos tal cual: cv.pdf, favicon.svg, og.png
+├─ public/                     archivos servidos tal cual: cv.pdf, favicon (svg, ico y apple-touch-icon), og.png (imagen para compartir) y robots.txt
 ├─ src/
 │  ├─ assets/                  imágenes optimizadas por Astro
 │  │  ├─ projects/
 │  │  └─ cases/colchagua/     capturas del Power BI del caso (galería de cases.json)
 │  ├─ components/
-│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts, Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
+│  │  ├─ layout/               piezas globales: Nav, Footer, Seo, IconSprite, StarSky + star-sky.ts + sky-matter.ts (gas y asteroides), Reveal, Trace (entrada de las líneas de tiempo), SmoothScroll, OffscreenPause
 │  │  ├─ sections/             una carpeta por sección del home
 │  │  │  ├─ hero/              Hero.astro + black-hole.ts (orquesta las pasadas con twgl) + shaders/ (GLSL) + hero-fall.ts (caída al portafolio)
 │  │  │  ├─ about/             About.astro (solo la grilla) + cards/ (BentoCard es el marco; cada tarjeta lee su contenido) + bento-art.ts (dibujos de las áreas) + bento-assemble.ts (armado al terminar la caída)
 │  │  │  ├─ experience/
-│  │  │  ├─ projects/          Projects.astro + ProjectCard (destacados) + ProjectRow (lista) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
-│  │  │  ├─ skills/
+│  │  │  ├─ projects/          Projects.astro (lista) + ProjectDetail (detalle) + ProjectPipeline (etapas) + projects.ts (elegir y animar) + ProjectLinks (sus enlaces) + ProjectGallery (visor)
 │  │  │  ├─ education/
 │  │  │  └─ contact/
 │  │  ├─ case/                 piezas de los casos de estudio: CaseDashboard, CaseBlock, BarChart
+│  │  ├─ ai-usage/             piezas de /uso-de-ia: MemoryGraph + memory-graph.ts (grafo de docs/, decisión 025)
 │  │  └─ ui/                   piezas reutilizables: Link (todo enlace), PillLink, Button, ProfileButtons (GitHub/LinkedIn/CV), GlassCard, Chip, MarkList, Section, SectionHeader, FileHeading (`$ cat …`), Period, YearBlock (columna de años), Glows, Icon, LinkHint
 │  ├─ content/                 datos del sitio (JSON), casos de estudio (cases.json) y uso de IA (ai-usage.json)
 │  ├─ layouts/                 BaseLayout.astro (todas las páginas), PageLayout.astro (páginas internas: caso y uso de IA)
 │  ├─ lib/                     lógica compartida en TS + sus tests (*.test.ts al lado)
-│  ├─ pages/                   rutas: index.astro, proyectos/[slug].astro, uso-de-ia.astro
+│  ├─ pages/                   rutas: index.astro, proyectos/[slug].astro, uso-de-ia.astro y sitemap.xml.ts (#185)
 │  ├─ styles/                  global.css (tokens + @theme)
 │  └─ content.config.ts        schemas zod de todo el contenido
 ├─ AGENTS.md                   reglas para agentes de IA
@@ -64,7 +64,8 @@ En la raíz solo quedan las configs que las herramientas exigen ahí (Astro, Typ
 | Un script que solo usa una sección | Al lado de su componente (`sections/hero/black-hole.ts`) |
 | Un componente que se usa en 2+ lugares | `components/ui/` |
 | Lógica usada por 2+ archivos | `src/lib/` |
-| Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getIconNames()`) | `src/lib/content.ts` |
+| Etiquetas del `<head>` (título, descripción, Open Graph) | `layout/Seo.astro`; el texto y la imagen para compartir salen de `site.json` (`share`) |
+| Una consulta a las colecciones que usan 2+ componentes (`getSite()`, `getSkillIcons()`, `getIconNames()`) | `src/lib/content.ts` |
 | Un enlace | `ui/Link.astro` (pone `target`/`rel` con `linkAttrs()` y avisa la pestaña nueva), nunca un `<a>` externo a mano |
 | Una página fuera del home | `layouts/PageLayout.astro` (volver, título, bajada y frase) |
 | Texto de `site.json` que usa un solo componente | Lo lee el componente con `getSite()`; no se pasa por props desde el padre |
