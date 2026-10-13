@@ -13,8 +13,8 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 - **Última versión:** v0.6.0 (2026-10-12) Contacto y extras: `/uso-de-ia`, caída al agujero con flecha, bento de áreas, columna de años, CV en LaTeX, componentes reutilizables, escenas con twgl.js y rendimiento (con GPU real, home móvil de 86 a 96). Lighthouse CI: performance 99 en el home y 100 en las páginas internas, el resto 100. Ver [bitácora 2026-10-12](06-bitacora/2026-10-12.md).
 - **Hito en curso:** v1.0.0 Entrega. Suma lo que quedó de v0.6.0: animaciones de entrada (#124) y SEO/Open Graph.
-- **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168) gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)) y el grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](03-decisiones/025-grafo-memoria.md)).
-- **Siguiente:** que el autor confirme los textos del pipeline y cerrar el proyecto (v1.0.0). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
+- **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168), gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)) el grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](03-decisiones/025-grafo-memoria.md)) y la fase de detalles: sin Cóndor (#174), sin "Configuro redes" (#176), skill elegida con color en Proyectos y footer (#180), logros que se abren suave (#181). Lighthouse sobre `develop`: home 97 y páginas internas 100.
+- **Siguiente:** SEO/Open Graph y README (agente), lo que decide el autor y el release v1.0.0; ver [pendientes](01-proyecto/pendientes.md#v100--entrega). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
 - **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
@@ -89,7 +89,7 @@ Leer la decisión solo si tu cambio la toca o la contradice. Las reemplazadas si
 
 Una nota por sesión. Leer solo la más reciente si falta contexto; las anteriores, únicamente para buscar algo puntual.
 
-- [2026-10-12](06-bitacora/2026-10-12.md): gas y asteroides (#172), brillos, nav y Noneto, skills dentro de Proyectos (#162), orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) escenas animadas con twgl.js y helpers compartidos, y análisis y arreglos de rendimiento.
+- [2026-10-12](06-bitacora/2026-10-12.md): fase de detalles (Cóndor, redes, grafo de la memoria, skill elegida, logros suaves), gas y asteroides (#172), brillos, nav y Noneto, skills dentro de Proyectos (#162), orden de componentes con KISS (Link, PageLayout, tarjetas del bento autónomas) escenas animadas con twgl.js y helpers compartidos, y análisis y arreglos de rendimiento.
 - [2026-10-11](06-bitacora/2026-10-11.md): bento de áreas, Experiencia y Educación en columna de años, CV en LaTeX y limpieza de contenido.
 - [2026-10-10](06-bitacora/2026-10-10.md): hito Movimiento, laboratorios de UI y Proyectos, hero descartado, Lighthouse y release v0.4.0.
 - [2026-10-09](06-bitacora/2026-10-09.md): auditoría y optimización previa a v0.4.0; imagen Docker para Coolify.

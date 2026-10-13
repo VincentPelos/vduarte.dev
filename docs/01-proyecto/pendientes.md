@@ -13,20 +13,7 @@ Estado de la rúbrica: [rubrica.md](rubrica.md).
 
 Lo que quedó abierto pasó a v1.0.0 (abajo), incluido #124.
 
-### Pasan a v1.0.0: pedidos del autor (2026-10-11)
-
-| Pendiente | Issue | Necesita del autor |
-|---|---|---|
-| Animaciones de entrada y fundidos (Experiencia y Educación ya tienen la suya) | #124 | Decidir si falta algo más |
-| La "sección de detalles" que el autor quiere ver antes de cerrar | — | Explicar qué es al empezar el chat |
-| Stack de Experiencia: aún lista Windows y TCP/IP (Municipalidad) y Redes (práctica) | — | Decidir si salen, como en Skills |
-| Caída al agujero y flecha del hero: probar en celular real y Safari | #136, #131 (PR #138) | Probarla en su celular |
-
-### Pasa a v1.0.0: del alcance
-
-| Pendiente | Issue | Necesita del autor |
-|---|---|---|
-| SEO e imagen para compartir (Open Graph) | — | Nada |
+Lo que quedó abierto (#124, la caída en celular real, el stack de Experiencia y SEO/Open Graph) está en la tabla de v1.0.0. La "fase de detalles" que pidió el autor se hizo el 2026-10-12 (#174 a #181).
 
 Descartados (2026-10-11): formulario n8n (queda el `mailto:`) y analytics con Umami (#140).
 
@@ -34,18 +21,30 @@ Hechos en este hito: `/uso-de-ia` (#127); quitar dos proyectos (#129); footer s�
 
 ## v1.0.0 · Entrega
 
+### Lo hace el agente (no necesita al autor)
+
+| Pendiente | Issue |
+|---|---|
+| SEO e imagen para compartir: Open Graph y Twitter Card en `Seo.astro`, `og.png` (1200 × 630), `robots.txt` y `sitemap.xml`. Hoy solo hay `title`, `description` y `canonical` | — |
+| README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | — |
+| Release: `CHANGELOG.md` con `[1.0.0]`, `package.json` a 1.0.0, PR `develop` → `main` y tag `v1.0.0` | — |
+
+### Necesita al autor
+
 | Pendiente | Necesita del autor |
 |---|---|
-| Confirmar los textos del pipeline de cada proyecto (#162): lo hecho en cada etapa | Revisar los de Placilla y Noneto, y los de DAX, mpv y Tailwind CSS; sumar enlaces a los repos cuando sean públicos |
-| Stack del bento: hoy no muestra ninguna herramienta de BI (las de Colchagua sí se ven en Proyectos) | Decidir si cambia alguna de `highlightStack` por Power BI o pandas |
-| LinkedIn y CV: el CV ya está (`pnpm cv`) y los enlaces funcionan | Actualizar su perfil de LinkedIn; confirmar las fechas de la práctica en AIEP |
-| Reducir los textos del caso Colchagua | Más adelante; por ahora quedan así. `/uso-de-ia` la escribe el agente: cuenta lo que hizo la IA |
-| Dominio final: de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido | Lo hace el autor en Coolify; el agente no lo toca |
-| Repo público | Cambiar la visibilidad en GitHub |
-| README final: cómo correr, desplegar y el pipeline (rúbrica A2 y A4) | Nada |
-| Lighthouse antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)) | Nada |
+| Textos del pipeline de cada proyecto (#162) | Revisar los de Placilla y Noneto, y los de DAX, mpv y Tailwind CSS; sumar enlaces a los repos cuando sean públicos |
+| Animaciones de entrada y fundidos | Decidir si falta algo o se cierra #124 |
+| Stack de Experiencia: aún lista Windows y TCP/IP (Municipalidad) y Redes (práctica) | Decidir si salen |
+| Stack del bento: no muestra ninguna herramienta de BI (las de Colchagua sí se ven en Proyectos) | Decidir si cambia alguna de `highlightStack` por Power BI o pandas |
+| LinkedIn y CV: el CV está al día (`pnpm cv`) | Actualizar LinkedIn; confirmar las fechas de la práctica en AIEP |
+| Dominio final: de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido | Lo hace en Coolify; el agente no lo toca |
+| Repo público (los puntos del grafo de `/uso-de-ia` y los enlaces a la bitácora llevan a GitHub) | Cambiar la visibilidad en GitHub |
 | Verificar `gzip` en el primer deploy: `curl -sI -H 'Accept-Encoding: gzip' <url>` debe responder `Content-Encoding: gzip` (#158) | Desplegar `main` en Coolify |
-| Pasada en celular real (rúbrica: responsivo) | Revisar en su celular Android. **Sin iPhone:** iOS/Safari (WebKit) queda sin verificar: caída con el rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte (hay respaldo) y rendimiento del WebGL |
+| Pasada en celular real (rúbrica: responsivo), con la caída al agujero y la flecha del hero (#136, #131) | Revisar en su Android. **Sin iPhone:** iOS/Safari queda sin verificar (rebote del scroll, barra que cambia el alto, `animation-timeline` sin soporte con respaldo, WebGL) |
 | Preparar la defensa: explicar código y decisiones | Leer las decisiones y la bitácora |
+| Reducir los textos del caso Colchagua | Opcional, más adelante |
+
+Lighthouse sobre `develop` el 2026-10-12, tras la fase de detalles (mediana de 3): home 97, `/proyectos/colchagua` 100 y `/uso-de-ia` 100; accesibilidad, buenas prácticas y SEO 100 en las tres. Se repite antes del release ([decisión 013](../03-decisiones/013-lighthouse-manual.md)).
 
 Hechos en este hito: skills dentro de Proyectos, con lista y detalle y pipeline; sale la sección Skills (#162, [decisión 023](../03-decisiones/023-skills-en-proyectos.md)); Noneto CLI con su sitio, repo y galería (#168); Cóndor sale de Proyectos hasta que esté listo (#174); sale "Configuro redes" de Experiencia y del CV (#176); grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](../03-decisiones/025-grafo-memoria.md)); skill elegida y con color en Proyectos, y footer sin "Hecho con Astro" (#180); logros que se abren suave (#181).
