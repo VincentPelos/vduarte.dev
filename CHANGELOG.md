@@ -4,6 +4,14 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [1.0.2] - 2026-10-13
+
+Rendimiento en pantallas de alta densidad: con DPR 2, el canvas del cielo medía 4,6 MP y se repintaba entero en cada cuadro de scroll. En 1280 × 900 con DPR 2 y GPU integrada, el scroll pasa de 44–48 a 60 fps ([rendimiento](docs/02-arquitectura/rendimiento.md#implementación-del-presupuesto-del-cielo-196)) (#196).
+
+### Cambiado
+
+- El cielo dibuja con un tope de 1,5 MP: en escritorio con DPR 2 usa DPR 1 y en celular conserva DPR 2. Mismos objetos y animaciones; en pantallas densas los puntos del cielo se ven un poco más suaves (#196).
+
 ## [1.0.1] - 2026-10-13
 
 Rendimiento con GPU integrada (la de una laptop común): el home quedaba con la GPU al 100 % en Sobre mí, Experiencia y el scroll, a 41–52 fps. Ahora va a 60 fps en escritorio; en celular (CPU 4× más lenta), Sobre mí pasa de 31 a 49–56 fps y el scroll de 31 a 50 ([rendimiento](docs/02-arquitectura/rendimiento.md#gpu-integrada-192)) (#192).
@@ -227,7 +235,8 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v1.0.1...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v1.0.2...develop
+[1.0.2]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.2
 [1.0.1]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.1
 [1.0.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.0
 [0.6.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.6.0
