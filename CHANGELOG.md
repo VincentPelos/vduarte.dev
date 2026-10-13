@@ -4,6 +4,20 @@ Cambios relevantes del proyecto. Formato basado en [Keep a Changelog](https://ke
 
 ## [Sin publicar]
 
+## [1.0.1] - 2026-10-13
+
+Rendimiento con GPU integrada (la de una laptop común): el home quedaba con la GPU al 100 % en Sobre mí, Experiencia y el scroll, a 41–52 fps. Ahora va a 60 fps en escritorio; en celular (CPU 4× más lenta), Sobre mí pasa de 31 a 49–56 fps y el scroll de 31 a 50 ([rendimiento](docs/02-arquitectura/rendimiento.md#gpu-integrada-192)) (#192).
+
+### Cambiado
+
+- Los brillos detrás de las secciones quedan quietos: animados, eran el mayor costo de GPU del sitio (#192).
+- Estrellas, asteroides y dibujos del bento se rellenan por grupos de color y no punto por punto; el bento pinta lo quieto una vez y se anima a 30 fps (#192).
+- El cielo deja de dibujar a 60 fps cuando el hero ya está tapado, y el pulso de "Disponible" se anima sin repintar (#192).
+
+### Corregido
+
+- El agujero negro y las animaciones del hero seguían corriendo tapados después de saltar a una sección con la nav (#192).
+
 ## [1.0.0] - 2026-10-13
 
 Hito **Entrega**: el portafolio queda listo para producción en `vduarte.dev` y para la evaluación de ISI802. Lighthouse CI sobre `develop` (2026-10-12, mediana de 3): performance 97 en el home y 100 en el caso y en `/uso-de-ia`; accesibilidad, buenas prácticas y SEO 100.
@@ -213,7 +227,8 @@ Hito **Fundaciones**: repositorio, documentación, scaffold, estilos base y tool
 - CI en GitHub Actions y Lighthouse CI con los puntajes en el resumen de cada run (#7, #18).
 - README, AGENTS.md, CLAUDE.md y este changelog (#9).
 
-[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v1.0.0...develop
+[Sin publicar]: https://github.com/VincentPelos/vduarte.dev/compare/v1.0.1...develop
+[1.0.1]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.1
 [1.0.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.0
 [0.6.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.6.0
 [0.5.0]: https://github.com/VincentPelos/vduarte.dev/releases/tag/v0.5.0
