@@ -11,13 +11,13 @@ Documentación viva del portafolio de **Vicente Contreras Duarte** (Desarrollado
 
 ## Estado actual
 
-- **Última versión:** v1.0.0 (2026-10-13) Entrega: grafo de la memoria en `/uso-de-ia`, skills dentro de Proyectos, cielo con gas y asteroides, favicon, imagen para compartir y sitemap. Se publica cuando el autor mergea el release a `main`. Ver [CHANGELOG](../CHANGELOG.md) y [bitácora 2026-10-13](06-bitacora/2026-10-13.md).
-- **Hito en curso:** v1.0.0 Entrega. El código está listo (#185, [bitácora 2026-10-13](06-bitacora/2026-10-13.md)); falta que el autor mergee el release a `main`, pase el dominio y haga público el repo.
+- **Última versión:** v1.0.0 (2026-10-13) Entrega: grafo de la memoria en `/uso-de-ia`, skills dentro de Proyectos, cielo con gas y asteroides, favicon, imagen para compartir y sitemap. En producción en `https://vduarte.dev` desde el 2026-10-13, con [GitHub Release](https://github.com/VincentPelos/vduarte.dev/releases/tag/v1.0.0). Ver [CHANGELOG](../CHANGELOG.md) y [bitácora 2026-10-13](06-bitacora/2026-10-13.md).
+- **Hito en curso:** ninguno: v1.0.0 Entrega está publicada. Falta que el autor haga público el repo.
 - **Hecho después de v0.6.0:** skills dentro de Proyectos (#162, [decisión 023](03-decisiones/023-skills-en-proyectos.md)), estrellas detrás del bento (#164), `~/` de la nav (#166), brillos y velo que difumina (#167), Noneto publicado (#168), gas estelar y asteroides (#172, [decisión 024](03-decisiones/024-gas-asteroides.md)) el grafo de la memoria en `/uso-de-ia` (#177, [decisión 025](03-decisiones/025-grafo-memoria.md)) y la fase de detalles: sin Cóndor (#174), sin "Configuro redes" (#176), skill elegida con color en Proyectos y footer (#180), logros que se abren suave (#181). Lighthouse sobre `develop`: home 97 y páginas internas 100.
-- **Siguiente:** los pasos del autor en [pendientes](01-proyecto/pendientes.md#v100--entrega); después, el tag `v1.0.0` y el GitHub Release. Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
+- **Siguiente:** repo público, LinkedIn y la defensa ([pendientes](01-proyecto/pendientes.md#v100--entrega)). Al usar `pnpm dev`, detener el servidor antes de cambiar de rama.
 - **Qué falta:** [pendientes](01-proyecto/pendientes.md), por hito y con lo que necesita del autor.
 - **Repositorio:** `VincentPelos/vduarte.dev` (privado durante el desarrollo, público antes de la entrega).
-- **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push); en línea en `https://preview.vduarte.dev`, con acceso restringido por ahora.
+- **Producción:** desplegado con Coolify desde `main` (Dockerfile, deploy automático por push), detrás de Cloudflare, en `https://vduarte.dev`.
 
 ## Mapa
 
