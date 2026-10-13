@@ -299,51 +299,5 @@
         "alt": "Inicio de noneto.vduarte.dev: \"Tu música de TIDAL, en la terminal\", con los botones para instalar y ver el código"
       }
     ]
-  },
-  {
-    "id": "condor",
-    "title": "Cóndor",
-    "description": "Investigación y diseño, sin prototipo funcional. Propuesta de mensajería descentralizada para emergencias sin Internet. Bluetooth Low Energy, Wi-Fi Direct, LoRa y redes mesh son alternativas en evaluación, no implementaciones terminadas.",
-    "steps": ["Investigación", "Diseño"],
-    "skills": [
-      {
-        "name": "Bluetooth Low Energy",
-        "icon": "simple-icons:bluetooth",
-        "uses": [
-          {
-            "step": "Investigación",
-            "text": "Alternativa en evaluación para la red sin Internet, sin implementar."
-          }
-        ]
-      },
-      {
-        "name": "Wi-Fi Direct",
-        "uses": [
-          {
-            "step": "Investigación",
-            "text": "Alternativa en evaluación para la red sin Internet, sin implementar."
-          }
-        ]
-      },
-      {
-        "name": "LoRa",
-        "uses": [
-          {
-            "step": "Investigación",
-            "text": "Alternativa en evaluación para la red sin Internet, sin implementar."
-          }
-        ]
-      },
-      {
-        "name": "Redes mesh",
-        "uses": [
-          {
-            "step": "Investigación",
-            "text": "Alternativa en evaluación para la red sin Internet, sin implementar."
-          }
-        ]
-      }
-    ],
-    "year": 2026
   }
 ]
