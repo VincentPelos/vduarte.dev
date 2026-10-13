@@ -1,6 +1,6 @@
 ---
 tags: [arquitectura, rendimiento]
-actualizado: 2026-10-12
+actualizado: 2026-10-13
 ---
 
 # Rendimiento
@@ -10,8 +10,8 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 ## Reglas
 
 - **Carga diferida:** los scripts de canvas se importan en `requestIdleCallback` (máx. 1,5 s) y nunca bloquean la primera pintura. Si fallan, la página se ve igual sin ellos.
-- **Sin animar lo que no se ve:** cada loop se pausa fuera de pantalla (`IntersectionObserver`) y con la pestaña oculta. El hero queda pegado arriba, así que el agujero negro y sus animaciones CSS se pausan cuando la hoja del portafolio lo tapa (`[data-hero-end]`, [decisión 014](../03-decisiones/014-hero-diapositiva.md)). **Todo `IntersectionObserver` de una sección va con `rootMargin: '-1px 0px'`:** en celular Sobre mí empieza justo bajo el hero, y tocar el borde ya cuenta como visible (así `bento-art` se animó sin verse hasta #158).
-- **~60 fps para lo que se anima solo:** `frameLoop(tick, SCENE_FPS)` se salta cuadros en pantallas de 120/144 Hz. El agujero negro y los dibujos del bento van a ~60 fps; el cielo también mientras orbita el agujero, pero con scroll dibuja en cada cuadro para que las constelaciones sigan a las secciones.
+- **Sin animar lo que no se ve:** cada loop se pausa fuera de pantalla (`IntersectionObserver`) y con la pestaña oculta. El hero queda pegado arriba, así que el agujero negro y sus animaciones CSS se pausan cuando la hoja del portafolio lo tapa (`[data-hero-end]`, [decisión 014](../03-decisiones/014-hero-diapositiva.md)). **Todo `IntersectionObserver` de una sección va con `rootMargin: '-1px 0px'`:** en celular Sobre mí empieza justo bajo el hero, y tocar el borde ya cuenta como visible (así `bento-art` se animó sin verse hasta #158). **El borde de la hoja (`[data-hero-end]`, 1 px) se observa con `rootMargin: '-2px 0px 100000px 0px'`** y "visible" = `isIntersecting`: un salto con la nav lo lleva de bajo la pantalla a arriba de ella sin cruzarla, y con el área normal el observador no avisaba; el agujero negro y las animaciones del hero seguían corriendo tapados (#192).
+- **~60 fps para lo que se anima solo:** `frameLoop(tick, SCENE_FPS)` se salta cuadros en pantallas de 120/144 Hz. El agujero negro va a ~60 fps; el cielo también mientras orbita el agujero **y el hero se ve**, y con scroll dibuja en cada cuadro para que las constelaciones sigan a las secciones. Los dibujos del bento van a 30 fps: se mueven de a una celda (#192).
 - **Nada de trabajo por cuadro que no cambie:** los uniforms constantes del agujero negro se fijan una vez; `hero-fall` solo escribe una variable CSS si cambió.
 - **DOM fuera del cuadro por elemento:** en un loop de animación, las lecturas de layout (`getBoundingClientRect`, `scrollY`) se hacen **una vez por cuadro**, nunca por estrella o por partícula.
 - **Densidad de píxeles acotada:** los canvas usan `devicePixelRatio` hasta 2.
@@ -19,9 +19,12 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **`prefers-reduced-motion`:** un cuadro estático; se redibuja solo al hacer scroll o cambiar el tamaño.
 - **Sin GPU, sin WebGL:** si WebGL va por software (SwiftShader, llvmpipe, Microsoft Basic Render Driver), el agujero negro no se monta y queda el respaldo (grilla de puntos y texto normal). En la CPU, solo compilar los shaders tardaba ~3 s y cada cuadro trababa la página; en Lighthouse (sin GPU) el bloqueo total llegaba a ~80 s (#109).
 - **Animaciones CSS en pausa fuera de pantalla:** `layout/OffscreenPause.astro` marca con `data-offscreen` las secciones que no se ven y sus animaciones decorativas (brillos, ecualizador, pulso) se pausan. Aunque no se vean, piden cuadros todo el tiempo (#109).
-- **Velos con `backdrop-filter`** (#167): las entradas de Experiencia y Educación difuminan lo que tienen detrás (6px, máscara radial). Son zonas chicas, pero se recalculan cuando el cielo redibuja: si una medición muestra costo, volver a un degradado tenue.
+- **Velos con `backdrop-filter`** (#167): las entradas de Experiencia y Educación difuminan lo que tienen detrás (6px, máscara radial). Son zonas chicas, pero se recalculan cuando el cielo redibuja: si una medición muestra costo, volver a un degradado tenue. Con el cielo a ~10 fps quieto y los brillos quietos (#192), bajar el blur del bento de 10 a 6 px no cambió nada medible, así que el vidrio se mantiene.
 - **Gas pintado una vez** (#172): cada capa de gas se pinta en un canvas aparte al montar o al cambiar el ancho; en cada cuadro solo se copia, movida de a una celda. Los asteroides se recalculan en cada cuadro (unas 600 celdas en total), sin leer el DOM salvo el alto de la página, una vez por segundo.
-- **Brillos sin `filter: blur` animado:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil.
+- **Brillos sin `filter: blur` y quietos:** un elemento difuminado que se anima obliga a difuminar de nuevo en cada cuadro. Los brillos (`Glows`) son degradados radiales (`glow-orb` en `global.css`) con el mismo perfil, y desde #192 no se animan: dentro de un contenedor con `mask-image`, moverlos obligaba a la GPU a recomponer la máscara y a difuminar de nuevo el vidrio de encima en cada cuadro. Era el mayor costo de GPU del sitio.
+- **Un `fill` por grupo, no por punto** (#192): en los canvas 2D, cada `beginPath` + `arc` + `fill` es una operación de dibujo aparte. `dotBatch()` (`lib/scene.ts`) junta los puntos por color y opacidad (pasos de 1/20) en un `Path2D` y rellena cada grupo de una vez. El cielo pasó de ~900 `fill` por cuadro a 15–50; lo usan las estrellas, los asteroides y el bento.
+- **Lo quieto, pintado una vez:** los puntos del bento que no cambian van a una capa aparte al montar; en cada cuadro se copia la capa y solo se dibujan el cursor, las barras que respiran, los paquetes y los monitos (#192).
+- **Animaciones CSS solo de `transform` y `opacity`:** el pulso de "Disponible" animaba `box-shadow`, que se repinta en el hilo principal en cada cuadro dentro de una tarjeta con blur. Ahora es un anillo en `::after` que escala y se apaga (#192).
 - **Cuadros solo cuando cambian:** el cielo de estrellas dibuja a 60 fps durante el scroll o mientras orbita el agujero negro; quieto, ~10 fps alcanzan para los destellos.
 - **Peso:** el HTML no repite SVG (íconos como sprite, [010](../03-decisiones/010-iconos-sprite.md)) y el sprite va solo en el home, la única página con íconos. Los comentarios de las plantillas van como `{/* */}`: los `<!-- -->` llegan al HTML. Martian Mono solo se importa en latín; Geist conserva sus subsets porque las flechas (→ ↗) están en `symbols2`, y el navegador solo baja los que usa.
 - **Fuentes precargadas:** Martian Mono 700 y Geist latín van con `<link rel="preload">` en `BaseLayout`; las escenas esperan las fuentes antes de montarse.
@@ -29,7 +32,7 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 - **Compresión:** Nginx sirve con `gzip` ([despliegue](despliegue.md)); sin ella el home pasa de ~180 a ~380 KB transferidos.
 - **Precalcular lo que no cambia:** si un cálculo caro no depende del tiempo, se hace una vez y se guarda en una textura ([011](../03-decisiones/011-agujero-precalculado.md)). El precálculo se reparte entre cuadros con un tope de trabajos, porque `gl.finish()` no siempre espera a la GPU.
 - **Smooth scroll (Lenis):** solo suaviza la rueda; el touch queda nativo para no pelear con el scroll del celular. La caída al agujero ([decisión 018](../03-decisiones/018-caida-al-agujero.md)) solo intercepta gestos arriba de todo y, durante 1 s, frena la rueda antes de que llegue a Lenis. **No usar `lenis.stop()`:** le pone `overflow: clip` a la página, la barra de scroll desaparece y todo salta de lado. `lib/smooth.ts` comparte la instancia para hacer scroll suave. Las escenas siguen leyendo `scrollY` una vez por cuadro, así que no necesitan saber de Lenis.
-- **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida, `frameLoop`, `fitCanvas`, `hash`) vive en `src/lib/scene.ts`. Todo bucle de cuadros usa `frameLoop`, que limita el paso a 0,05 s.
+- **Lo compartido entre escenas** (tamaño de celda, DPR, paleta, carga diferida, `frameLoop`, `fitCanvas`, `hash`, `dotBatch`) vive en `src/lib/scene.ts`. Todo bucle de cuadros usa `frameLoop`, que limita el paso a 0,05 s.
 - **twgl.js** ([decisión 022](../03-decisiones/022-twgl-escenas.md)) suma ~12 KB gzip al chunk diferido del agujero negro (de ~7 a ~19 KB). Sus texturas van con `auto: false`: sin eso intenta generar mipmaps en texturas que no son potencia de 2.
 
 ## Estado
@@ -44,8 +47,33 @@ El sitio tiene dos capas animadas siempre presentes: el agujero negro del hero (
 | Íconos en sprite ([010](../03-decisiones/010-iconos-sprite.md)) y precarga de fuentes | Cumplida (#69); sprite solo en el home (#158) |
 | Bucles a ~60 fps, `-1px` en los observadores, shaders asíncronos, gzip | Cumplida (#158) |
 | Trayectorias del agujero negro precalculadas | Cumplida (#81) |
+| Brillos quietos, `fill` por grupo, bento con capa quieta a 30 fps, pulso compositable, borde de la hoja con área extendida | Cumplida (#192) |
 
 ## Mediciones
+
+### GPU integrada (#192)
+
+**Las mediciones anteriores usaban la RTX 5060; Edge en esta máquina usa por defecto la Intel Iris Xe integrada**, que es lo que tiene un visitante con laptop. Ahí el home se trababa: GPU al 100 % en Sobre mí, Experiencia y el scroll, con 41–52 fps y cientos de cuadros largos. Lighthouse (97) no lo ve porque mide la carga, no los cuadros.
+
+Banco: Edge con ventana (no headless), producción contra la rama compilada, fases de 4 s, ms de trabajo por segundo de cada hilo (unión de tareas: 1000 = hilo lleno). La GPU integrada varía mucho con la temperatura: se intercalaron corridas y se compararon pares. Las causas se aislaron apagando una capa a la vez en producción:
+
+| Capa apagada | Efecto |
+|---|---|
+| Animación de los brillos | La GPU baja de ~500 a ~100 en Proyectos, Educación y Contacto; scroll a 60 fps en 2 de 3 corridas |
+| `backdrop-filter` (todo) | Experiencia 50 → 58 fps, scroll 42 → 52 |
+| Cielo, dibujos del bento o agujero negro, por separado | Ninguno arregla Sobre mí: ahí se suman |
+| Lenis o el gas | Sin efecto medible |
+
+Resultado, escritorio 1440 px (GPU, producción → rama):
+
+| Fase | GPU | Hilo principal | fps |
+|---|---|---|---|
+| Sobre mí | 992 → 483–695 | 506 → 276–312 | 41–58 → **60** |
+| Experiencia | 608–1000 → 53–79 | 349 → 53–78 | 50–60 → **60** |
+| Educación | 366–538 → 83 | 228 → 55 | 60 |
+| Scroll | 709–999 → 508–674 | 497 → 213–264 | 41–60 → **60** |
+
+Celular 390 px con CPU 4× (aquí el cuello es el hilo principal): Sobre mí 31–32 → 49–56 fps, Experiencia 44–57 → 60, scroll 31–44 → 50.
 
 Edge headless con WebGL por software, hilo principal en ms de trabajo por segundo (menos es mejor), 4 s por fase, CPU sin ralentizar. Los valores varían ±30 % entre corridas; sirven para comparar, no como números absolutos.
 
@@ -119,4 +147,5 @@ El precálculo tarda 140–450 ms en esa GPU por software, repartido en 8 cuadro
 
 - **Lighthouse CI** se corre a mano sobre `develop` antes de cada versión menor o mayor (`gh workflow run Lighthouse --ref develop`) y deja los puntajes en el resumen del job (perfil móvil). Ver [decisión 013](../03-decisiones/013-lighthouse-manual.md).
 - En local: `pnpm build && pnpm preview`, DevTools → _Performance_ con CPU 4× más lenta, y revisar que el cuadro quede bajo 16 ms al hacer scroll.
+- **Cuadros con GPU integrada** (#192): Lighthouse no mide los fps después de cargar. Para eso, Edge **con ventana** (headless no presenta los cuadros igual) por CDP: contar `requestAnimationFrame` por fase y sumar en el trace el tiempo ocupado de `CrRendererMain`, `Compositor` y `CrGpuMain` (unión de tareas, no suma: se anidan). Ver qué GPU usa con `WEBGL_debug_renderer_info`; en una laptop híbrida suele ser la integrada. Para aislar una causa, apagar una capa con CSS inyectado (`display: none`, `animation: none`, `backdrop-filter: none`) y comparar pares intercalados. La ventana debe quedar visible: tapada, el navegador deja de dibujar y la corrida sale vacía.
 - **Lighthouse local con y sin GPU:** servir `dist/` **con compresión** (`npx serve dist`; `python -m http.server` no comprime y baja el puntaje ~20 puntos) y correr `npx lighthouse` con `CHROME_PATH` apuntando a Edge o Chrome. Con `--chrome-flags="--headless=new"` usa la GPU; con `--use-angle=swiftshader --use-gl=angle --disable-gpu`, WebGL va por software como en el CI. El TBT varía mucho entre corridas: comparar medianas de varias corridas intercaladas, no una contra una.

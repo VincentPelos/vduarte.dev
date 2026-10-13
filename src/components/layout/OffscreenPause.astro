@@ -9,21 +9,22 @@
   );
   const io = new IntersectionObserver(
     (entries) => {
-      for (const entry of entries) {
-        // El hero queda pegado arriba (decisión 014) y siempre "se ve": está tapado cuando el
-        // borde de la hoja ([data-hero-end]) pasó arriba de la pantalla (#158).
-        if (entry.target === end)
-          hero?.toggleAttribute(
-            'data-offscreen',
-            !entry.isIntersecting && entry.boundingClientRect.top <= 0,
-          );
-        else entry.target.toggleAttribute('data-offscreen', !entry.isIntersecting);
-      }
+      for (const entry of entries)
+        entry.target.toggleAttribute('data-offscreen', !entry.isIntersecting);
     },
     // Un píxel hacia adentro: Sobre mí empieza justo bajo el hero, y tocar el borde ya cuenta
     // como visible.
     { rootMargin: '-1px 0px' },
   );
   sections.forEach((section) => io.observe(section));
-  if (hero && end) io.observe(end);
+
+  // El hero queda pegado arriba (decisión 014) y siempre "se ve": está tapado cuando el borde de
+  // la hoja ([data-hero-end]) pasó arriba de la pantalla (#158). El área se extiende hacia abajo
+  // sin límite para que un salto con la nav, que no cruza la pantalla, igual cambie el estado
+  // (#192, como en black-hole.ts).
+  if (hero && end)
+    new IntersectionObserver(
+      ([entry]) => hero.toggleAttribute('data-offscreen', !entry.isIntersecting),
+      { rootMargin: '-2px 0px 100000px 0px' },
+    ).observe(end);
 </script>
