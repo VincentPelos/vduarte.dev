@@ -9,17 +9,17 @@ const icons = await getSkillIcons();
 ---
 
 {/*
-  Solo logos (#133), en gris: el color de marca no está en los tokens. El nombre aparece al
+  Solo logos (#133), en una línea desde 621px (9 desde #185, con Power BI), en gris: el color de marca no está en los tokens. El nombre aparece al
   pasar el mouse (`title`) y lo leen los lectores de pantalla.
 */}
 <BentoCard label={bento.stack} class="[grid-area:stack]">
-  <ul class="grid flex-1 grid-cols-8 content-center gap-2.5 max-[620px]:grid-cols-4">
+  <ul class="grid flex-1 grid-cols-9 content-center gap-2 max-[620px]:grid-cols-5">
     {highlightStack.map((name) => {
       const icon = icons.get(name);
       return (
         <li
           title={name}
-          class="grid place-items-center rounded-[14px] border border-line bg-glass py-4 text-[1.85rem] text-muted transition hover:-translate-y-0.5 hover:border-line-hi hover:text-fg max-[460px]:py-3 max-[460px]:text-[1.5rem]"
+          class="grid place-items-center rounded-[14px] border border-line bg-glass py-3.5 text-[1.5rem] text-muted transition hover:-translate-y-0.5 hover:border-line-hi hover:text-fg max-[460px]:py-2.5 max-[460px]:text-[1.3rem]"
         >
           <span aria-hidden="true" class="grid place-items-center">
             {icon ? (
