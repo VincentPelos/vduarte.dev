@@ -22,7 +22,7 @@ import {
   type Rgb,
 } from '../../lib/constellation';
 import { hole } from '../../lib/hole';
-import { CELL, fitCanvas, frameLoop, readPalette, SCENE_FPS } from '../../lib/scene';
+import { CELL, dotBatch, fitCanvas, frameLoop, readPalette, SCENE_FPS } from '../../lib/scene';
 import { createMatter } from './sky-matter';
 
 interface Options {
@@ -277,13 +277,10 @@ export function mount(
     };
   };
 
+  const stars$ = dotBatch();
   const dot = (x: number, y: number, level: number, color: string, alpha: number) => {
-    if (x < -4 || y < -4 || x > width + 4 || y > height + 4 || alpha <= 0) return;
-    ctx.globalAlpha = Math.min(1, alpha);
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(snap(x), snap(y), RADII[level], 0, Math.PI * 2);
-    ctx.fill();
+    if (x < -4 || y < -4 || x > width + 4 || y > height + 4) return;
+    stars$.add(snap(x), snap(y), RADII[level], color, alpha);
   };
 
   let time = 0;
@@ -370,10 +367,11 @@ export function mount(
       }
       dot(x, y, Math.max(0, Math.min(2, level + twinkle(s.i))), color, alpha);
     }
-    ctx.globalAlpha = 1;
+    stars$.flush(ctx);
     matter.drawRocks(ctx, time, width, height, heroBottom);
-    // Desde el hero, las estrellas orbitan el disco del agujero negro aunque no haya scroll.
-    return from === 0 && hole.ready;
+    // Desde el hero, las estrellas orbitan el disco del agujero negro aunque no haya scroll. Con
+    // el hero tapado el agujero está en pausa y nada orbita: basta el ritmo de quieto (#192).
+    return from === 0 && hole.ready && heroBottom > 0;
   };
 
   const resize = () => {

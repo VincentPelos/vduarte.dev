@@ -25,10 +25,10 @@ El código está listo (#185): Power BI en el bento, favicon, imagen para compar
 
 | Paso | Qué |
 |---|---|
-| 1. Release | Mergear el PR `develop` → `main`: Coolify despliega. Después, el tag `v1.0.0` y el GitHub Release (lo puede hacer el agente) |
-| 2. Dominio | En Coolify, de `preview.vduarte.dev` a `vduarte.dev`, sin acceso restringido |
+| ~~1. Release~~ | Hecho el 2026-10-13: #188 a `main`, tag `v1.0.0` y GitHub Release |
+| ~~2. Dominio~~ | Hecho: `https://vduarte.dev` responde sin acceso restringido |
 | 3. Repo público | Cambiar la visibilidad en GitHub: los puntos del grafo de `/uso-de-ia` y los enlaces a la bitácora dejan de dar 404 |
-| 4. Verificar | `curl -sI -H 'Accept-Encoding: gzip' https://vduarte.dev` responde `Content-Encoding: gzip` (#158); compartir el enlace muestra la imagen; pasada en su Android (iOS/Safari queda sin verificar) |
+| 4. Verificar | Hecho por el agente el 2026-10-13: `gzip` activo (#158), las rutas y archivos responden 200, las etiquetas Open Graph apuntan a `og.png` y no hay errores de consola. Falta: compartir el enlace para ver la imagen y la pasada en su Android (iOS/Safari queda sin verificar) |
 | 5. LinkedIn | Actualizar el perfil; confirmar las fechas de la práctica en AIEP |
 | 6. Defensa | Leer las decisiones, la bitácora y la [revisión de la rúbrica](rubrica.md#revisión-antes-de-v100-2026-10-13) |
 
