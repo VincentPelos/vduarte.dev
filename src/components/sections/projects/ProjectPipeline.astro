@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { getSite } from '../../../lib/content';
-import { fileName } from '../../../lib/projects';
+import { fileName, initialSkill } from '../../../lib/projects';
 import { pluralize } from '../../../lib/text';
 import Link from '../../ui/Link.astro';
 
@@ -12,23 +12,37 @@ interface Props {
 const { project } = Astro.props;
 const { steps, skills } = project;
 const texts = (await getSite()).sections.projects.skills;
+// Se abre con una skill elegida (#180): el pipeline ya viene encendido y projects.ts lo anima.
+const picked = initialSkill(project);
+const pickedSteps =
+  skills.find((skill) => skill.name === picked)?.uses.map((use) => use.step) ?? [];
+const lit = steps.filter((step) => pickedSteps.includes(step));
 ---
 
 {/*
   Pipeline (#162, decisión 023): las etapas del proyecto en una línea de puntos. Al elegir una
   skill (projects.ts) se encienden las etapas donde se usó y se abre lo que se hizo en cada una.
-  Cada etapa trae el texto de todas sus skills, oculto; sin JS se ven solo las etapas.
+  Cada etapa trae el texto de todas sus skills, oculto salvo el de la skill elegida al abrir (#180).
 */}
 <div class="project-pipe grid content-start gap-2.5 border-t border-dashed border-line p-4 min-[561px]:border-t-0 min-[561px]:border-l">
   <p class="flex justify-between gap-2.5 font-mono text-[0.7rem] leading-none text-muted">
-    <span data-pipe-idle>{pluralize(steps.length, texts.steps)}</span>
-    <span data-pipe-idle>{texts.pick}</span>
-    <span data-pipe-active hidden>
-      {texts.usedIn} <b data-pipe-skill class="font-medium text-fg"></b>
+    <span data-pipe-idle hidden={!!picked}>
+      {pluralize(steps.length, texts.steps)}
     </span>
-    <span data-pipe-active data-pipe-count hidden class="tabular-nums"></span>
+    <span data-pipe-idle hidden={!!picked}>
+      {texts.pick}
+    </span>
+    <span data-pipe-active hidden={!picked}>
+      {texts.usedIn}{' '}
+      <b data-pipe-skill class="font-medium text-fg">
+        {picked}
+      </b>
+    </span>
+    <span data-pipe-active data-pipe-count hidden={!picked} class="tabular-nums">
+      {lit.length}/{steps.length}
+    </span>
   </p>
-  <ol data-steps aria-live="polite" class="steps relative grid">
+  <ol data-steps data-skill={picked} aria-live="polite" class="steps relative grid">
     {steps.map((step) => {
       const uses = skills.flatMap((skill) =>
         skill.uses.filter((use) => use.step === step).map((use) => ({ skill: skill.name, ...use })),
@@ -37,6 +51,7 @@ const texts = (await getSite()).sections.projects.skills;
         <li
           data-step
           data-skills={JSON.stringify(uses.map((use) => use.skill))}
+          data-on={lit.includes(step) ? '' : undefined}
           class="step grid grid-cols-[7px_minmax(0,1fr)] items-baseline gap-x-3 py-px"
         >
           <span aria-hidden="true" data-dot class="dot relative -top-px size-[7px] rounded-full" />
@@ -44,7 +59,12 @@ const texts = (await getSite()).sections.projects.skills;
           {uses.map(
             (use) =>
               use.text && (
-                <div data-use={use.skill} hidden class="use col-start-2 grid">
+                <div
+                  data-use={use.skill}
+                  hidden={use.skill !== picked}
+                  data-open={use.skill === picked ? '' : undefined}
+                  class="use col-start-2 grid"
+                >
                   <div class="overflow-hidden">
                     <p class="pt-0.5 pb-1.5 text-[0.86rem] text-soft">
                       {use.text}

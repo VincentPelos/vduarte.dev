@@ -243,6 +243,8 @@ export const projectSchema = <T extends z.ZodType>(image: () => T) =>
       /** Etapas del proyecto, en orden: la línea de puntos del pipeline. */
       steps: z.array(z.string().min(1)).min(1),
       skills: z.array(projectSkill).min(1),
+      /** Skill elegida al abrir el proyecto, para que se note que se pueden pulsar (#180); si falta, la primera. */
+      skill: z.string().min(1).optional(),
       image: image().optional(),
       repo: z.url().optional(),
       demo: z.url().optional(),
@@ -266,6 +268,13 @@ export const projectSchema = <T extends z.ZodType>(image: () => T) =>
           }
         }),
       );
+      if (project.skill && !project.skills.some((skill) => skill.name === project.skill)) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `La skill "${project.skill}" no está en skills`,
+          path: ['skill'],
+        });
+      }
     });
 
 const text = z.string().min(1);

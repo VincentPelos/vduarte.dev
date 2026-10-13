@@ -5,6 +5,8 @@ import { SIGNAL_EASING, signalTime } from '../../../lib/projects';
  * - Elegir un proyecto muestra su detalle; el cambio va con View Transitions ("Transformar").
  * - Elegir una skill enciende las etapas del pipeline donde se usó: un punto baja por la línea y
  *   enciende cada una al pasar ("Señal"); al llegar, se abren los textos.
+ * - Cada proyecto se abre con una skill elegida (#180): su pipeline ya viene encendido y la señal
+ *   se repite al verlo por primera vez y al cambiar de proyecto, para que se note que se pulsan.
  * El contenido nunca espera a la animación: los estados se aplican al tiro y la animación solo
  * los acompaña. Con `prefers-reduced-motion`, nada se mueve.
  */
@@ -37,8 +39,15 @@ function selectProject(list: HTMLElement, id: string) {
     const after = clicked?.getBoundingClientRect().top ?? 0;
     if (after !== before) window.scrollBy(0, after - before);
   };
+  const opened = document.getElementById(clicked?.getAttribute('aria-controls') ?? '');
   if (reduced() || !document.startViewTransition) apply();
-  else document.startViewTransition(apply);
+  else document.startViewTransition(apply).finished.then(() => opened && replay(opened));
+}
+
+/** Repite la señal de la skill que el proyecto tiene elegida. */
+function replay(detail: HTMLElement) {
+  const pressed = detail.querySelector<HTMLElement>('[data-skill][aria-pressed="true"]');
+  if (pressed) setSkill(detail, pressed.dataset.skill ?? null);
 }
 
 function setSkill(detail: HTMLElement, name: string | null) {
@@ -171,3 +180,21 @@ document.addEventListener('click', (event) => {
     );
   }
 });
+
+// La primera vez que se ve el detalle abierto, su skill elegida reproduce la señal.
+if (!reduced()) {
+  const seen = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        seen.unobserve(entry.target);
+        const detail = entry.target as HTMLElement;
+        if (!detail.hidden) replay(detail);
+      }
+    },
+    { threshold: 0.4 },
+  );
+  document
+    .querySelectorAll<HTMLElement>('[data-project]')
+    .forEach((detail) => seen.observe(detail));
+}

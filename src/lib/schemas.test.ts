@@ -248,6 +248,11 @@ describe('projectSchema', () => {
     const skills = [{ name: 'DAX', uses: [{ step: 'Modelo' }] }];
     expect(errorPaths(schema.safeParse({ ...project, skills }))).toEqual(['skills.0.uses.0.step']);
   });
+
+  it('exige que la skill elegida esté en skills', () => {
+    expect(schema.safeParse({ ...project, skill: 'Power BI' }).success).toBe(true);
+    expect(errorPaths(schema.safeParse({ ...project, skill: 'DAX' }))).toEqual(['skill']);
+  });
 });
 
 describe('caseSchema', () => {

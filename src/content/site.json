@@ -30,7 +30,7 @@
       { "section": "educacion", "label": "educación" },
       { "section": "contacto", "label": "contacto" }
     ],
-    "footerNote": "Hecho con Astro · vduarte.dev",
+    "footerNote": "vduarte.dev",
     "footerLinks": [{ "label": "Uso de IA", "href": "/uso-de-ia" }],
     "scrollCue": { "label": "portafolio", "ariaLabel": "Bajar al portafolio" },
     "prompt": { "user": "vicente@vduarte", "command": "whoami" },
